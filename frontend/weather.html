@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Alerts - KisanCare</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">🌿 KisanCare</div>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar">☰</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="crop.html">Crop Advisory</a></li>
+                <li><a href="weather.html" class="active">Weather Alerts</a></li>
+                <li><a href="market.html">Market Prices</a></li>
+                <li><a href="index.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Real-Time Weather Alerts</h2>
+        <div class="card">
+            <div class="form-group">
+                <label for="weatherLocation">Enter Location</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="weatherLocation" placeholder="e.g. Nagpur">
+                    <button id="getWeatherBtn" class="btn">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="weatherDisplay" class="weather-info" style="display: none;">
+            <div class="weather-card">
+                <h3 id="displayLocation">Nagpur</h3>
+                <h1 id="displayTemp" style="font-size: 3rem;">32°C</h1>
+                <p id="displayCondition">Sunny</p>
+            </div>
+
+            <div class="card" style="flex: 1;">
+                <h3>Status & Alerts</h3>
+                <p><strong>Rain Prediction:</strong> <span id="rainPred">No rain expected today.</span></p>
+
+                <div id="alertBox" class="alert-box alert-safe">
+                    ✅ No Severe Alerts
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

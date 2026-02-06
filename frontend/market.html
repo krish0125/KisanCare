@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Prices - KisanCare</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">🌿 KisanCare</div>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar">☰</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="crop.html">Crop Advisory</a></li>
+                <li><a href="weather.html">Weather Alerts</a></li>
+                <li><a href="market.html" class="active">Market Prices</a></li>
+                <li><a href="index.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Live Market Prices (Mandi Rates)</h2>
+        <div class="card">
+            <div class="form-group">
+                <label for="marketCrop">Select Crop</label>
+                <select id="marketCrop">
+                    <option value="wheat">Wheat</option>
+                    <option value="rice">Rice</option>
+                    <option value="onion">Onion</option>
+                    <option value="potato">Potato</option>
+                    <option value="tomato">Tomato</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="marketName">Market / APMC Name</label>
+                <input type="text" id="marketName" placeholder="e.g. Nashik APMC">
+            </div>
+            <button id="getPriceBtn" class="btn">Get Prices</button>
+        </div>
+
+        <div id="priceResult" class="card" style="display: none;">
+            <h3>Price List</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Crop</th>
+                        <th>Market</th>
+                        <th>Price (per Quintal)</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="priceTableBody">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

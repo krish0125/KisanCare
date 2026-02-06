@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Advisory - KisanCare</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">🌿 KisanCare</div>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar">☰</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="crop.html" class="active">Crop Advisory</a></li>
+                <li><a href="weather.html">Weather Alerts</a></li>
+                <li><a href="market.html">Market Prices</a></li>
+                <li><a href="index.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Crop Advisory System</h2>
+        <div class="card">
+            <form id="cropForm">
+                <div class="form-group">
+                    <label for="soilType">Soil Type</label>
+                    <select id="soilType" required>
+                        <option value="">Select Soil Type</option>
+                        <option value="Alluvial">Alluvial</option>
+                        <option value="Black">Black</option>
+                        <option value="Red">Red</option>
+                        <option value="Clay">Clay</option>
+                        <option value="Sandy">Sandy</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location (District)</label>
+                    <input type="text" id="location" placeholder="e.g. Pune" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="season">Season</label>
+                    <select id="season" required>
+                        <option value="">Select Season</option>
+                        <option value="Kharif">Kharif (Monsoon)</option>
+                        <option value="Rabi">Rabi (Winter)</option>
+                        <option value="Zaid">Zaid (Summer)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="temperature">Temperature (°C) (Optional)</label>
+                    <input type="number" id="temperature" placeholder="e.g. 28">
+                </div>
+
+                <button type="submit" class="btn">Get Recommendation</button>
+            </form>
+        </div>
+
+        <div id="cropResult" class="card" style="display: none;">
+            <h3>Recommended Crop</h3>
+            <p id="recommendationText">Generating...</p>
+            <hr>
+            <h4>Fertilizer Suggestion</h4>
+            <p id="fertilizerText">Loading...</p>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
