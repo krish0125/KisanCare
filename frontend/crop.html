@@ -22,19 +22,20 @@
                 <li><a href="crop.html" class="active">Crop Advisory</a></li>
                 <li><a href="weather.html">Weather Alerts</a></li>
                 <li><a href="market.html">Market Prices</a></li>
+                <li><a href="#" id="navFeedbackLink" data-lang="feedback_nav">Feedback</a></li>
                 <li><a href="index.html">Login</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="container">
-        <h2>Crop Advisory System</h2>
+        <h2 data-lang="crop_header">Crop Advisory System</h2>
         <div class="card">
             <form id="cropForm">
                 <div class="form-group">
-                    <label for="soilType">Soil Type</label>
+                    <label for="soilType" data-lang="soil_label">Soil Type</label>
                     <select id="soilType" required>
-                        <option value="">Select Soil Type</option>
+                        <option value="" data-lang="select_soil">Select Soil Type</option>
                         <option value="Alluvial">Alluvial</option>
                         <option value="Black">Black</option>
                         <option value="Red">Red</option>
@@ -44,14 +45,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="location">Location (District)</label>
+                    <label for="location" data-lang="location_label">Location (District)</label>
                     <input type="text" id="location" placeholder="e.g. Pune" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="season">Season</label>
+                    <label for="season" data-lang="season_label">Season</label>
                     <select id="season" required>
-                        <option value="">Select Season</option>
+                        <option value="" data-lang="select_season">Select Season</option>
                         <option value="Kharif">Kharif (Monsoon)</option>
                         <option value="Rabi">Rabi (Winter)</option>
                         <option value="Zaid">Zaid (Summer)</option>
@@ -59,19 +60,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="temperature">Temperature (°C) (Optional)</label>
+                    <label for="temperature" data-lang="temp_label">Temperature (°C) (Optional)</label>
                     <input type="number" id="temperature" placeholder="e.g. 28">
                 </div>
 
-                <button type="submit" class="btn">Get Recommendation</button>
+                <button type="submit" class="btn" data-lang="get_recommendation">Get Recommendation</button>
             </form>
         </div>
 
         <div id="cropResult" class="card" style="display: none;">
-            <h3>Recommended Crop</h3>
+            <h3 data-lang="rec_crop_title">Recommended Crop</h3>
             <p id="recommendationText">Generating...</p>
             <hr>
-            <h4>Fertilizer Suggestion</h4>
+            <h4 data-lang="fert_sug_title">Fertilizer Suggestion</h4>
             <p id="fertilizerText">Loading...</p>
         </div>
     </main>

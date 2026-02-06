@@ -76,8 +76,9 @@ nav {
 
 /* Glassmorphism Card */
 .auth-container {
-    max-width: 420px;
-    width: 90%;
+    width: 550px;
+    height: 550px;
+    max-width: 90%;
     margin: 0 auto;
     text-align: center;
 
@@ -88,11 +89,17 @@ nav {
     /* Blur the background behind */
     -webkit-backdrop-filter: blur(12px);
 
-    padding: 3rem 2.5rem;
+    padding: 2rem;
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.6);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    /* Box Shape & Centering */
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .auth-container:hover {
@@ -604,4 +611,188 @@ th {
     .menu-toggle {
         display: block;
     }
+}
+
+/* ===========================
+   Settings Modal & Dark Mode
+   =========================== */
+
+/* Dark Mode Variables */
+body.dark-mode {
+    --primary-green: #2ecc71;
+    /* Keep bright */
+    --dark-green: #1e8449;
+    /* Slightly darker */
+    --light-bg: #121212;
+    /* Very dark grey for background */
+    --white: #1e1e1e;
+    /* Dark grey for cards */
+    --text-dark: #ecf0f1;
+    /* Light text */
+    --text-light: #bdc3c7;
+    /* Muted light text */
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    /* Heavier shadow */
+}
+
+/* Settings Modal Overlay */
+.settings-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.settings-modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s forwards;
+}
+
+/* Settings Modal Content */
+.settings-modal {
+    background: var(--white);
+    /* Uses variable for theme support */
+    color: var(--text-dark);
+    width: 400px;
+    max-width: 90%;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slideUp 0.3s forwards;
+}
+
+@keyframes slideUp {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary-green);
+}
+
+.close-settings {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-dark);
+    transition: transform 0.2s;
+}
+
+.close-settings:hover {
+    transform: scale(1.1);
+    color: #e74c3c;
+}
+
+/* Settings Options */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.setting-label {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.setting-control {
+    display: flex;
+    align-items: center;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: var(--primary-green);
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+/* Extra Info */
+.app-version {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.settings-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.settings-footer a {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin: 0 10px;
+}
+
+.settings-footer a:hover {
+    text-decoration: underline;
 }

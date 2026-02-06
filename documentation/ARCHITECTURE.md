@@ -17,7 +17,7 @@ graph TD
 ## 2. Technology Stack Finalization
 
 ### Frontend
-- **Languages:** HTML5, CSS3, JavaScript (ES6+)
+- **Languages:** HTML, CSS, JavaScript (ES6+)
 - **Styling:** Vanilla CSS (Modern features: Flexbox, Grid, CSS Variables)
 - **Design:** Respondent, Mobile-Friendly (Glassmorphism aesthetics)
 

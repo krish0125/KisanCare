@@ -21,20 +21,21 @@
                 <li><a href="home.html">Home</a></li>
                 <li><a href="crop.html">Crop Advisory</a></li>
                 <li><a href="weather.html" class="active">Weather Alerts</a></li>
-                <li><a href="market.html">Market Prices</a></li>
-                <li><a href="index.html">Login</a></li>
+                <li><a href="market.html" data-lang="market_prices">Market Prices</a></li>
+                <li><a href="#" id="navFeedbackLink" data-lang="feedback_nav">Feedback</a></li>
+                <li><a href="index.html" data-lang="login">Login</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="container">
-        <h2>Real-Time Weather Alerts</h2>
+        <h2 data-lang="weather_header">Real-Time Weather Alerts</h2>
         <div class="card">
             <div class="form-group">
-                <label for="weatherLocation">Enter Location</label>
+                <label for="weatherLocation" data-lang="enter_location">Enter Location</label>
                 <div style="display: flex; gap: 10px;">
                     <input type="text" id="weatherLocation" placeholder="e.g. Nagpur">
-                    <button id="getWeatherBtn" class="btn">Search</button>
+                    <button id="getWeatherBtn" class="btn" data-lang="search_btn">Search</button>
                 </div>
             </div>
         </div>
@@ -47,8 +48,9 @@
             </div>
 
             <div class="card" style="flex: 1;">
-                <h3>Status & Alerts</h3>
-                <p><strong>Rain Prediction:</strong> <span id="rainPred">No rain expected today.</span></p>
+                <h3 data-lang="status_alerts">Status & Alerts</h3>
+                <p><strong data-lang="rain_prediction">Rain Prediction:</strong> <span id="rainPred">No rain expected
+                        today.</span></p>
 
                 <div id="alertBox" class="alert-box alert-safe">
                     ✅ No Severe Alerts

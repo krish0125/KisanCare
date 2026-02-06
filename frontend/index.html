@@ -22,17 +22,17 @@
 
             <!-- Login Form -->
             <form id="loginForm" class="auth-form">
-                <h2>Welcome Back</h2>
+                <h2 data-lang="welcome_back">Welcome Back</h2>
 
                 <!-- Login Method Toggle Removed from Top -->
 
                 <div id="emailLoginGroup">
                     <div class="form-group">
-                        <label for="loginEmail">Email</label>
+                        <label for="loginEmail" data-lang="email_label">Email</label>
                         <input type="email" id="loginEmail" placeholder="Enter your email">
                     </div>
                     <div class="form-group">
-                        <label for="loginPassword">Password</label>
+                        <label for="loginPassword" data-lang="password_label">Password</label>
                         <input type="password" id="loginPassword" placeholder="Enter your password">
                     </div>
                 </div>
@@ -50,32 +50,35 @@
                         style="background: #e67e22; margin-bottom: 10px; width: 100%;">Send OTP</button>
                 </div>
 
-                <button type="submit" class="btn" style="width: 100%;">Login</button>
+                <button type="submit" class="btn" style="width: 100%;" data-lang="login_btn">Login</button>
 
                 <!-- Social Login -->
                 <div style="margin-top: 20px; text-align: center;">
-                    <p style="margin-bottom: 10px; font-size: 0.9rem; color: #666;">Or continue with:</p>
+                    <p style="margin-bottom: 10px; font-size: 0.9rem; color: #666;" data-lang="or_continue">Or continue
+                        with:</p>
 
                     <button type="button" id="googleLoginBtn" class="social-btn google-btn">
                         <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width="20">
-                        Continue with Google
+                        <span data-lang="continue_google">Continue with Google</span>
                     </button>
 
                     <div style="margin-top: 10px;">
                         <button type="button" id="phoneLoginLink"
-                            style="background:none; border:none; color: #7f8c8d; cursor:pointer; text-decoration: underline;">
+                            style="background:none; border:none; color: #7f8c8d; cursor:pointer; text-decoration: underline;"
+                            data-lang="login_phone_link">
                             Login with Phone Number
                         </button>
                     </div>
                 </div>
 
                 <p style="margin-top: 15px; font-size: 0.9rem;">
-                    Don't have an account? <a href="#" id="switchToSignup"
-                        style="color: var(--primary-green); font-weight: bold; text-decoration: none;">Sign Up</a>
+                    <span data-lang="dont_have_account">Don't have an account?</span> <a href="#" id="switchToSignup"
+                        style="color: var(--primary-green); font-weight: bold; text-decoration: none;"
+                        data-lang="sign_up_link">Sign Up</a>
                 </p>
             </form>
 
-            <!-- Mock Google Sign-In Popup -->
+            <!-- Mock Google Sign-In Popup & Welcome Modal -->
             <div id="googleModal" class="google-modal-overlay" style="display: none;">
                 <div class="google-modal-content">
                     <div class="google-header">
@@ -85,20 +88,22 @@
                     <div class="google-body">
                         <h3>Choose an account</h3>
                         <p>to continue to KisanCare</p>
-
                         <div class="account-list">
-                            <div class="account-item" onclick="handleGoogleSelect('demo@gmail.com', 'Demo User')">
-                                <div class="avatar" style="background: #ef5350;">D</div>
+                            <!-- Account 1 -->
+                            <div class="account-item"
+                                onclick="handleGoogleSelect('kishan_farmer@gmail.com', 'Kishan Admin')">
+                                <div class="avatar" style="background-color: #ef5350;">K</div>
                                 <div class="account-info">
-                                    <span class="name">Demo User</span>
-                                    <span class="email">demo@gmail.com</span>
+                                    <span class="name">Kishan Admin</span>
+                                    <span class="email">kishan_farmer@gmail.com</span>
                                 </div>
                             </div>
-                            <div class="account-item" onclick="handleGoogleSelect('user2@example.com', 'User Two')">
-                                <div class="avatar" style="background: #4285f4;">U</div>
+                            <!-- Account 2 -->
+                            <div class="account-item" onclick="handleGoogleSelect('user_demo@gmail.com', 'User Demo')">
+                                <div class="avatar" style="background-color: #4285f4;">U</div>
                                 <div class="account-info">
-                                    <span class="name">User Two</span>
-                                    <span class="email">user2@example.com</span>
+                                    <span class="name">User Demo</span>
+                                    <span class="email">user_demo@gmail.com</span>
                                 </div>
                             </div>
                         </div>
@@ -109,40 +114,24 @@
                 </div>
             </div>
 
-            <!-- Welcome Modal -->
-            <div id="welcomeModal" class="google-modal-overlay" style="display: none; z-index: 2100;">
-                <div class="google-modal-content" style="text-align: center; padding: 40px; width: 350px;">
-                    <div style="font-size: 3rem; margin-bottom: 20px;">🎉</div>
-                    <h2 style="color: var(--dark-green); margin-bottom: 10px;">Welcome Back!</h2>
-                    <h3 id="welcomeUserName" style="color: #555; font-weight: 500;">User</h3>
-                    <p style="color: #888; margin-top: 15px;">Redirecting to dashboard...</p>
-                    <div class="loading-spinner"
-                        style="border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-green); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto 0;">
-                    </div>
+            <div id="welcomeModal" class="google-modal-overlay" style="display: none;">
+                <div class="google-modal-content" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+                    <h2 style="color: #2ecc71;">Login Successful!</h2>
+                    <p>Welcome back, <span id="welcomeUserName" style="font-weight: bold;">User</span>!</p>
+                    <p style="font-size: 0.9rem; color: #777;">Redirecting you to home...</p>
                 </div>
             </div>
 
-            <style>
-                @keyframes spin {
-                    0% {
-                        transform: rotate(0deg);
-                    }
-
-                    100% {
-                        transform: rotate(360deg);
-                    }
-                }
-            </style>
-
             <!-- Signup Form -->
             <form id="signupForm" class="auth-form" style="display: none;">
-                <h2>Create Account</h2>
+                <h2 data-lang="create_account">Create Account</h2>
                 <div class="form-group">
-                    <label for="signupName">Full Name</label>
+                    <label for="signupName" data-lang="full_name">Full Name</label>
                     <input type="text" id="signupName" placeholder="Enter your full name" required>
                 </div>
                 <div class="form-group">
-                    <label for="signupEmail">Email</label>
+                    <label for="signupEmail" data-lang="email_label">Email</label>
                     <input type="email" id="signupEmail" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
@@ -150,17 +139,18 @@
                     <input type="tel" id="signupPhone" placeholder="Enter 10-digit number" pattern="[0-9]{10}" required>
                 </div>
                 <div class="form-group">
-                    <label for="signupPassword">Password</label>
+                    <label for="signupPassword" data-lang="password_label">Password</label>
                     <input type="password" id="signupPassword" placeholder="Create a password" required>
                 </div>
                 <div class="form-group">
-                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <label for="signupConfirmPassword" data-lang="confirm_password">Confirm Password</label>
                     <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
                 </div>
-                <button type="submit" class="btn" style="width: 100%;">Sign Up</button>
+                <button type="submit" class="btn" style="width: 100%;" data-lang="sign_up_btn">Sign Up</button>
                 <p style="margin-top: 15px; font-size: 0.9rem;">
-                    Already have an account? <a href="#" id="switchToLogin"
-                        style="color: var(--primary-green); font-weight: bold; text-decoration: none;">Login</a>
+                    <span data-lang="already_account">Already have an account?</span> <a href="#" id="switchToLogin"
+                        style="color: var(--primary-green); font-weight: bold; text-decoration: none;"
+                        data-lang="login_link">Login</a>
                 </p>
             </form>
         </div>
@@ -224,6 +214,18 @@
                     loggedInAt: new Date().toISOString(),
                     provider: 'google'
                 };
+
+                // Send to Backend (MongoDB Logger)
+                fetch('http://localhost:5001/login-history', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        device: navigator.platform + " (Google Login)",
+                        version: navigator.userAgent
+                    })
+                }).catch(err => console.error("Log Error:", err));
+
                 localStorage.setItem('kisanUser', JSON.stringify(user));
 
                 // Hide Google Modal
@@ -293,43 +295,117 @@
             }
 
             // Handle Login Submit
-            loginForm.addEventListener('submit', (e) => {
+            loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                const method = document.querySelector('input[name="loginMethod"]:checked').value;
+                // Determine method based on visibility of the phone group
+                const phoneLoginGroup = document.getElementById('phoneLoginGroup');
+                const isPhoneLogin = phoneLoginGroup && phoneLoginGroup.style.display !== 'none';
                 let userIdentifier = '';
 
-                if (method === 'email') {
-                    userIdentifier = document.getElementById('loginEmail').value;
-                    const password = document.getElementById('loginPassword').value;
-                    if (!password) { alert("Please enter password"); return; }
-                } else {
+                // -----------------------------
+                // 1. PHONE LOGIN (Mock Logic)
+                // -----------------------------
+                if (isPhoneLogin) {
                     userIdentifier = document.getElementById('loginPhone').value;
                     const otpInput = document.getElementById('loginOTP').value;
+
+                    if (!generatedOtp) {
+                        alert("Please verify your phone number by sending an OTP first.");
+                        return;
+                    }
+
                     if (parseInt(otpInput) !== generatedOtp) {
                         alert("Invalid OTP! Please try again.");
                         return;
                     }
+
+                    // Success for Phone
+                    finishLogin(userIdentifier, "Phone User");
+                    return;
                 }
 
-                // Mock user object
+                // -----------------------------
+                // 2. EMAIL LOGIN (Real Auth)
+                // -----------------------------
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                if (!email || !password) {
+                    alert("Please fill in all fields.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch('http://localhost:5001/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.status === 'success') {
+                        // Success -> Proceed
+                        finishLogin(email, result.user.name);
+                    } else {
+                        // Failure -> Show Error
+                        alert("❌ " + result.message + "\n\nPlease enter a valid email id or password.");
+                    }
+                } catch (err) {
+                    console.error("Login Error:", err);
+                    alert("Server Error. Is the backend running?");
+                }
+            });
+
+            function finishLogin(identifier, name) {
+                // Capture Device Info
+                const deviceVersion = navigator.userAgent;
+                const loginTime = new Date().toLocaleString();
+
                 const user = {
-                    name: "User " + userIdentifier,
-                    email: userIdentifier,
-                    loggedInAt: new Date().toISOString()
+                    name: name || "User " + identifier,
+                    email: identifier,
+                    loggedInAt: new Date().toISOString(),
+                    device: deviceVersion
                 };
+
+                // Send to Backend History
+                fetch('http://localhost:5001/login-history', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: identifier,
+                        device: navigator.platform,
+                        version: deviceVersion
+                    })
+                }).catch(error => console.error('Error logging login:', error));
 
                 localStorage.setItem('kisanUser', JSON.stringify(user));
 
-                alert('Login Successful!');
-                window.location.href = 'home.html';
-            });
+                // Show Visual Welcome Modal
+                const welcomeModal = document.getElementById('welcomeModal');
+                if (welcomeModal) {
+                    document.getElementById('welcomeUserName').innerText = name || identifier;
+                    welcomeModal.style.display = 'flex';
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 2000);
+                } else {
+                    // Fallback
+                    alert(`Login Successful! Welcome ${name || identifier}`);
+                    window.location.href = 'home.html';
+                }
+            }
 
             // Handle Signup Submit
-            signupForm.addEventListener('submit', (e) => {
+            signupForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const name = document.getElementById('signupName').value;
                 const email = document.getElementById('signupEmail').value;
+                const phone = document.getElementById('signupPhone').value;
                 const p1 = document.getElementById('signupPassword').value;
                 const p2 = document.getElementById('signupConfirmPassword').value;
 
@@ -338,16 +414,36 @@
                     return;
                 }
 
-                const user = {
-                    name: name,
-                    email: email,
-                    loggedInAt: new Date().toISOString()
-                };
+                try {
+                    const response = await fetch('http://localhost:5001/signup', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            password: p1,
+                            phone: phone
+                        })
+                    });
 
-                localStorage.setItem('kisanUser', JSON.stringify(user));
+                    const result = await response.json();
 
-                alert('Signup Successful!');
-                window.location.href = 'home.html';
+                    if (result.status === 'success') {
+                        alert("🎉 Account Created Successfully!\n\nPlease Login with your new email and password.");
+
+                        // Switch to Login Form
+                        signupForm.style.display = 'none';
+                        loginForm.style.display = 'block';
+
+                        // Pre-fill email for convenience
+                        document.getElementById('loginEmail').value = email;
+                    } else {
+                        alert("❌ Signup Failed: " + result.message);
+                    }
+                } catch (err) {
+                    console.error("Signup Error:", err);
+                    alert("Server Error during Signup.");
+                }
             });
         });
     </script>

@@ -21,17 +21,18 @@
                 <li><a href="home.html">Home</a></li>
                 <li><a href="crop.html">Crop Advisory</a></li>
                 <li><a href="weather.html">Weather Alerts</a></li>
-                <li><a href="market.html" class="active">Market Prices</a></li>
-                <li><a href="index.html">Login</a></li>
+                <li><a href="market.html" data-lang="market_prices" class="active">Market Prices</a></li>
+                <li><a href="#" id="navFeedbackLink" data-lang="feedback_nav">Feedback</a></li>
+                <li><a href="index.html" data-lang="login">Login</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="container">
-        <h2>Live Market Prices (Mandi Rates)</h2>
+        <h2 data-lang="market_header">Live Market Prices (Mandi Rates)</h2>
         <div class="card">
             <div class="form-group">
-                <label for="marketCrop">Select Crop</label>
+                <label for="marketCrop" data-lang="select_crop_label">Select Crop</label>
                 <select id="marketCrop">
                     <option value="wheat">Wheat</option>
                     <option value="rice">Rice</option>
@@ -41,21 +42,21 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="marketName">Market / APMC Name</label>
+                <label for="marketName" data-lang="market_name_label">Market / APMC Name</label>
                 <input type="text" id="marketName" placeholder="e.g. Nashik APMC">
             </div>
-            <button id="getPriceBtn" class="btn">Get Prices</button>
+            <button id="getPriceBtn" class="btn" data-lang="get_prices_btn">Get Prices</button>
         </div>
 
         <div id="priceResult" class="card" style="display: none;">
-            <h3>Price List</h3>
+            <h3 data-lang="price_list_title">Price List</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Crop</th>
-                        <th>Market</th>
-                        <th>Price (per Quintal)</th>
-                        <th>Date</th>
+                        <th data-lang="th_crop">Crop</th>
+                        <th data-lang="th_market">Market</th>
+                        <th data-lang="th_price">Price (per Quintal)</th>
+                        <th data-lang="th_date">Date</th>
                     </tr>
                 </thead>
                 <tbody id="priceTableBody">
