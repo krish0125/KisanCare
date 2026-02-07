@@ -229,14 +229,78 @@ def submit_feedback():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/login-phone', methods=['POST'])
+def login_phone():
+    global db, client
+    try:
+        data = request.json
+        phone = data.get('phone')
+        otp = data.get('otp')
+        
+        # Ensure DB is active
+        if db is None:
+             print("❌ Database variable is None. Reconnecting...")
+             if client:
+                 db = client[DB_NAME]
+             else:
+                 return jsonify({'status': 'error', 'message': 'Database not connected'}), 500
+
+        print(f"🔍 Checking Phone Login for: {phone}, OTP used: {otp}")
+        
+        users_col = db['users']
+        user = users_col.find_one({'phone': phone})
+        
+        # Update details to store in DB
+        update_data = {
+            'last_login': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'last_otp': otp,
+            'last_login_method': 'phone'
+        }
+        
+        if user:
+             # Update existing user
+             users_col.update_one({'phone': phone}, {'$set': update_data})
+             print(f"✅ User Logged In (Phone): {user.get('name')}")
+             
+             return jsonify({
+                'status': 'success', 
+                'message': 'Login Successful',
+                'user': {'name': user.get('name', 'User'), 'email': user.get('email', ''), 'phone': user.get('phone')}
+             })
+        else:
+            # Create new user
+            new_user = {
+                'name': 'Farmer User', 
+                'phone': phone,
+                'email': '', 
+                'password': '', 
+                'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                **update_data # Include the OTP and login method
+            }
+            users_col.insert_one(new_user)
+            print(f"✅ New Phone User Created with OTP: {phone}")
+            
+            return jsonify({
+                'status': 'success', 
+                'message': 'Account Created & Logged In',
+                'user': {'name': 'Farmer User', 'phone': phone}
+            })
+            
+    except Exception as e:
+        print(f"⚠️ Exception in Phone Login: {e}")
+        return jsonify({'status': 'error', 'message': f"Server Error: {str(e)}"}), 500
+
 @app.route('/login-history', methods=['POST'])
 def login_history():
     try:
         data = request.json
         entry = {
             'email': data.get('email'),
+            'phone': data.get('phone'),  # Added phone
+            'otp': data.get('otp'),      # Added OTP
             'device': data.get('device'),
             'version': data.get('version'),
+            'method': data.get('method', 'email'), # Added method
             'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         
@@ -244,9 +308,8 @@ def login_history():
         if db is not None:
             try:
                 collection = db['login_history']
-                result = collection.insert_one(entry.copy()) # Use copy to avoid mutating if we need 'entry' later
-                # Convert ObjectId to string for JSON serialization if needed, though we don't return it here
-                print(f"Logged to MongoDB with ID: {result.inserted_id}")
+                result = collection.insert_one(entry.copy()) 
+                print(f"Logged to MongoDB History: {entry}")
                 return jsonify({'status': 'success', 'message': 'Login logged to MongoDB', 'entry': entry})
             except Exception as db_e:
                 print(f"MongoDB Insert Error: {db_e}. Falling back to file.")

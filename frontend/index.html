@@ -275,12 +275,19 @@
                 });
             }
 
+            // Helper for Phone Validation (Indian Mobile Format: 6-9 start, 10 digits)
+            function validatePhone(phone) {
+                const regex = /^[6-9]\d{9}$/;
+                return regex.test(phone);
+            }
+
             // Send OTP Mock
             if (sendOtpBtn) {
                 sendOtpBtn.addEventListener('click', () => {
                     const phone = document.getElementById('loginPhone').value;
-                    if (!phone || phone.length !== 10) {
-                        alert("Please enter a valid 10-digit phone number.");
+
+                    if (!validatePhone(phone)) {
+                        alert("Invalid Phone Number!\n\nPlease enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.");
                         return;
                     }
 
@@ -310,6 +317,11 @@
                     userIdentifier = document.getElementById('loginPhone').value;
                     const otpInput = document.getElementById('loginOTP').value;
 
+                    if (!validatePhone(userIdentifier)) {
+                        alert("Invalid Phone Number!\n\nPlease enter a valid 10-digit mobile number.");
+                        return;
+                    }
+
                     if (!generatedOtp) {
                         alert("Please verify your phone number by sending an OTP first.");
                         return;
@@ -320,8 +332,30 @@
                         return;
                     }
 
-                    // Success for Phone
-                    finishLogin(userIdentifier, "Phone User");
+                    // Success for Phone -> Call Backend to Register/Login
+                    try {
+                        const response = await fetch('http://localhost:5001/login-phone', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                phone: userIdentifier,
+                                otp: otpInput // Send OTP to backend
+                            })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.status === 'success') {
+                            // Finish login with backend data
+                            finishLogin(userIdentifier, result.user.name, 'phone', otpInput);
+                        } else {
+                            alert("Login Error: " + result.message);
+                        }
+                    } catch (err) {
+                        console.error("Phone Login Error:", err);
+                        // Fallback to mock if server fails
+                        finishLogin(userIdentifier, "Phone User", 'phone', otpInput);
+                    }
                     return;
                 }
 
@@ -347,7 +381,7 @@
 
                     if (result.status === 'success') {
                         // Success -> Proceed
-                        finishLogin(email, result.user.name);
+                        finishLogin(email, result.user.name, 'email');
                     } else {
                         // Failure -> Show Error
                         alert("❌ " + result.message + "\n\nPlease enter a valid email id or password.");
@@ -358,14 +392,15 @@
                 }
             });
 
-            function finishLogin(identifier, name) {
+            function finishLogin(identifier, name, method = 'email', otp = null) {
                 // Capture Device Info
                 const deviceVersion = navigator.userAgent;
                 const loginTime = new Date().toLocaleString();
 
                 const user = {
                     name: name || "User " + identifier,
-                    email: identifier,
+                    email: method === 'email' ? identifier : '',
+                    phone: method === 'phone' ? identifier : '',
                     loggedInAt: new Date().toISOString(),
                     device: deviceVersion
                 };
@@ -375,7 +410,10 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        email: identifier,
+                        email: method === 'email' ? identifier : '',
+                        phone: method === 'phone' ? identifier : '',
+                        otp: otp,
+                        method: method,
                         device: navigator.platform,
                         version: deviceVersion
                     })
@@ -388,7 +426,7 @@
                 if (welcomeModal) {
                     document.getElementById('welcomeUserName').innerText = name || identifier;
                     welcomeModal.style.display = 'flex';
-                    
+
                     // Redirect after 2 seconds
                     setTimeout(() => {
                         window.location.href = 'home.html';
@@ -408,6 +446,11 @@
                 const phone = document.getElementById('signupPhone').value;
                 const p1 = document.getElementById('signupPassword').value;
                 const p2 = document.getElementById('signupConfirmPassword').value;
+
+                if (!validatePhone(phone)) {
+                    alert("Invalid Phone Number!\n\nPlease enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.");
+                    return;
+                }
 
                 if (p1 !== p2) {
                     alert('Passwords do not match!');
