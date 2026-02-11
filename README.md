@@ -39,39 +39,5 @@ Collage Project 2026-27/
 └── index.html              # Entry point (Redirects to frontend)
 ```
 
-## 🔧 Setup & Installation
 
-### Prerequisities
-- Python 3.x installed on your system.
-- A modern web browser.
-
-### 1. Install Dependencies
-Open a terminal in the project root directory and run:
-
-```bash
-pip install -r requirements.txt
-```
-
-### 2. Run the Backend Server
-Navigate to the backend directory and start the Flask server:
-
-```bash
-cd backend
-python app.py
-```
-The server should start running (usually on `http://127.0.0.1:5000`).
-
-### 3. Launch the Application
-Simply open the `index.html` file located in the root directory in your web browser. It will automatically redirect you to the main application interface.
-
-## 📝 Usage
-1. Open the web interface.
-2. Enter the required parameters (e.g., physical stats, working conditions).
-3. Click "Unique Predict" (or the submit button).
-4. View the predicted stamina score and recommendations.
-
-## 👥 Contributors
-- **Krish0125** (Project Lead)
-
----
 *Created for the 2026-27 Academic Year.*
