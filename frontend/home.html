@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KisanCare - Smart Farming Assistant</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chat.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
@@ -61,7 +63,36 @@
         </section>
     </main>
 
+    <!-- Chat Widget -->
+    <div class="chat-btn" id="chat-toggle-btn">
+        <span class="material-icons">chat</span>
+    </div>
+
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <span>Kisan AI Assistant</span>
+            <span class="material-icons close-btn" id="close-chat">close</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will appear here -->
+            <div class="message bot">
+                <p>Hello! I am your AI assistant. Send me a photo of your crop or ask a question!</p>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <label for="chat-file-input" class="file-upload-label">
+                <span class="material-icons">attach_file</span>
+            </label>
+            <input type="file" id="chat-file-input" accept="image/*" hidden>
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="send-btn">
+                <span class="material-icons">send</span>
+            </button>
+        </div>
+    </div>
+
     <script src="js/app.js"></script>
+    <script src="js/chat.js"></script>
 </body>
 
 </html>

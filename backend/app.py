@@ -7,6 +7,9 @@ from pymongo import MongoClient
 import json
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+import random
+import time
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for Frontend communication
@@ -332,6 +335,92 @@ def login_history():
         
     except Exception as e:
         print(f"Error logging login: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    try:
+        # Simulate AI Processing Time
+        time.sleep(1)
+        
+        message = request.form.get('message', '').lower()
+        image = request.files.get('image')
+        
+        reply = ""
+        
+        if image:
+            filename = secure_filename(image.filename)
+            # In a real app, we would save the image or pass it to an ML model
+            # For this project, we mock the analysis
+            reply = f"I have received your image '{filename}'. \n\n"
+            reply += "🔍 **Visual Analysis:**\n"
+            
+            # Simple keyword matching for mock responses
+            if "leaf" in filename.lower() or "plant" in filename.lower():
+                reply += "The plant appears to be healthy, but check for small spots which might indicate early fungal infection. Ensure proper drainage."
+            elif "soil" in filename.lower():
+                reply += "The soil texture looks good. If it feels too dry, consider irrigating soon."
+            else:
+                reply += "This looks like a crop field. Based on the visual data, the crop density seems optimal."
+                
+            reply += "\n\n📋 **Guidelines:**\n"
+            reply += "1. Monitor water levels daily.\n"
+            reply += "2. Check for pests under the leaves.\n"
+            reply += "3. Ensure adequate sunlight exposure."
+            
+        elif message:
+            # ---------------------------------------------------------
+            # Enhanced Rule-Based Agri-Chatbot Logic
+            # ---------------------------------------------------------
+            
+            # 1. Weather
+            if any(word in message for word in ["weather", "rain", "temperature", "climate", "forecast", "cloud"]):
+                reply = "🌤️ **Weather Update:**\nBased on general data, the forecast predicts clear skies with a temperature around 25°C-30°C. \n\n⚠️ *Advisory:* It's a good time for spraying fertilizers or harvesting if crops are ready."
+                
+            # 2. Market Prices
+            elif any(word in message for word in ["price", "market", "rate", "cost", "mandi", "sell"]):
+                reply = "💰 **Market Prices (Estimated):**\n- 🌾 **Wheat:** ₹2,100/quintal\n- 🍚 **Rice:** ₹2,800/quintal\n- 🍅 **Tomato:** ₹40/kg\n- 🥔 **Potato:** ₹25/kg\n- 🧅 **Onion:** ₹35/kg\n\n*Prices may vary based on your local Mandi.*"
+                
+            # 3. Specific Crops Advice
+            elif "wheat" in message:
+                reply = "🌾 **Wheat Farming Tips:**\n- **Sowing Time:** November to December.\n- **Irrigation:** Needs 4-6 waterings at critical stages.\n- **Fertilizer:** NPK ratio 4:2:1 is generally recommended.\n- **Harvest:** When grains harden and straw turns golden."
+                
+            elif "rice" in message or "paddy" in message:
+                reply = "🍚 **Paddy (Rice) Cultivation:**\n- **Season:** Kharif (June-July).\n- **Water:** Requires standing water (flood irrigation) during early stages.\n- **Protection:** Watch for Stem Borer and Blast disease."
+                
+            elif "cotton" in message:
+                reply = "☁️ **Cotton Farming:**\n- **Soil:** Black soil is best.\n- **Pests:** Highly susceptible to Bollworms setup pheromone traps.\n- **Harvest:** Pick dry bolls in the morning."
+                
+            elif "tomato" in message:
+                 reply = "🍅 **Tomato Cultivation:**\n- **Soil:** Well-drained loamy soil.\n- **Care:** Staking is needed to support the plant.\n- **Disease:** Watch for Early Blight and Leaf Curl virus."
+
+            # 4. Irrigation / Water
+            elif any(word in message for word in ["water", "irrigation", "drip", "sprinkler"]):
+                reply = "💧 **Irrigation Advice:**\n- **Drip Irrigation:** Saves 50-70% water, best for vegetables/fruits.\n- **Sprinkler:** Good for wheat and pulses.\n- **Tip:** Irrigate early morning or late evening to reduce evaporation."
+
+            # 5. Soil / Fertilizer
+            elif any(word in message for word in ["soil", "fertilizer", "urea", "compost", "land", "mud"]):
+                 reply = "🌱 **Soil & Nutrition:**\n- **Soil Test:** Recommended every 3 years.\n- **Organic:** Use Vermicompost or Cow Dung manure to improve soil structure.\n- **N-P-K:** Nitrogen for growth, Phosphorus for roots, Potassium for strength."
+
+            # 6. Pests / Diseases
+            elif any(word in message for word in ["pest", "bug", "insect", "worm", "disease", "virus", "fungus"]):
+                 reply = "🐛 **Pest & Disease Control:**\n- **Prevention:** Crop rotation helps break pest cycles.\n- **Organic:** Neem Oil spray is effective for many soft-bodied insects.\n- **Chemical:** Consult a local expert before using heavy pesticides."
+                 
+            # 7. Greetings
+            elif any(word in message for word in ["hello", "hi", "hey", "greetings", "namaste"]):
+                 reply = "👋 **Namaste! I am your Kisan Assistant.**\n\nI can help you with:\n- 🌤️ Weather updates\n- 💰 Mandi Prices\n- 🌾 Crop Advice (Wheat, Rice, Cotton...)\n- 🐛 Pest Control\n\n*Ask me a question or upload a photo!*"
+                 
+            # 8. General / Fallback
+            else:
+                reply = "🤔 I didn't quite catch that.\n\nI am trained to answer questions about **Farming, Crops, Weather, and Prices**.\n\nTry asking:\n- *\"What is the price of Wheat?\"*\n- *\"How to grow Tomatoes?\"*\n- *\"Weather forecast today\"*"
+                
+        else:
+            return jsonify({'error': 'No input provided'}), 400
+            
+        return jsonify({'status': 'success', 'reply': reply})
+        
+    except Exception as e:
+        print(f"Chat Error: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
