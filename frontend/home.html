@@ -1,98 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KisanCare - Smart Farming Assistant</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/chat.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
+    <style>
+    body { margin:0; padding:0; }
+    .home-main { min-height:100vh; }
 
+    /* ========= HERO WITH SOIL BG ========= */
+    .home-hero {
+        position: relative;
+        min-height: 92vh;
+        background: url('images/soil_bg.png') center center / cover no-repeat;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+    }
+    .home-hero::before {
+        content:''; position:absolute; inset:0;
+        background: linear-gradient(135deg, rgba(8,35,12,0.78) 0%, rgba(18,70,25,0.58) 45%, rgba(0,0,0,0.38) 100%);
+    }
+    /* floating soil particles animation */
+    .home-hero::after {
+        content:'🌿'; position:absolute; font-size:3rem;
+        bottom:30px; right:60px; opacity:0.12;
+        animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-20px) rotate(8deg);} }
+
+    .home-hero-content {
+        position:relative; z-index:2;
+        text-align:center; color:white;
+        padding:40px 20px; max-width:860px; margin:0 auto;
+        animation: heroIn 0.9s ease forwards;
+    }
+    @keyframes heroIn { from{opacity:0;transform:translateY(32px);} to{opacity:1;transform:translateY(0);} }
+
+    .hero-badge-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:22px; }
+    .hero-badge {
+        background:rgba(255,255,255,0.13); border:1px solid rgba(255,255,255,0.38);
+        backdrop-filter:blur(10px); padding:5px 18px; border-radius:50px;
+        font-size:0.82rem; font-weight:500; letter-spacing:0.3px;
+    }
+    .hero-title {
+        font-size: clamp(2.2rem, 5.5vw, 4rem);
+        font-weight:800; line-height:1.15; margin-bottom:0.9rem;
+        text-shadow:0 3px 22px rgba(0,0,0,0.45);
+    }
+    .hero-brand {
+        background: linear-gradient(135deg, #56ab2f, #a8e063);
+        -webkit-background-clip:text; background-clip:text;
+        -webkit-text-fill-color:transparent;
+    }
+    .hero-sub {
+        font-size:1.1rem; opacity:0.9; line-height:1.75; margin-bottom:2.2rem;
+        text-shadow:0 1px 8px rgba(0,0,0,0.35);
+    }
+    .hero-btns { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:2.8rem; }
+    .hero-btn-primary {
+        background:linear-gradient(135deg,#2ecc71,#27ae60); color:white;
+        text-decoration:none; padding:14px 36px; border-radius:50px;
+        font-size:1rem; font-weight:700;
+        box-shadow:0 6px 28px rgba(46,204,113,0.55); transition:all 0.3s;
+    }
+    .hero-btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(46,204,113,0.65); }
+    .hero-btn-secondary {
+        background:rgba(255,255,255,0.14); border:2px solid rgba(255,255,255,0.58);
+        backdrop-filter:blur(10px); color:white; text-decoration:none;
+        padding:14px 36px; border-radius:50px; font-size:1rem; font-weight:700;
+        transition:all 0.3s;
+    }
+    .hero-btn-secondary:hover { background:rgba(255,255,255,0.26); transform:translateY(-3px); }
+
+    /* stats strip */
+    .hero-stats {
+        display:flex; gap:28px; justify-content:center; flex-wrap:wrap;
+        background:rgba(255,255,255,0.1); backdrop-filter:blur(16px);
+        border:1px solid rgba(255,255,255,0.18); border-radius:18px; padding:18px 32px;
+    }
+    .stat-item { text-align:center; }
+    .stat-num { display:block; font-size:1.55rem; font-weight:800; color:#a8e063; }
+    .stat-label { font-size:0.73rem; opacity:0.85; letter-spacing:0.3px; }
+
+    /* ========= FEATURES SECTION ========= */
+    .home-features-section { background:linear-gradient(160deg,#f0f7f4,#e8f5e9); padding:72px 20px; }
+    .home-features-header { text-align:center; margin-bottom:42px; }
+    .home-features-header h2 {
+        font-size:2rem; font-weight:700;
+        background:linear-gradient(135deg,#1a7a45,#2ecc71);
+        -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .home-features-header p { color:#666; margin-top:8px; font-size:0.96rem; }
+    .home-features-grid {
+        max-width:1100px; margin:0 auto;
+        display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:24px;
+    }
+    .home-feature-card {
+        background:white; border-radius:20px; padding:32px 22px;
+        text-align:center; box-shadow:0 4px 22px rgba(0,0,0,0.08);
+        text-decoration:none; color:inherit;
+        transition:transform 0.3s, box-shadow 0.3s;
+        border-top:4px solid #2ecc71;
+        display:flex; flex-direction:column; align-items:center; gap:10px;
+    }
+    .home-feature-card:hover { transform:translateY(-9px); box-shadow:0 14px 38px rgba(0,0,0,0.13); }
+    .feat-icon { font-size:2.8rem; }
+    .home-feature-card h3 { font-size:1.1rem; font-weight:700; color:#2c3e50; margin:0; }
+    .home-feature-card p { font-size:0.84rem; color:#666; line-height:1.6; margin:0; }
+    .feat-link { color:#27ae60; font-weight:600; font-size:0.85rem; margin-top:4px; }
+
+    @media(max-width:600px){
+        .hero-stats { gap:18px; padding:14px 16px; }
+        .hero-btns { flex-direction:column; align-items:center; }
+    }
+    </style>
+</head>
 <body>
 
-    <header>
-        <nav>
-            <div class="logo">🌿 KisanCare</div>
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar">☰</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="home.html" class="active" data-lang="home">Home</a></li>
-                <li><a href="crop.html" data-lang="crop_advisory">Crop Advisory</a></li>
-                <li><a href="weather.html" data-lang="weather_alerts">Weather Alerts</a></li>
-                <li><a href="market.html" data-lang="market_prices">Market Prices</a></li>
-                <li><a href="#" id="navFeedbackLink" data-lang="feedback_nav">Feedback</a></li>
-                <li><a href="index.html" data-lang="login">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+<header>
+    <nav>
+        <div class="logo">🌿 KisanCare</div>
+        <div class="menu-toggle" id="mobile-menu"><span class="bar">☰</span></div>
+        <ul class="nav-links">
+            <li><a href="home.html" class="active" data-lang="home">Home</a></li>
+            <li><a href="crop.html" data-lang="crop_advisory">Crop Advisory</a></li>
+            <li><a href="weather.html" data-lang="weather_alerts">Weather Alerts</a></li>
+            <li><a href="market.html" data-lang="market_prices">Market Prices</a></li>
+            <li><a href="schemes.html" data-lang="schemes">🏛️ Govt Schemes</a></li>
+            <li><a href="fertilizer.html">🌱 Fertilizers</a></li>
+            <li><a href="#" id="navFeedbackLink" data-lang="feedback_nav">Feedback</a></li>
+            <li><a href="index.html" data-lang="login">Login</a></li>
+        </ul>
+    </nav>
+</header>
 
-    <main class="container">
-        <section class="hero card">
-            <h1 data-lang="welcome">Welcome to KisanCare</h1>
-            <p data-lang="hero_text">Empowering Farmers with Technology. Get real-time crop advice, weather alerts, and
-                market prices to
-                maximize your yield.</p>
-            <br>
-            <a href="crop.html" class="btn" data-lang="get_started">Get Started</a>
-        </section>
+<main class="home-main">
 
-        <section class="features-grid">
-            <div class="feature-card">
-                <h3 data-lang="feature_crop">🌱 Crop Advisory</h3>
-                <p data-lang="desc_crop">Find the best crop for your soil and season using AI data.</p>
-                <br>
-                <a href="crop.html" class="btn" data-lang="check_now">Check Now</a>
+    <!-- HERO -->
+    <section class="home-hero">
+        <div class="home-hero-content">
+            <div class="hero-badge-row">
+                <span class="hero-badge">🇮🇳 Made for Indian Farmers</span>
+                <span class="hero-badge">🤖 AI Powered</span>
+                <span class="hero-badge">🌾 Free to Use</span>
             </div>
-            <div class="feature-card">
-                <h3 data-lang="feature_weather">☁️ Weather Alerts</h3>
-                <p data-lang="desc_weather">Stay prepared with real-time weather updates and warnings.</p>
-                <br>
-                <a href="weather.html" class="btn" data-lang="view_weather">View Weather</a>
+            <h1 class="hero-title">Welcome to <span class="hero-brand">KisanCare</span></h1>
+            <p class="hero-sub">Empowering Farmers with Technology.<br>Get real-time crop advice, weather alerts, market prices &amp; fertilizer guidance — all in one place.</p>
+            <div class="hero-btns">
+                <a href="crop.html" class="hero-btn-primary">🌱 Get Started Free</a>
+                <a href="fertilizer.html" class="hero-btn-secondary">🧪 Buy Fertilizers</a>
             </div>
-            <div class="feature-card">
-                <h3 data-lang="feature_market">💰 Market Prices</h3>
-                <p data-lang="desc_market">Get the latest Mandi prices for your crops.</p>
-                <br>
-                <a href="market.html" class="btn" data-lang="check_prices">Check Prices</a>
+            <div class="hero-stats">
+                <div class="stat-item"><span class="stat-num">12+</span><span class="stat-label">Fertilizer Brands</span></div>
+                <div class="stat-item"><span class="stat-num">50+</span><span class="stat-label">Crops Supported</span></div>
+                <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">AI Support</span></div>
+                <div class="stat-item"><span class="stat-num">Free</span><span class="stat-label">For All Farmers</span></div>
             </div>
-        </section>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <!-- Chat Widget -->
-    <div class="chat-btn" id="chat-toggle-btn">
-        <span class="material-icons">chat</span>
+    <!-- FEATURES -->
+    <section class="home-features-section">
+        <div class="home-features-header">
+            <h2>Everything a Farmer Needs</h2>
+            <p>All smart farming tools in one place — powered by AI &amp; real-time data</p>
+        </div>
+        <div class="home-features-grid">
+            <a href="crop.html" class="home-feature-card">
+                <div class="feat-icon">🌱</div>
+                <h3>Crop Advisory</h3>
+                <p>AI recommendations based on your soil type, weather &amp; season.</p>
+                <span class="feat-link">Explore →</span>
+            </a>
+            <a href="weather.html" class="home-feature-card">
+                <div class="feat-icon">⛅</div>
+                <h3>Weather Alerts</h3>
+                <p>Real-time weather updates and severe warnings for your district.</p>
+                <span class="feat-link">Check Now →</span>
+            </a>
+            <a href="market.html" class="home-feature-card">
+                <div class="feat-icon">💰</div>
+                <h3>Market Prices</h3>
+                <p>Live Mandi rates for wheat, rice, onion, potato and 20+ crops.</p>
+                <span class="feat-link">View Prices →</span>
+            </a>
+            <a href="fertilizer.html" class="home-feature-card">
+                <div class="feat-icon">🧪</div>
+                <h3>Fertilizer Store</h3>
+                <p>Buy liquid &amp; solid fertilizers. Compare brands from across India.</p>
+                <span class="feat-link">Shop Now →</span>
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<!-- Chat Widget -->
+<div class="chat-btn" id="chat-toggle-btn">
+    <span class="material-icons">chat</span>
+</div>
+<div class="chat-container" id="chat-container">
+    <div class="chat-header">
+        <span>Kisan AI Assistant</span>
+        <span class="material-icons close-btn" id="close-chat">close</span>
     </div>
-
-    <div class="chat-container" id="chat-container">
-        <div class="chat-header">
-            <span>Kisan AI Assistant</span>
-            <span class="material-icons close-btn" id="close-chat">close</span>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <!-- Messages will appear here -->
-            <div class="message bot">
-                <p>Hello! I am your AI assistant. Send me a photo of your crop or ask a question!</p>
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <label for="chat-file-input" class="file-upload-label">
-                <span class="material-icons">attach_file</span>
-            </label>
-            <input type="file" id="chat-file-input" accept="image/*" hidden>
-            <input type="text" id="chat-input" placeholder="Type a message...">
-            <button id="send-btn">
-                <span class="material-icons">send</span>
-            </button>
+    <div class="chat-messages" id="chat-messages">
+        <div class="message bot">
+            <p>Hello! I am your Kisan AI assistant. Ask me about crops, fertilizers, or weather! 🌾</p>
         </div>
     </div>
+    <div class="chat-input-area">
+        <label for="chat-file-input" class="file-upload-label">
+            <span class="material-icons">attach_file</span>
+        </label>
+        <input type="file" id="chat-file-input" accept="image/*" hidden>
+        <input type="text" id="chat-input" placeholder="Type a message...">
+        <button id="send-btn"><span class="material-icons">send</span></button>
+    </div>
+</div>
 
-    <script src="js/app.js"></script>
-    <script src="js/chat.js"></script>
+<script src="js/app.js"></script>
+<script src="js/chat.js"></script>
 </body>
-
 </html>

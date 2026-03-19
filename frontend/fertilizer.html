@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - KisanCare</title>
+    <!-- Include Chart.js as requested -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #f4f9f5;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --border-color: rgba(0, 0, 0, 0.05);
+            /* Chart colors */
+            --chart-price: #2ecc71;
+            --chart-weather-temp: #e74c3c;
+            --chart-weather-rain: #3498db;
+            --chart-fert: #9b59b6;
+            --chart-activity: #f1c40f;
+            --chart-profit: #1abc9c;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+        }
+
+        /* Dashboard Header */
+        .dash-header {
+            padding: 20px 40px;
+            background: linear-gradient(135deg, #1e3c2f 0%, #155d3a 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dash-title {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .dash-title span {
+            color: #a8e063;
+        }
+
+        .dash-nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: all 0.3s;
+        }
+
+        .dash-nav a:hover {
+            opacity: 1;
+            color: #a8e063;
+        }
+
+        /* Layout Grid */
+        .dashboard-container {
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 24px;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Individual Card Style */
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chart-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-card:hover::before {
+            opacity: 1;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .chart-wrapper {
+            width: 100%;
+            height: 300px; /* Fixed height for consistency */
+            position: relative;
+        }
+
+        .full-width .chart-wrapper {
+            height: 400px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+            .dash-header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Advisor Specific Rich Cards */
+        .advice-rich-card { display: flex; align-items: flex-start; gap: 15px; padding: 15px; border-radius: 12px; border: 1px solid #eee; background: white; }
+        .arc-photo { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 2rem; position: relative; }
+        .arc-photo img { max-width: 100%; max-height: 100%; border-radius: 6px; }
+        .arc-badge { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: #e74c3c; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; white-space: nowrap; }
+        .arc-body { flex: 1; }
+        .arc-name { font-weight: bold; font-size: 1.1rem; color: #1e3c2f; margin-bottom: 5px; }
+        .arc-npk { font-size: 0.85rem; color: #7f8c8d; margin-bottom: 8px; }
+        .arc-why, .arc-need { font-size: 0.9rem; margin-bottom: 5px; }
+        .arc-dose { font-weight: bold; color: #2ecc71; margin-top: 5px; }
+        
+        .timeline-step { display: flex; flex-direction: column; align-items: center; min-width: 120px; text-align: center; }
+        .ts-dot { width: 40px; height: 40px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 10px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .ts-highlight { background: #1abc9c; color: white; border-color: #1abc9c; }
+        .ts-label { font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
+        .ts-days { font-size: 0.8rem; color: #7f8c8d; margin-bottom: 4px; }
+        .ts-fert { font-size: 0.85rem; color: #2c3e50; background: #f8f9fa; padding: 2px 6px; border-radius: 4px; }
+        
+        .soil-steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .soil-step-card { padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 8px; position: relative; }
+        .ss-num { position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; background: #f39c12; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+        
+        .alert-rain { border-color: #3498db; background: rgba(52, 152, 219, 0.1); color: #2980b9; }
+        .alert-hot { border-color: #e74c3c; background: rgba(231, 76, 60, 0.1); color: #c0392b; }
+        .alert-cold { border-color: #9b59b6; background: rgba(155, 89, 182, 0.1); color: #8e44ad; }
+        .alert-humid { border-color: #f1c40f; background: rgba(241, 196, 15, 0.1); color: #d35400; }
+        .alert-good { border-color: #2ecc71; background: rgba(46, 204, 113, 0.1); color: #27ae60; }
+        
+        .dos-box, .donts-box { flex: 1; min-width: 250px; padding: 15px; border-radius: 8px; }
+        .dos-box { background: rgba(46, 204, 113, 0.05); border: 1px solid #2ecc71; }
+        .donts-box { background: rgba(231, 76, 60, 0.05); border: 1px solid #e74c3c; }
+        .dos-box h4 { color: #27ae60; margin-top: 0; }
+        .donts-box h4 { color: #c0392b; margin-top: 0; }
+        .dos-box ul, .donts-box ul { padding-left: 20px; margin-bottom: 0; }
+    </style>
+</head>
+<body>
+
+    <!-- Header identical to site style but specific to Dashboard -->
+    <header class="dash-header">
+        <h1 class="dash-title"><i class="material-icons">dashboard</i> KisanCare <span>Pro</span></h1>
+        <nav class="dash-nav" style="display: flex; align-items: center;">
+            <a href="home.html">Back to Home</a>
+            <a href="crop.html">Crop Advisory</a>
+            <a href="javascript:void(0)" onclick="viewCart()" style="position: relative; display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">
+                <i class="material-icons">shopping_cart</i> Cart
+                <span id="cartCount" style="background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem; font-weight: bold;">0</span>
+            </a>
+            <a href="index.html">Logout</a>
+        </nav>
+    </header>
+
+    <!-- PRO DASHBOARD LAYOUT -->
+    <main class="dashboard-container">
+        
+        <!-- 1. APMC Live Price Chart -->
+        <div class="chart-card" style="justify-content: flex-start;">
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; width: 100%; justify-content: center;">
+                <select id="stateSelect" style="padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); font-family: 'Outfit'; color: #2c3e50; background: #f8fcf9; cursor: pointer;">
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Punjab">Punjab</option>
+                </select>
+                <select id="cropSelect" style="padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); font-family: 'Outfit'; color: #2c3e50; background: #f8fcf9; cursor: pointer;">
+                    <option value="Wheat">Wheat</option>
+                    <option value="Rice">Rice</option>
+                    <option value="Cotton">Cotton</option>
+                </select>
+            </div>
+            <div class="chart-wrapper" style="height: 240px;">
+                <canvas id="apmcChart"></canvas>
+            </div>
+            <div id="smartSuggestion" style="margin-top: 10px; font-size: 0.85rem; color: #16a085; font-weight: 600; text-align: center; background: rgba(26, 188, 156, 0.1); padding: 5px 10px; border-radius: 6px; width: 100%;">
+                Loading smart suggestion...
+            </div>
+        </div>
+
+        <!-- 2. Weather Chart -->
+        <div class="chart-card">
+            <div class="chart-wrapper">
+                <canvas id="weatherChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 3. Fertilizer Chart -->
+        <div class="chart-card">
+            <div class="chart-wrapper">
+                <canvas id="fertilizerChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 4. Activity Chart -->
+        <div class="chart-card">
+            <div class="chart-wrapper">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 5. Profit Chart (Full Width) -->
+        <div class="chart-card full-width">
+            <div class="chart-wrapper">
+                <canvas id="profitChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 6. Solid vs Liquid Fertilizers: Compare & Purchase Section -->
+        <div class="chart-card full-width" style="margin-top: 10px; background: #ffffff;">
+            <h2 style="margin-top: 0; color: #1e3c2f; display: flex; align-items: center; gap: 10px;">
+                <i class="material-icons">store</i> Fertilizer Store & Usage Guide
+            </h2>
+            <p style="margin-bottom: 30px; color: var(--text-muted);">Compare Solid vs Liquid fertilizers, understand how to apply them, and purchase verified products directly.</p>
+            
+            <!-- Comprehensive Comparison Guide -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 30px;">
+                <!-- Solid Fertilizers -->
+                <div style="background: rgba(46, 204, 113, 0.05); border: 1px solid #2ecc71; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <h3 style="color: #27ae60; margin-top: 0; margin-bottom: 20px; display:flex; align-items:center; gap:8px; font-size: 1.4rem;">
+                        <i class="material-icons">grain</i> Solid Fertilizers
+                    </h3>
+                    <p><strong>What is it?</strong> Traditional Granules or powder forms (e.g., Urea, DAP, MOP).</p>
+                    <p><strong>Which is Best for:</strong> Foundational soil preparation before sowing and long-term, slow release of nutrients over weeks.</p>
+                    
+                    <h4 style="color: #1e3c2f; margin: 20px 0 10px; border-bottom: 1px solid rgba(46, 204, 113, 0.2); padding-bottom: 5px;">Step-by-Step Application:</h4>
+                    <ol style="padding-left: 20px; margin: 0; line-height: 1.6; color: #2c3e50;">
+                        <li><strong>Measure:</strong> Calculate the exact bag weight needed per acre.</li>
+                        <li><strong>Prepare Soil:</strong> Ensure the soil has slight moisture. Do not apply on dry, cracked soil.</li>
+                        <li><strong>Method 1 (Broadcasting):</strong> Walk linearly and scatter the granules evenly by hand across the field.</li>
+                        <li><strong>Method 2 (Band Placement):</strong> Use a seed drill to place the fertilizer 5cm away and 5cm below the seed line.</li>
+                        <li><strong>Irrigate:</strong> Lightly water the field within 24 hours to help the granules mix and prevent nitrogen loss.</li>
+                    </ol>
+                </div>
+                
+                <!-- Liquid Fertilizers -->
+                <div style="background: rgba(52, 152, 219, 0.05); border: 1px solid #3498db; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <h3 style="color: #2980b9; margin-top: 0; margin-bottom: 20px; display:flex; align-items:center; gap:8px; font-size: 1.4rem;">
+                        <i class="material-icons">water_drop</i> Liquid / Nano Fertilizers
+                    </h3>
+                    <p><strong>What is it?</strong> Concentrated liquid formulas (e.g., Nano Urea, Liquid NPK).</p>
+                    <p><strong>Which is Best for:</strong> Instant nutrient absorption during rapid growth, lowering costs, and preventing soil/water pollution.</p>
+                    
+                    <h4 style="color: #1e3c2f; margin: 20px 0 10px; border-bottom: 1px solid rgba(52, 152, 219, 0.2); padding-bottom: 5px;">Step-by-Step Application:</h4>
+                    <ol style="padding-left: 20px; margin: 0; line-height: 1.6; color: #2c3e50;">
+                        <li><strong>Dilute:</strong> Mix 2-4 ml of liquid fertilizer per 1 litre of clean water in your sprayer tank.</li>
+                        <li><strong>Timing:</strong> Pick a clear morning (before 10 AM) or evening (after 4 PM) to avoid evaporation. Don't spray if rain is expected.</li>
+                        <li><strong>Method 1 (Foliar Spray):</strong> Pump the sprayer and coat the plant leaves thoroughly until wet.</li>
+                        <li><strong>Method 2 (Drip Fertigation):</strong> Mix the liquid load directly into your drip irrigation system's venturi tank.</li>
+                        <li><strong>Safety:</strong> Wear gloves and a mask. Do not mix incompatible pesticides.</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- Direct Comparison / Conclusion box -->
+            <div style="background: #fff3e0; border-left: 6px solid #f39c12; padding: 20px; border-radius: 8px; margin-bottom: 40px;">
+                <h3 style="margin: 0 0 10px; color: #d35400;">Verdict: Which one is the Best?</h3>
+                <p style="margin: 0; line-height: 1.6; color: #1e3c2f;">
+                    <strong>For the best yield, combine both!</strong> Use <strong>Solid Fertilizers (DAP/NPK)</strong> at the time of sowing (Basal Application) to give the seeds a strong foundation in the soil. Later, during the vegetative and flowering stages, switch to <strong>Liquid Spray Fertilizers (Nano Urea/Liquid NPK)</strong> for Top-Dressing. Liquid is ultimately superior for the environment and highly cost-effective, but solids are still mandatory for initial root establishment.
+                </p>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
+            <h3 style="margin-bottom: 20px; color: #2c3e50;">Pesticide & Fertilizer Marketplace</h3>
+
+            <!-- E-Commerce Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+                <!-- Product 1 (Solid) -->
+                <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column;">
+                    <div style="background: #f8f9fa; padding: 20px; height: 160px; display:flex; align-items:center; justify-content:center;">
+                        <img src="images/iffco_npk.png" alt="IFFCO NPK" style="max-height: 100%; max-width: 100%; object-fit: contain;" onerror="this.style.display='none';">
+                    </div>
+                    <div style="padding: 15px; flex: 1; display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <span style="background: #2ecc71; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 8px; display: inline-block;">SOLID</span>
+                            <h4 style="margin: 0 0 10px; font-size: 1.1rem; color: #2c3e50;">IFFCO NPK (12:32:16)</h4>
+                            <p style="margin: 0 0 10px; color: #7f8c8d; font-size: 0.85rem;">For Basal application - 50kg bag</p>
+                            <div style="font-size: 0.8rem; background: #e8f5e9; padding: 5px; border-radius: 4px; color: #2e7d32; margin-bottom: 10px; text-align: left;">
+                                <strong>Components:</strong> 12% Nitrogen, 32% Phosphorus, 16% Potassium
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.3rem; font-weight: bold; color: #1e3c2f; margin-bottom: 12px;">₹1,470</div>
+                            <button onclick="addToCart('IFFCO NPK (12:32:16)', 1470)" class="hero-btn-primary" style="padding: 8px 15px; width: 100%; border:none; cursor:pointer;">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 (Liquid) -->
+                <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column;">
+                    <div style="background: #f8f9fa; padding: 20px; height: 160px; display:flex; align-items:center; justify-content:center;">
+                        <img src="images/nfl_urea.png" alt="Nano Urea" style="max-height: 100%; max-width: 100%; object-fit: contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <i class="material-icons" style="font-size: 4rem; color: #3498db; display: none;" id="fallback-nano">science</i>
+                    </div>
+                    <div style="padding: 15px; flex: 1; display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <span style="background: #3498db; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 8px; display: inline-block;">LIQUID</span>
+                            <h4 style="margin: 0 0 10px; font-size: 1.1rem; color: #2c3e50;">Nano Urea (Liquid)</h4>
+                            <p style="margin: 0 0 10px; color: #7f8c8d; font-size: 0.85rem;">Foliar Spray - 500ml Bottle</p>
+                            <div style="font-size: 0.8rem; background: #e1f5fe; padding: 5px; border-radius: 4px; color: #0277bd; margin-bottom: 10px; text-align: left;">
+                                <strong>Components:</strong> 4% Total Nitrogen (w/v)
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.3rem; font-weight: bold; color: #1e3c2f; margin-bottom: 12px;">₹225</div>
+                            <button onclick="addToCart('Nano Urea (Liquid)', 225)" class="hero-btn-primary" style="padding: 8px 15px; width: 100%; border:none; cursor:pointer;">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 (Solid) -->
+                <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column;">
+                    <div style="background: #f8f9fa; padding: 20px; height: 160px; display:flex; align-items:center; justify-content:center;">
+                        <img src="images/coromandel_dap.png" alt="Coromandel DAP" style="max-height: 100%; max-width: 100%; object-fit: contain;" onerror="this.style.display='none';">
+                    </div>
+                    <div style="padding: 15px; flex: 1; display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <span style="background: #2ecc71; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 8px; display: inline-block;">SOLID</span>
+                            <h4 style="margin: 0 0 10px; font-size: 1.1rem; color: #2c3e50;">Coromandel DAP</h4>
+                            <p style="margin: 0 0 10px; color: #7f8c8d; font-size: 0.85rem;">Root Establishment - 50kg bag</p>
+                            <div style="font-size: 0.8rem; background: #e8f5e9; padding: 5px; border-radius: 4px; color: #2e7d32; margin-bottom: 10px; text-align: left;">
+                                <strong>Components:</strong> 18% Nitrogen, 46% Phosphorus
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.3rem; font-weight: bold; color: #1e3c2f; margin-bottom: 12px;">₹1,350</div>
+                            <button onclick="addToCart('Coromandel DAP', 1350)" class="hero-btn-primary" style="padding: 8px 15px; width: 100%; border:none; cursor:pointer;">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 (Solid) -->
+                <div style="border: 1px solid #eee; border-radius: 10px; overflow: hidden; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column;">
+                    <div style="background: #f8f9fa; padding: 20px; height: 160px; display:flex; align-items:center; justify-content:center;">
+                        <img src="images/chambal_urea.png" alt="Chambal Urea" style="max-height: 100%; max-width: 100%; object-fit: contain;" onerror="this.style.display='none';">
+                    </div>
+                    <div style="padding: 15px; flex: 1; display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <span style="background: #2ecc71; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 8px; display: inline-block;">SOLID</span>
+                            <h4 style="margin: 0 0 10px; font-size: 1.1rem; color: #2c3e50;">Chambal Urea (Neem Coated)</h4>
+                            <p style="margin: 0 0 10px; color: #7f8c8d; font-size: 0.85rem;">Top Dressing - 45kg bag</p>
+                            <div style="font-size: 0.8rem; background: #e8f5e9; padding: 5px; border-radius: 4px; color: #2e7d32; margin-bottom: 10px; text-align: left;">
+                                <strong>Components:</strong> 46% Nitrogen (with Neem oil)
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.3rem; font-weight: bold; color: #1e3c2f; margin-bottom: 12px;">₹266</div>
+                            <button onclick="addToCart('Chambal Urea', 266)" class="hero-btn-primary" style="padding: 8px 15px; width: 100%; border:none; cursor:pointer;">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- 7. Smart Fertilizer Advisor Section -->
+        <div class="chart-card full-width advisor-section" style="background: linear-gradient(135deg, #f8fffc, #e8f5e9); border-left: 5px solid #2ecc71;">
+            <h2 style="margin-top: 0; color: #1e3c2f; display: flex; align-items: center; gap: 10px;">
+                <i class="material-icons">psychology</i> Smart Fertilizer Advisor
+            </h2>
+            <p style="margin-bottom: 20px; color: var(--text-muted);">Get precise, real-time fertilization advice for your crop and soil.</p>
+            
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+                <input type="text" id="advisorCity" placeholder="Enter City for Weather..." style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; flex: 1; min-width: 200px;">
+                <button onclick="fetchLiveWeather()" style="padding: 10px 20px; border-radius: 8px; border: none; background: #3498db; color: white; cursor: pointer; font-weight: bold; min-width: 150px;">Get Weather</button>
+                <div id="weatherStatus" style="padding: 10px; font-weight: 500; color: #e74c3c; width: 100%;">Weather not fetched</div>
+            </div>
+
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+                <select id="advisorCrop" style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; flex: 1; min-width: 150px;">
+                    <option value="">Select Crop...</option>
+                    <option value="wheat">Wheat</option>
+                    <option value="paddy">Paddy / Rice</option>
+                    <option value="cotton">Cotton</option>
+                    <option value="sugarcane">Sugarcane</option>
+                    <option value="tomato">Tomato</option>
+                    <option value="potato">Potato</option>
+                </select>
+
+                <select id="advisorSoil" style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; flex: 1; min-width: 150px;">
+                    <option value="">Select Soil Type...</option>
+                    <option value="alluvial">Alluvial (जलोढ़)</option>
+                    <option value="black">Black (काली)</option>
+                    <option value="red">Red (लाल)</option>
+                    <option value="sandy">Sandy (बलुई)</option>
+                    <option value="loamy">Loamy (दोमट)</option>
+                    <option value="laterite">Laterite (लैटेराइट)</option>
+                </select>
+                
+                <button onclick="generateAdvice()" style="padding: 10px 20px; border-radius: 8px; border: none; background: #2ecc71; color: white; cursor: pointer; font-weight: bold; width: 100%;">Generate Expert Advice</button>
+            </div>
+            
+            <!-- Output Panel -->
+            <div id="advicePanel" style="display: none; margin-top: 30px; border-top: 2px dashed #9E9E9E; padding-top: 20px;">
+                <div id="weatherAlert" style="padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 1.1rem; border: 1px solid;"></div>
+                
+                <h3 style="margin-bottom: 15px; color: #1e3c2f;">Recommended Fertilizers</h3>
+                <div id="adviceRichCards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px;"></div>
+                
+                <h3 style="margin-bottom: 15px; color: #1e3c2f;">Growth Stage Timeline</h3>
+                <div id="adviceTimeline" style="display: flex; overflow-x: auto; gap: 15px; margin-bottom: 30px; padding-bottom: 15px;"></div>
+                
+                <div id="adviceSoilMethod" style="margin-bottom: 30px; padding: 20px; background: #ffffff; border-radius: 12px; border: 1px solid #eee;"></div>
+                
+                <div id="adviceSimple" style="margin-bottom: 20px; padding: 15px; background: #fff3e0; border-left: 5px solid #ff9800; border-radius: 5px;"></div>
+                <div id="adviceDos" style="display: flex; gap: 20px; flex-wrap: wrap;"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="js/advisor_db.js"></script>
+    <script src="js/advisor.js"></script>
+
+    <script>
+        // Set Default Chart Fonts and Colors for Premium Look
+        Chart.defaults.font.family = "'Outfit', sans-serif";
+        Chart.defaults.color = '#7f8c8d';
+        Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.04)';
+        Chart.defaults.plugins.title.font.size = 18;
+        Chart.defaults.plugins.title.font.weight = '600';
+        Chart.defaults.plugins.title.color = '#2c3e50';
+        Chart.defaults.plugins.title.padding = {top: 10, bottom: 20};
+
+        // 📈 1. APMC Live Price Chart (Gov API)
+        let apmcChartInstance = null;
+
+        async function loadAPMCChart() {
+            const state = document.getElementById('stateSelect').value;
+            const crop = document.getElementById('cropSelect').value;
+            const suggestionBox = document.getElementById('smartSuggestion');
+            
+            try {
+                suggestionBox.innerHTML = "Fetching latest APMC Mandi prices...";
+                // Call our Python Backend middleware which interfaces with data.gov.in
+                const res = await fetch(`http://localhost:5001/api/apmc?state=${state}&commodity=${crop}`);
+                if (!res.ok) throw new Error("API failed");
+                const data = await res.json();
+                
+                if (data.length === 0) {
+                    suggestionBox.innerHTML = "⚠️ No data found for selected State/Crop. Try another.";
+                    if (apmcChartInstance) apmcChartInstance.destroy();
+                    return;
+                }
+
+                const labels = data.map(item => item.market);
+                const prices = data.map(item => item.modal_price);
+
+                // Smart Suggestion Logic (Price + Fake Weather Integration)
+                const maxPriceInfo = data.reduce((prev, current) => (prev.modal_price > current.modal_price) ? prev : current);
+                suggestionBox.innerHTML = `🌟 <b>Smart Tip:</b> Best price for ${crop} is ₹${maxPriceInfo.modal_price} at <b>${maxPriceInfo.market}</b>. Weather is clear for transport!`;
+
+                if (apmcChartInstance) {
+                    apmcChartInstance.destroy();
+                }
+
+                const apmcCtx = document.getElementById('apmcChart').getContext('2d');
+                
+                // Exquisite Gradient
+                let gradientPrice = apmcCtx.createLinearGradient(0, 0, 0, 300);
+                gradientPrice.addColorStop(0, 'rgba(46, 204, 113, 0.6)');
+                gradientPrice.addColorStop(1, 'rgba(46, 204, 113, 0.05)');
+
+                apmcChartInstance = new Chart(apmcCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `${crop} Price (₹/Quintal)`,
+                            data: prices,
+                            backgroundColor: gradientPrice,
+                            borderColor: '#2ecc71',
+                            borderWidth: { top: 3, right: 0, bottom: 0, left: 0 },
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: { display: true, text: `Real-Time APMC Mandi Rates (${state})` },
+                            legend: { display: false },
+                            tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', padding: 12, cornerRadius: 8 }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: false,
+                                ticks: { callback: function(value) { return '₹' + value; } }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                suggestionBox.innerHTML = "❌ Failed to load APMC data. Is Backend running?";
+                console.error("APMC Load Error:", error);
+            }
+        }
+
+        // Attach listeners to Dropdowns
+        document.getElementById('stateSelect').addEventListener('change', loadAPMCChart);
+        document.getElementById('cropSelect').addEventListener('change', loadAPMCChart);
+
+        // Auto-refresh every 60 seconds (Bonus)
+        setInterval(loadAPMCChart, 60000);
+
+        // Initial Load
+        loadAPMCChart();
+
+        // 🌦️ 3. Weather Forecast (Line Chart)
+        const weatherCtx = document.getElementById('weatherChart').getContext('2d');
+        new Chart(weatherCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                datasets: [
+                    {
+                        label: 'Temperature (°C)',
+                        data: [30, 32, 31, 29, 28],
+                        borderColor: '#e74c3c',
+                        backgroundColor: '#e74c3c',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Rainfall (mm)',
+                        data: [5, 10, 2, 20, 15],
+                        borderColor: '#3498db',
+                        backgroundColor: '#3498db',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Weather Forecast' }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                }
+            }
+        });
+
+        // 📊 4. Fertilizer Availability (Bar Chart)
+        const fertCtx = document.getElementById('fertilizerChart').getContext('2d');
+        new Chart(fertCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Urea', 'DAP', 'Potash'],
+                datasets: [{
+                    label: 'Stock Available (Bags)',
+                    data: [50, 30, 20],
+                    backgroundColor: [
+                        'rgba(155, 89, 182, 0.8)',
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(241, 196, 15, 0.8)'
+                    ],
+                    borderColor: [
+                        '#9b59b6',
+                        '#3498db',
+                        '#f1c40f'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 6 // Rounded bars
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Fertilizer Availability' },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // 🤖 5. Farmer Activity (Pie Chart)
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        new Chart(activityCtx, {
+            type: 'doughnut', // using doughnut instead of pie for a sleeker modern look
+            data: {
+                labels: ['Completed', 'Pending', 'In Progress'],
+                datasets: [{
+                    data: [60, 25, 15],
+                    backgroundColor: [
+                        '#2ecc71',
+                        '#e74c3c',
+                        '#f39c12'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Farmer Activity Status' },
+                    legend: { position: 'bottom' }
+                },
+                cutout: '70%' // Makes it a nice thin doughnut
+            }
+        });
+
+        // 📉 6. Profit Analysis (Bar Chart)
+        const profitCtx = document.getElementById('profitChart').getContext('2d');
+        
+        let gradientProfitBefore = profitCtx.createLinearGradient(0, 0, 0, 400);
+        gradientProfitBefore.addColorStop(0, 'rgba(149, 165, 166, 0.8)');
+        gradientProfitBefore.addColorStop(1, 'rgba(127, 140, 141, 0.8)');
+
+        let gradientProfitAfter = profitCtx.createLinearGradient(0, 0, 0, 400);
+        gradientProfitAfter.addColorStop(0, 'rgba(26, 188, 156, 0.9)');
+        gradientProfitAfter.addColorStop(1, 'rgba(22, 160, 133, 0.9)');
+
+        new Chart(profitCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Before Platform Integration', 'After Platform Integration'],
+                datasets: [{
+                    label: 'Income (₹)',
+                    data: [50000, 70000],
+                    backgroundColor: [gradientProfitBefore, gradientProfitAfter],
+                    borderRadius: 8,
+                    borderWidth: 0,
+                    barPercentage: 0.5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Seasonal Income Improvement / Profit Analysis' },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
