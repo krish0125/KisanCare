@@ -66,31 +66,55 @@ from pymongo import MongoClient
 import json
 from datetime import datetime
 
-# MongoDB Setup
-# You can change this URI to your MongoDB Atlas connection string if using cloud
-# e.g., "mongodb+srv://<username>:<password>@cluster0.mongodb.net/?retryWrites=true&w=majority"
-MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/') 
-DB_NAME = 'kisancare_db'
+# ── MongoDB Setup ──────────────────────────────────────────────────────────
+MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
+DB_NAME    = 'kisancare_db'
+LOGIN_COL  = 'login'   # collection name as requested by user
+
+import re
+
+def is_valid_email(email):
+    """Validate email: must have local part, @ symbol, domain with valid TLD."""
+    pattern = r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.(com|net|org|in|co\.in|edu|gov|io|gg|biz|info|me|yahoo\.com|outlook\.com|hotmail\.com|gmail\.com|rediffmail\.com)$'
+    return bool(re.match(pattern, email.lower().strip()))
+
+def is_strong_password(password):
+    """
+    At least 8 characters, one uppercase, one lowercase, one digit, one special char.
+    Returns (bool, error_message)
+    """
+    if len(password) < 8:
+        return False, 'Password must be at least 8 characters long.'
+    if not re.search(r'[A-Z]', password):
+        return False, 'Password must contain at least one uppercase letter (A-Z).'
+    if not re.search(r'[a-z]', password):
+        return False, 'Password must contain at least one lowercase letter (a-z).'
+    if not re.search(r'[0-9]', password):
+        return False, 'Password must contain at least one digit (0-9).'
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-\[\]\\/+=~`]', password):
+        return False, 'Password must contain at least one special character (!@#$%^&* etc.)'
+    return True, ''
 
 try:
     client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
     db = client[DB_NAME]
-    print(f"Connected to MongoDB at {MONGO_URI}")
-    
-    # Setup Demo User
-    users_col = db['users']
-    if not users_col.find_one({'email': 'demo@gmail.com'}):
-        # Create demo user
+    print(f"✅ Connected to MongoDB at {MONGO_URI}")
+
+    # Seed a demo user in the 'login' collection (hashed password)
+    login_col = db[LOGIN_COL]
+    if not login_col.find_one({'email': 'demo@gmail.com'}):
         demo_user = {
+            'name': 'Demo User',
             'email': 'demo@gmail.com',
-            'password': 'demo@123', # storing plain text as per user simple request, but usually should hash
-            'name': 'Demo User'
+            'password': generate_password_hash('Demo@1234'),
+            'phone': '',
+            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
-        users_col.insert_one(demo_user)
-        print("✅ Demo User Created: demo@gmail.com / demo@123")
+        login_col.insert_one(demo_user)
+        print("✅ Demo User seeded in 'login' collection: demo@gmail.com / Demo@1234")
 
 except Exception as e:
-    print(f"Warning: Could not connect to MongoDB. Error: {e}")
+    print(f"⚠️  Warning: Could not connect to MongoDB — {e}")
     client = None
     db = None
 
@@ -98,86 +122,102 @@ except Exception as e:
 def login():
     global db, client
     try:
-        data = request.json
-        email = data.get('email')
-        password = data.get('password')
-        
-        # Ensure DB is active
-        if db is None:
-             print("❌ Database variable is None. Reconnecting...")
-             if client:
-                 db = client[DB_NAME]
-             else:
-                 return jsonify({'status': 'error', 'message': 'Database not connected'}), 500
+        data    = request.json
+        email   = (data.get('email') or '').strip().lower()
+        password = (data.get('password') or '').strip()
 
-        print(f"🔍 Checking Login for: {email}")
-        
-        # Parse output
-        users_collection = db['users']
-        user = users_collection.find_one({'email': email})
-        
-        if user:
-             print(f"✅ User found: {user.get('email')}")
-             # Check password 
-             if user.get('password') == password:
-                 print("✅ Password Matched")
-                 return jsonify({
-                    'status': 'success', 
-                    'message': 'Login Successful',
-                    'user': {'name': user.get('name', 'User'), 'email': user['email']}
-                 })
-             else:
-                 print("❌ Password Mismatch")
-                 return jsonify({'status': 'error', 'message': 'Invalid Email or Password'}), 401
-        else:
-            print("❌ User not found")
-            return jsonify({'status': 'error', 'message': 'User not found. Please Sign Up.'}), 401
-            
+        # ── Basic presence check ──────────────────────────────
+        if not email or not password:
+            return jsonify({'status': 'error', 'message': 'Email and password are required.'}), 400
+
+        # ── Email format validation ───────────────────────────
+        if not is_valid_email(email):
+            return jsonify({'status': 'error', 'message': 'Invalid email format. Use a valid email like user@gmail.com'}), 400
+
+        # ── Ensure DB ─────────────────────────────────────────
+        if db is None:
+            if client:
+                db = client[DB_NAME]
+            else:
+                return jsonify({'status': 'error', 'message': 'Database not connected'}), 500
+
+        print(f"🔍 Login attempt for: {email}")
+
+        login_col = db[LOGIN_COL]
+        user = login_col.find_one({'email': email})
+
+        if not user:
+            print("❌ User not found in 'login' collection")
+            return jsonify({'status': 'error', 'message': 'No account found with this email. Please Sign Up first.'}), 401
+
+        # ── Password check (hashed) ─────────────────────────
+        if not check_password_hash(user['password'], password):
+            print("❌ Password mismatch")
+            return jsonify({'status': 'error', 'message': 'Incorrect password. Please try again.'}), 401
+
+        print(f"✅ Login successful: {email}")
+        return jsonify({
+            'status': 'success',
+            'message': 'Login Successful',
+            'user': {'name': user.get('name', 'User'), 'email': user['email']}
+        })
+
     except Exception as e:
         import traceback
         traceback.print_exc()
-        print(f"⚠️ Exception in Login: {e}")
-        return jsonify({'status': 'error', 'message': f"Server Error: {str(e)}", 'error': str(e)}), 500
+        return jsonify({'status': 'error', 'message': f'Server Error: {str(e)}'}), 500
 
 @app.route('/signup', methods=['POST'])
 def signup():
     global db, client
     try:
-        data = request.json
-        name = data.get('name')
-        email = data.get('email')
-        password = data.get('password')
-        phone = data.get('phone')
+        data     = request.json
+        name     = (data.get('name') or '').strip()
+        email    = (data.get('email') or '').strip().lower()
+        password = (data.get('password') or '').strip()
+        phone    = (data.get('phone') or '').strip()
 
-        # Ensure DB is active
+        # ── Field presence check ──────────────────────────────
+        if not name or not email or not password:
+            return jsonify({'status': 'error', 'message': 'Name, email, and password are required.'}), 400
+
+        # ── Email format validation ───────────────────────────
+        if not is_valid_email(email):
+            return jsonify({'status': 'error', 'message': 'Invalid email format. Use a valid email like user@gmail.com or user@yahoo.com'}), 400
+
+        # ── Password strength validation ──────────────────────
+        ok, err_msg = is_strong_password(password)
+        if not ok:
+            return jsonify({'status': 'error', 'message': err_msg}), 400
+
+        # ── Ensure DB ─────────────────────────────────────────
         if db is None:
-             print("❌ Database variable is None. Reconnecting...")
-             if client:
-                 db = client[DB_NAME]
-             else:
-                 return jsonify({'status': 'error', 'message': 'Database not connected'}), 500
-        
-        users_col = db['users']
-        
-        # Check if user exists
-        if users_col.find_one({'email': email}):
+            if client:
+                db = client[DB_NAME]
+            else:
+                return jsonify({'status': 'error', 'message': 'Database not connected'}), 500
+
+        login_col = db[LOGIN_COL]
+
+        # ── Duplicate check ───────────────────────────────────
+        if login_col.find_one({'email': email}):
             return jsonify({'status': 'error', 'message': 'Email already registered! Please Login.'}), 400
-            
-        # Create User
+
+        # ── Hash password & store ─────────────────────────────
         new_user = {
             'name': name,
             'email': email,
-            'password': password, 
+            'password': generate_password_hash(password),   # PBKDF2 hashed — never stored as plain text
             'phone': phone,
-            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
-        users_col.insert_one(new_user)
-        print(f"✅ New User Registered: {email}")
-        
+        login_col.insert_one(new_user)
+        print(f"✅ New user registered in 'login' collection: {email}")
+
         return jsonify({'status': 'success', 'message': 'Account Created Successfully!'})
-        
+
     except Exception as e:
-        print(f"Error in Signup: {e}")
+        print(f"❌ Signup Error: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 # Simple file based storage for login history (Fallback)
@@ -341,82 +381,128 @@ def login_history():
         print(f"Error logging login: {e}")
         return jsonify({'error': str(e)}), 500
 
+# ── Gemini AI Integration ──────────────────────────────────────────────────
+# Install:  pip install google-genai
+# Docs:     https://ai.google.dev/gemini-api/docs
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'YOUR_GEMINI_API_KEY')
+
+# Language name lookup (used in system prompt)
+LANG_NAMES = {
+    'en': 'English', 'hi': 'Hindi', 'gu': 'Gujarati', 'mr': 'Marathi',
+    'pa': 'Punjabi', 'ta': 'Tamil', 'te': 'Telugu', 'bn': 'Bengali',
+    'kn': 'Kannada', 'ml': 'Malayalam', 'or': 'Odia', 'ur': 'Urdu'
+}
+
+def call_gemini(user_message, language_code='en'):
+    """Call Google Gemini API and return the response text."""
+    try:
+        from google import genai
+
+        client = genai.Client(api_key=GEMINI_API_KEY)
+
+        lang_name = LANG_NAMES.get(language_code, 'English')
+
+        system_prompt = (
+            f"You are 'KisanCare AI', an expert Indian farming and agriculture assistant. "
+            f"The user is communicating in {lang_name}. "
+            f"You MUST reply ENTIRELY in {lang_name} language using {lang_name} script. "
+            f"Do NOT use any other language. "
+            f"Provide detailed, accurate, and helpful answers about: "
+            f"crops, fertilizers (liquid & solid), soil health, weather, irrigation, "
+            f"pest control, market prices (mandi rates), government schemes (PM-Kisan, KCC), "
+            f"organic farming, seed selection, and modern farming techniques. "
+            f"Use emojis to make responses friendly. "
+            f"Structure answers with bold headings (**heading**), bullet points, and numbers. "
+            f"Keep answers informative but concise (under 300 words). "
+            f"If the user greets, greet back warmly and explain what you can help with. "
+            f"If the user asks something unrelated to farming/agriculture, politely redirect them."
+        )
+
+        response = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=f"{system_prompt}\n\nUser: {user_message}"
+        )
+
+        return response.text.strip()
+
+    except ImportError:
+        print("⚠️ google-genai package not installed. Run: pip install google-genai")
+        return None
+    except Exception as e:
+        print(f"⚠️ Gemini API Error: {e}")
+        return None
+
+
+def get_fallback_reply(message):
+    """Old keyword-based fallback when Gemini is not available."""
+    message = message.lower()
+
+    if any(w in message for w in ["weather", "rain", "temperature", "climate", "forecast", "cloud"]):
+        return "🌤️ **Weather Update:**\nBased on general data, the forecast predicts clear skies with a temperature around 25°C-30°C.\n\n⚠️ *Advisory:* It's a good time for spraying fertilizers or harvesting if crops are ready."
+
+    elif any(w in message for w in ["price", "market", "rate", "cost", "mandi", "sell"]):
+        return "💰 **Market Prices (Estimated):**\n- 🌾 **Wheat:** ₹2,100/quintal\n- 🍚 **Rice:** ₹2,800/quintal\n- 🍅 **Tomato:** ₹40/kg\n- 🥔 **Potato:** ₹25/kg\n- 🧅 **Onion:** ₹35/kg\n\n*Prices may vary based on your local Mandi.*"
+
+    elif "wheat" in message:
+        return "🌾 **Wheat Farming Tips:**\n- **Sowing Time:** November to December\n- **Irrigation:** 4-6 waterings at critical stages\n- **Fertilizer:** NPK ratio 4:2:1\n- **Harvest:** When grains harden and straw turns golden."
+
+    elif "rice" in message or "paddy" in message:
+        return "🍚 **Paddy (Rice):**\n- **Season:** Kharif (June-July)\n- **Water:** Flood irrigation early stages\n- **Protection:** Watch for Stem Borer and Blast disease."
+
+    elif "cotton" in message:
+        return "☁️ **Cotton Farming:**\n- **Soil:** Black soil is best\n- **Pests:** Bollworms — use pheromone traps\n- **Harvest:** Pick dry bolls in the morning."
+
+    elif any(w in message for w in ["water", "irrigation", "drip", "sprinkler"]):
+        return "💧 **Irrigation Advice:**\n- **Drip:** Saves 50-70% water, best for veggies/fruits\n- **Sprinkler:** Good for wheat/pulses\n- **Tip:** Irrigate early morning or late evening."
+
+    elif any(w in message for w in ["soil", "fertilizer", "urea", "compost", "dap", "npk"]):
+        return "🌱 **Soil & Nutrition:**\n- **Soil Test:** Every 3 years\n- **Organic:** Vermicompost or Cow Dung manure\n- **N-P-K:** Nitrogen for growth, Phosphorus for roots, Potassium for strength."
+
+    elif any(w in message for w in ["pest", "bug", "insect", "worm", "disease", "virus", "fungus"]):
+        return "🐛 **Pest Control:**\n- **Prevention:** Crop rotation breaks pest cycles\n- **Organic:** Neem Oil spray\n- **Chemical:** Consult a local expert before using."
+
+    elif any(w in message for w in ["hello", "hi", "hey", "namaste", "help"]):
+        return "👋 **Namaste! I am your Kisan Assistant.**\n\nI can help with:\n- 🌤️ Weather\n- 💰 Mandi Prices\n- 🌾 Crop Advice\n- 🐛 Pest Control\n\n*Ask me anything!*"
+
+    else:
+        return "🤔 I can help with **Farming, Crops, Weather, and Market Prices**.\n\nTry asking:\n- *\"What is the price of Wheat?\"*\n- *\"How to grow Tomatoes?\"*\n- *\"Weather forecast today\"*"
+
+
 @app.route('/chat', methods=['POST'])
 def chat():
     try:
-        # Simulate AI Processing Time
-        time.sleep(1)
-        
-        message = request.form.get('message', '').lower()
-        image = request.files.get('image')
-        
+        message  = request.form.get('message', '').strip()
+        language = request.form.get('language', 'en').strip()
+        image    = request.files.get('image')
+
         reply = ""
-        
+
         if image:
             filename = secure_filename(image.filename)
-            # In a real app, we would save the image or pass it to an ML model
-            # For this project, we mock the analysis
             reply = f"I have received your image '{filename}'. \n\n"
             reply += "🔍 **Visual Analysis:**\n"
-            
-            # Simple keyword matching for mock responses
+
             if "leaf" in filename.lower() or "plant" in filename.lower():
-                reply += "The plant appears to be healthy, but check for small spots which might indicate early fungal infection. Ensure proper drainage."
+                reply += "The plant appears healthy, but check for spots which might indicate early fungal infection. Ensure proper drainage."
             elif "soil" in filename.lower():
-                reply += "The soil texture looks good. If it feels too dry, consider irrigating soon."
+                reply += "The soil texture looks good. If too dry, consider irrigating soon."
             else:
-                reply += "This looks like a crop field. Based on the visual data, the crop density seems optimal."
-                
-            reply += "\n\n📋 **Guidelines:**\n"
-            reply += "1. Monitor water levels daily.\n"
-            reply += "2. Check for pests under the leaves.\n"
-            reply += "3. Ensure adequate sunlight exposure."
-            
+                reply += "This looks like a crop field. Crop density seems optimal."
+
+            reply += "\n\n📋 **Guidelines:**\n1. Monitor water levels daily.\n2. Check for pests under leaves.\n3. Ensure adequate sunlight."
+
         elif message:
-            # ---------------------------------------------------------
-            # Enhanced Rule-Based Agri-Chatbot Logic
-            # ---------------------------------------------------------
-            
-            # 1. Weather
-            if any(word in message for word in ["weather", "rain", "temperature", "climate", "forecast", "cloud"]):
-                reply = "🌤️ **Weather Update:**\nBased on general data, the forecast predicts clear skies with a temperature around 25°C-30°C. \n\n⚠️ *Advisory:* It's a good time for spraying fertilizers or harvesting if crops are ready."
-                
-            # 2. Market Prices
-            elif any(word in message for word in ["price", "market", "rate", "cost", "mandi", "sell"]):
-                reply = "💰 **Market Prices (Estimated):**\n- 🌾 **Wheat:** ₹2,100/quintal\n- 🍚 **Rice:** ₹2,800/quintal\n- 🍅 **Tomato:** ₹40/kg\n- 🥔 **Potato:** ₹25/kg\n- 🧅 **Onion:** ₹35/kg\n\n*Prices may vary based on your local Mandi.*"
-                
-            # 3. Specific Crops Advice
-            elif "wheat" in message:
-                reply = "🌾 **Wheat Farming Tips:**\n- **Sowing Time:** November to December.\n- **Irrigation:** Needs 4-6 waterings at critical stages.\n- **Fertilizer:** NPK ratio 4:2:1 is generally recommended.\n- **Harvest:** When grains harden and straw turns golden."
-                
-            elif "rice" in message or "paddy" in message:
-                reply = "🍚 **Paddy (Rice) Cultivation:**\n- **Season:** Kharif (June-July).\n- **Water:** Requires standing water (flood irrigation) during early stages.\n- **Protection:** Watch for Stem Borer and Blast disease."
-                
-            elif "cotton" in message:
-                reply = "☁️ **Cotton Farming:**\n- **Soil:** Black soil is best.\n- **Pests:** Highly susceptible to Bollworms setup pheromone traps.\n- **Harvest:** Pick dry bolls in the morning."
-                
-            elif "tomato" in message:
-                 reply = "🍅 **Tomato Cultivation:**\n- **Soil:** Well-drained loamy soil.\n- **Care:** Staking is needed to support the plant.\n- **Disease:** Watch for Early Blight and Leaf Curl virus."
+            # ── Try Gemini AI first ──────────────────────────────────
+            if GEMINI_API_KEY and GEMINI_API_KEY != 'YOUR_GEMINI_API_KEY':
+                gemini_reply = call_gemini(message, language)
+                if gemini_reply:
+                    reply = gemini_reply
+                    print(f"✅ Gemini replied in {LANG_NAMES.get(language, language)}")
 
-            # 4. Irrigation / Water
-            elif any(word in message for word in ["water", "irrigation", "drip", "sprinkler"]):
-                reply = "💧 **Irrigation Advice:**\n- **Drip Irrigation:** Saves 50-70% water, best for vegetables/fruits.\n- **Sprinkler:** Good for wheat and pulses.\n- **Tip:** Irrigate early morning or late evening to reduce evaporation."
-
-            # 5. Soil / Fertilizer
-            elif any(word in message for word in ["soil", "fertilizer", "urea", "compost", "land", "mud"]):
-                 reply = "🌱 **Soil & Nutrition:**\n- **Soil Test:** Recommended every 3 years.\n- **Organic:** Use Vermicompost or Cow Dung manure to improve soil structure.\n- **N-P-K:** Nitrogen for growth, Phosphorus for roots, Potassium for strength."
-
-            # 6. Pests / Diseases
-            elif any(word in message for word in ["pest", "bug", "insect", "worm", "disease", "virus", "fungus"]):
-                 reply = "🐛 **Pest & Disease Control:**\n- **Prevention:** Crop rotation helps break pest cycles.\n- **Organic:** Neem Oil spray is effective for many soft-bodied insects.\n- **Chemical:** Consult a local expert before using heavy pesticides."
-                 
-            # 7. Greetings
-            elif any(word in message for word in ["hello", "hi", "hey", "greetings", "namaste"]):
-                 reply = "👋 **Namaste! I am your Kisan Assistant.**\n\nI can help you with:\n- 🌤️ Weather updates\n- 💰 Mandi Prices\n- 🌾 Crop Advice (Wheat, Rice, Cotton...)\n- 🐛 Pest Control\n\n*Ask me a question or upload a photo!*"
-                 
-            # 8. General / Fallback
-            else:
-                reply = "🤔 I didn't quite catch that.\n\nI am trained to answer questions about **Farming, Crops, Weather, and Prices**.\n\nTry asking:\n- *\"What is the price of Wheat?\"*\n- *\"How to grow Tomatoes?\"*\n- *\"Weather forecast today\"*"
+            # ── Fallback to keyword-based if Gemini unavailable ──────
+            if not reply:
+                print("⚠️ Gemini unavailable, using keyword fallback")
+                reply = get_fallback_reply(message)
                 
         else:
             return jsonify({'error': 'No input provided'}), 400

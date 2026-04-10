@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const messagesDiv    = document.getElementById('chat-messages');
     const fileInput      = document.getElementById('chat-file-input');
     const fileLabel      = document.querySelector('.file-upload-label');
+    const voiceBtn       = document.getElementById('voice-btn');
+    const langSelect     = document.getElementById('chat-lang-select');
 
     // ── Add header online info ──────────────────────────────────
     const header = document.querySelector('.chat-header span:first-child');
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="chat-header-info">
                 <div>
                     <div>Kisan AI Assistant</div>
-                    <div class="chat-online">Online • Always ready</div>
+                    <div class="chat-online">🤖 Powered by Gemini AI</div>
                 </div>
             </div>`;
     }
@@ -55,53 +57,204 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── OFFLINE AI REPLIES (fertilizer / crop knowledge) ───────
-    const offlineReplies = [
-        {
-            keys: ['liquid fertilizer', 'liquid', 'liquid fert'],
-            reply: `🌊 **Liquid Fertilizers** are nutrient solutions applied directly to soil or leaves.\n\n**Advantages:**\n• Faster absorption (within 24-48 hrs)\n• Suitable for drip/sprinkler irrigation\n• Less wastage – up to 30% more efficient\n\n**Popular Liquid Fertilizers in India:**\n• IFFCO Nano Urea (Liquid)\n• IFFCO Nano DAP (Liquid)\n• Coromandel Plantex Liquid NPK\n• Deepak Fertilisers Liquid NP`
-        },
-        {
-            keys: ['urea', 'urea tips', 'nitrogen'],
-            reply: `🌾 **Urea Tips:**\n• Apply at 60-100 kg/acre for most crops\n• Split into 2-3 doses for best results\n• Always irrigate after broadcasting\n• Use Neem-coated Urea to reduce nitrogen loss by 30%\n\n**Best companies:** IFFCO, NFL, RCF, Chambal`
-        },
-        {
-            keys: ['dap', 'dap info', 'phosphorus'],
-            reply: `🌱 **DAP (Di-Ammonium Phosphate):**\n• NPK ratio: 18-46-0\n• Best as basal application before sowing\n• Apply 50-100 kg/acre\n• Do NOT mix with Urea directly\n\n**Best brands:** IFFCO DAP, Coromandel Gromor, Zuari Jai Kisaan`
-        },
-        {
-            keys: ['npk', 'npk guide', 'complex'],
-            reply: `⚡ **NPK Fertilizers:**\nContain Nitrogen (N), Phosphorus (P) and Potassium (K) in one granule.\n\n**Common ratios:**\n• 12-32-16 – for basal dose\n• 15-15-15 – balanced for all crops (RCF Suphala)\n• 10-26-26 – high PK for vegetables\n\n**Apply:** 75-150 kg/acre depending on crop`
-        },
-        {
-            keys: ['crop advice', 'crop', 'which crop', 'plant'],
-            reply: `🌿 **Crop Selection Tips:**\n• Check your Soil Health Card for NPK status\n• Rabi season: Wheat, Mustard, Gram\n• Kharif season: Paddy, Cotton, Soybean\n• Use our Crop Advisory section for detailed guidance!\n\n👉 [Go to Crop Advisory](crop.html)`
-        },
-        {
-            keys: ['compare', 'liquid vs solid', 'which is better', 'difference'],
-            reply: `⚖️ **Liquid vs Solid Fertilizers:**\n\n| Factor | Liquid | Solid |\n|---|---|---|\n| Speed | ⚡ Fast (24-48h) | 🐢 Slow (3-7 days) |\n| Cost | 💰 Higher | 💰 Lower |\n| Application | Drip/spray | Broadcast |\n| Absorption | 90%+ | 60-70% |\n| Storage | Short shelf | Long shelf |\n\n✅ **Best choice:** Liquid for horticulture & drip systems. Solid for field crops like wheat & paddy.`
-        },
-        {
-            keys: ['hello', 'hi', 'namaste', 'good morning', 'help'],
-            reply: `🌾 **Namaste! Welcome to KisanCare!**\n\nI can help you with:\n• 🧪 Fertilizer recommendations\n• 💧 Liquid vs Solid comparison\n• 🌱 Crop advice\n• ☀️ Weather guidance\n• 💰 Market price queries\n\nWhat would you like to know today?`
-        },
-        {
-            keys: ['price', 'cost', 'rate', 'how much'],
-            reply: `💰 **Fertilizer Prices (Approx 2025):**\n\n• Urea (45 kg): ₹266 (subsidized)\n• DAP (50 kg): ₹1,350\n• NPK 15-15-15 (50 kg): ₹1,380\n• MOP (50 kg): ₹850\n• Nano Urea 500ml: ₹195\n\n👉 Visit our [Fertilizer Store](fertilizer.html) for current prices!`
-        }
-    ];
+    // ══════════════════════════════════════════════════════════════
+    //  LANGUAGE SUPPORT
+    // ══════════════════════════════════════════════════════════════
 
-    function getOfflineReply(text) {
-        const lower = text.toLowerCase();
-        for (const item of offlineReplies) {
-            if (item.keys.some(k => lower.includes(k))) {
-                return item.reply;
-            }
-        }
-        return `🤔 I'm not sure about that, but try asking about:\n**Liquid Fertilizer**, **Urea Tips**, **DAP Info**, **NPK Guide**, or **Crop Advice**.\n\nOr visit our [Fertilizer Store](fertilizer.html) for product details.`;
+    // Language → BCP-47 tag map for Speech API
+    const langCodeMap = {
+        'en': 'en-IN',
+        'hi': 'hi-IN',
+        'gu': 'gu-IN',
+        'mr': 'mr-IN',
+        'pa': 'pa-IN',
+        'ta': 'ta-IN',
+        'te': 'te-IN',
+        'bn': 'bn-IN',
+        'kn': 'kn-IN',
+        'ml': 'ml-IN',
+        'or': 'or-IN',
+        'ur': 'ur-IN'
+    };
+
+    // Language → display name for UI messages
+    const langNames = {
+        'en': 'English', 'hi': 'हिन्दी', 'gu': 'ગુજરાતી', 'mr': 'मराठी',
+        'pa': 'ਪੰਜਾਬੀ', 'ta': 'தமிழ்', 'te': 'తెలుగు', 'bn': 'বাংলা',
+        'kn': 'ಕನ್ನಡ', 'ml': 'മലയാളം', 'or': 'ଓଡ଼ିଆ', 'ur': 'اردو'
+    };
+
+    function getSelectedLang() {
+        return langSelect ? langSelect.value : 'en';
     }
 
-    // ── Send Message ────────────────────────────────────────────
+    // ── Simple offline fallback (for when server is completely down) ──
+    const offlineFallback = {
+        'en': '🤖 I\'m currently offline. Please check your internet or start the backend server.\n\nI can help with: **Crops**, **Fertilizers**, **Weather**, **Market Prices**, and more!\n\nTry reloading the page.',
+        'hi': '🤖 मैं अभी ऑफ़लाइन हूँ। कृपया अपना इंटरनेट जांचें या बैकेंड सर्वर शुरू करें।\n\nमैं मदद कर सकता हूँ: **फसल**, **खाद**, **मौसम**, **बाज़ार भाव** और भी बहुत कुछ!',
+        'gu': '🤖 હું હાલમાં ઑફલાઇન છું. કૃપા કરીને તમારું ઇન્ટરનેટ ચકાસો અથવા બેકેન્ડ સર્વર શરૂ કરો.\n\nહું મદદ કરી શકું: **પાક**, **ખાતર**, **હવામાન**, **બજાર ભાવ** અને ઘણું બધું!',
+        'mr': '🤖 मी सध्या ऑफलाइन आहे. कृपया तुमचे इंटरनेट तपासा किंवा बॅकएंड सर्व्हर सुरू करा.\n\nमी मदत करू शकतो: **पीक**, **खत**, **हवामान**, **बाजार भाव** आणि बरेच काही!',
+        'pa': '🤖 ਮੈਂ ਹੁਣ ਔਫਲਾਈਨ ਹਾਂ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਇੰਟਰਨੈੱਟ ਚੈੱਕ ਕਰੋ ਜਾਂ ਬੈਕਐਂਡ ਸਰਵਰ ਸ਼ੁਰੂ ਕਰੋ।',
+        'ta': '🤖 நான் தற்போது ஆஃப்லைனில் இருக்கிறேன். தயவுசெய்து இணைய இணைப்பை சரிபார்க்கவும்.',
+        'te': '🤖 నేను ప్రస్తుతం ఆఫ్‌లైన్‌లో ఉన్నాను. దయచేసి మీ ఇంటర్నెట్ తనిఖీ చేయండి.',
+        'bn': '🤖 আমি এখন অফলাইনে আছি। দয়া করে আপনার ইন্টারনেট পরীক্ষা করুন।',
+        'kn': '🤖 ನಾನು ಪ್ರಸ್ತುತ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೇನೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಪರಿಶೀಲಿಸಿ.',
+        'ml': '🤖 ഞാൻ ഇപ്പോൾ ഓഫ്‌ലൈനാണ്. ദയവായി നിങ്ങളുടെ ഇന്റർനെറ്റ് പരിശോധിക്കുക.',
+        'or': '🤖 ମୁଁ ବର୍ତ୍ତମାନ ଅଫଲାଇନ ଅଛି। ଦୟାକରି ଆପଣଙ୍କ ଇଣ୍ଟରନେଟ ଯାଞ୍ଚ କରନ୍ତୁ।',
+        'ur': '🤖 میں ابھی آف لائن ہوں۔ براہ کرم اپنا انٹرنیٹ چیک کریں۔'
+    };
+
+    // ══════════════════════════════════════════════════════════════
+    //  VOICE INPUT — Speech-to-Text (Web Speech API)
+    // ══════════════════════════════════════════════════════════════
+
+    let recognition = null;
+    let isRecording = false;
+
+    // Create voice status tooltip
+    const voiceStatus = document.createElement('div');
+    voiceStatus.className = 'voice-status';
+    voiceStatus.textContent = '🎤 Listening...';
+    if (voiceBtn) voiceBtn.appendChild(voiceStatus);
+
+    function initSpeechRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('⚠️ Voice input is not supported in this browser. Please use Chrome or Edge.');
+            return null;
+        }
+
+        const rec = new SpeechRecognition();
+        rec.continuous = false;
+        rec.interimResults = true;
+        rec.maxAlternatives = 1;
+
+        // Set language based on dropdown
+        const lang = getSelectedLang();
+        rec.lang = langCodeMap[lang] || 'en-IN';
+
+        rec.onstart = () => {
+            isRecording = true;
+            if (voiceBtn) {
+                voiceBtn.classList.add('recording');
+                voiceStatus.classList.add('visible');
+
+                const langLabels = {
+                    'en': '🎤 Listening...', 'hi': '🎤 सुन रहा हूँ...',
+                    'gu': '🎤 સાંભળી રહ્યો છું...', 'mr': '🎤 ऐकत आहे...',
+                    'pa': '🎤 ਸੁਣ ਰਿਹਾ ਹਾਂ...', 'ta': '🎤 கேட்கிறேன்...',
+                    'te': '🎤 వింటున్నాను...', 'bn': '🎤 শুনছি...',
+                    'kn': '🎤 ಕೇಳುತ್ತಿದ್ದೇನೆ...', 'ml': '🎤 കേൾക്കുന്നു...',
+                    'or': '🎤 ଶୁଣୁଛି...', 'ur': '🎤 سن رہا ہوں...'
+                };
+                voiceStatus.textContent = langLabels[lang] || '🎤 Listening...';
+            }
+        };
+
+        rec.onresult = (event) => {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
+            }
+            chatInput.value = transcript;
+        };
+
+        rec.onend = () => {
+            isRecording = false;
+            if (voiceBtn) {
+                voiceBtn.classList.remove('recording');
+                voiceStatus.classList.remove('visible');
+            }
+            // Auto-send if there's text
+            if (chatInput.value.trim()) {
+                sendMessage();
+            }
+        };
+
+        rec.onerror = (event) => {
+            isRecording = false;
+            if (voiceBtn) {
+                voiceBtn.classList.remove('recording');
+                voiceStatus.classList.remove('visible');
+            }
+            if (event.error === 'no-speech') {
+                // Silent fail
+            } else if (event.error === 'not-allowed') {
+                alert('🎤 Microphone access denied. Please allow microphone permissions in your browser settings.');
+            } else {
+                console.warn('Speech recognition error:', event.error);
+            }
+        };
+
+        return rec;
+    }
+
+    if (voiceBtn) {
+        voiceBtn.addEventListener('click', () => {
+            if (isRecording && recognition) {
+                recognition.stop();
+                return;
+            }
+
+            recognition = initSpeechRecognition();
+            if (recognition) {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.warn('Speech recognition start error:', e);
+                }
+            }
+        });
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  TEXT-TO-SPEECH — Read Bot Replies Aloud
+    // ══════════════════════════════════════════════════════════════
+
+    function speakText(text, button) {
+        // If already speaking, stop
+        if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            document.querySelectorAll('.msg-speak-btn.speaking').forEach(b => b.classList.remove('speaking'));
+            return;
+        }
+
+        // Strip markdown and HTML for cleaner speech
+        let cleanText = text
+            .replace(/\*\*(.*?)\*\*/g, '$1')
+            .replace(/\*(.*?)\*/g, '$1')
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+            .replace(/[|]/g, ' ')
+            .replace(/[-]{3,}/g, '')
+            .replace(/[#•⚡🌊🌾🌱🌿⚖️💰🤔✅👉🤖☀️🧪💧🏛️🔔💸☂️💳🚜💦🏦🎉🐛🍅🍚☁️🥔🧅]/g, '')
+            .replace(/\n+/g, '. ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        if (!cleanText) return;
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        const lang = getSelectedLang();
+        utterance.lang = langCodeMap[lang] || 'en-IN';
+        utterance.rate = 0.92;
+        utterance.pitch = 1.0;
+
+        if (button) button.classList.add('speaking');
+
+        utterance.onend = () => {
+            if (button) button.classList.remove('speaking');
+        };
+        utterance.onerror = () => {
+            if (button) button.classList.remove('speaking');
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  SEND MESSAGE — Gemini AI via Backend
+    // ══════════════════════════════════════════════════════════════
+
     async function sendMessage() {
         const text = chatInput.value.trim();
         const file = fileInput.files[0];
@@ -116,30 +269,32 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show typing indicator
         const typingEl = showTyping();
 
-        // Try server first, fall back to offline AI
+        // Build request
         const formData = new FormData();
         formData.append('message', text);
+        formData.append('language', getSelectedLang());
         if (file) formData.append('image', file);
 
-        let replied = false;
         try {
             const res = await Promise.race([
-                fetch('http://localhost:5001/chat', { method:'POST', body:formData }),
-                new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))
+                fetch('http://localhost:5001/chat', { method: 'POST', body: formData }),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))
             ]);
             const data = await res.json();
             removeTyping(typingEl);
-            appendMessage('bot', data.reply || "Sorry, I couldn't process that.");
-            replied = true;
-        } catch {
-            // Server unavailable — use local smart replies
-        }
 
-        if (!replied) {
-            setTimeout(() => {
-                removeTyping(typingEl);
-                appendMessage('bot', getOfflineReply(text));
-            }, 900);
+            if (data.reply) {
+                appendMessage('bot', data.reply);
+            } else if (data.error) {
+                appendMessage('bot', `⚠️ ${data.error}`);
+            } else {
+                appendMessage('bot', "Sorry, I couldn't process that.");
+            }
+        } catch (err) {
+            removeTyping(typingEl);
+            console.warn('Chat fetch error:', err);
+            const lang = getSelectedLang();
+            appendMessage('bot', offlineFallback[lang] || offlineFallback['en']);
         }
     }
 
@@ -194,6 +349,16 @@ document.addEventListener('DOMContentLoaded', () => {
         timeEl.className = 'msg-time';
         timeEl.textContent = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
         msgDiv.appendChild(timeEl);
+
+        // ── 🔊 Speak Button for bot messages ────────────────────
+        if (sender === 'bot' && text) {
+            const speakBtn = document.createElement('button');
+            speakBtn.className = 'msg-speak-btn';
+            speakBtn.title = 'Listen to this message';
+            speakBtn.innerHTML = '<span class="material-icons">volume_up</span> Listen';
+            speakBtn.addEventListener('click', () => speakText(text, speakBtn));
+            msgDiv.appendChild(speakBtn);
+        }
 
         messagesDiv.appendChild(msgDiv);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;

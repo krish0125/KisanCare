@@ -78,6 +78,23 @@
             <span>Kisan AI Assistant</span>
             <span class="material-icons close-btn" id="close-chat">close</span>
         </div>
+        <div class="chat-lang-bar">
+            <label>🌐 Language:</label>
+            <select id="chat-lang-select">
+                <option value="en">🇬🇧 English</option>
+                <option value="hi">🇮🇳 हिन्दी (Hindi)</option>
+                <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+                <option value="mr">🇮🇳 मराठी (Marathi)</option>
+                <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
+                <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+                <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+                <option value="bn">🇮🇳 বাংলা (Bengali)</option>
+                <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+                <option value="ml">🇮🇳 മലయാളം (Malayalam)</option>
+                <option value="or">🇮🇳 ଓଡ଼ିଆ (Odia)</option>
+                <option value="ur">🇮🇳 اردو (Urdu)</option>
+            </select>
+        </div>
         <div class="chat-messages" id="chat-messages">
             <div class="message bot">
                 <p>Hello! Ask me about crop prices, fertilizers, or farming tips! 🌾</p>
@@ -89,6 +106,7 @@
             </label>
             <input type="file" id="chat-file-input" accept="image/*" hidden>
             <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="voice-btn" class="voice-btn" title="Voice Input"><span class="material-icons">mic</span></button>
             <button id="send-btn"><span class="material-icons">send</span></button>
         </div>
     </div>
