@@ -393,34 +393,63 @@ LANG_NAMES = {
     'kn': 'Kannada', 'ml': 'Malayalam', 'or': 'Odia', 'ur': 'Urdu'
 }
 
-def call_gemini(user_message, language_code='en'):
-    """Call Google Gemini API and return the response text."""
+def call_gemini(user_message, language_code='en', image_bytes=None, image_mime=None):
+    """Call Google Gemini API and return the response text. Supports image input."""
     try:
         from google import genai
+        from google.genai import types
 
-        client = genai.Client(api_key=GEMINI_API_KEY)
-
+        client_gemini = genai.Client(api_key=GEMINI_API_KEY)
         lang_name = LANG_NAMES.get(language_code, 'English')
 
         system_prompt = (
-            f"You are 'KisanCare AI', an expert Indian farming and agriculture assistant. "
-            f"The user is communicating in {lang_name}. "
-            f"You MUST reply ENTIRELY in {lang_name} language using {lang_name} script. "
-            f"Do NOT use any other language. "
-            f"Provide detailed, accurate, and helpful answers about: "
-            f"crops, fertilizers (liquid & solid), soil health, weather, irrigation, "
-            f"pest control, market prices (mandi rates), government schemes (PM-Kisan, KCC), "
-            f"organic farming, seed selection, and modern farming techniques. "
-            f"Use emojis to make responses friendly. "
-            f"Structure answers with bold headings (**heading**), bullet points, and numbers. "
-            f"Keep answers informative but concise (under 300 words). "
-            f"If the user greets, greet back warmly and explain what you can help with. "
-            f"If the user asks something unrelated to farming/agriculture, politely redirect them."
+            f"You are 'KisanCare AI', an expert Indian farming, agriculture, and agronomy assistant built for Indian farmers. "
+            f"The farmer is communicating in {lang_name}. "
+            f"CRITICAL RULE: You MUST reply ENTIRELY in {lang_name} language only. "
+            f"Use the native script of {lang_name} (e.g., Devanagari for Hindi, Gujarati script for Gujarati). "
+            f"Do NOT mix languages or use English inside a non-English reply. "
+            f"\n\nYour expertise covers ALL of the following farming topics:\n"
+            f"1. CROPS: Wheat, Rice/Paddy, Cotton, Tomato, Potato, Onion, Sugarcane, Banana, Maize, Pulses, Oilseeds, "
+            f"   Vegetables, Fruits - sowing time, variety selection, yield optimization\n"
+            f"2. FERTILIZERS: Urea (46%N), DAP (18:46:0), MOP (0:0:60), NPK blends, Nano Urea, "
+            f"   Zinc Sulphate, Boron, micronutrients, dose calculation per acre, timing\n"
+            f"3. SOIL HEALTH: pH management, soil testing, organic matter, macro/micro nutrients, "
+            f"   green manuring, soil amendments (lime, gypsum, FYM, vermicompost)\n"
+            f"4. PEST & DISEASE CONTROL: IPM, bio-pesticides, neem oil, chemical pesticides (dose & safety), "
+            f"   fungicides, disease identification, prevention strategies\n"
+            f"5. IRRIGATION: Drip vs sprinkler vs flood, water scheduling, critical stages, PM Sinchai Yojana\n"
+            f"6. WEATHER & CLIMATE: Farming advisories for heat/cold/drought/flood, spray timing in weather\n"
+            f"7. MARKET & PRICES: MSP 2024-25, APMC mandi rates, eNAM platform, how to sell crops\n"
+            f"8. GOVERNMENT SCHEMES: PM-Kisan (₹6000/yr), KCC loan (4% interest), PMFBY crop insurance, "
+            f"   Soil Health Card, PM Sinchai Yojana, RKVY, FPO, e-Shram, Agri Infra Fund\n"
+            f"9. ORGANIC FARMING: Zero Budget Natural Farming, Jeevamrit, Panchagavya, SRI method, ZBNF\n"
+            f"10. SEED SELECTION: Hybrid vs OP, Bt varieties, certified seed, seed treatment, germination test\n"
+            f"11. FARM MACHINERY: Tractors, power tillers, harvester, spray machines, correct usage\n"
+            f"12. ANIMAL HUSBANDRY: Dairy, poultry, goat farming basics if asked\n"
+            f"\nFORMATTING RULES:\n"
+            f"- Use emojis to make responses friendly and visual\n"
+            f"- Use **bold** for headings, bullet points (•) for lists\n"
+            f"- Use tables (| col | col |) for comparisons and dose charts\n"
+            f"- Keep responses 150-350 words — informative but not overwhelming\n"
+            f"- For image questions: describe what you see and give specific farming advice\n"
+            f"- If greeting: greet warmly in {lang_name} and list main topics you can help with\n"
+            f"- NEVER talk about non-agriculture topics. Politely redirect to farming topics."
         )
 
-        response = client.models.generate_content(
+        contents = []
+
+        # If image is attached, use vision model
+        if image_bytes and image_mime:
+            contents = [
+                types.Part.from_bytes(data=image_bytes, mime_type=image_mime),
+                types.Part.from_text(text=f"{system_prompt}\n\nFarmer's question about the uploaded image: {user_message or 'Please analyze this farm/crop/pest/soil image and give advice.'}")
+            ]
+        else:
+            contents = [f"{system_prompt}\n\nFarmer's Question: {user_message}"]
+
+        response = client_gemini.models.generate_content(
             model='gemini-2.0-flash',
-            contents=f"{system_prompt}\n\nUser: {user_message}"
+            contents=contents
         )
 
         return response.text.strip()
@@ -471,46 +500,51 @@ def get_fallback_reply(message):
 @app.route('/chat', methods=['POST'])
 def chat():
     try:
-        message  = request.form.get('message', '').strip()
-        language = request.form.get('language', 'en').strip()
+        message  = (request.form.get('message') or '').strip()
+        language = (request.form.get('language') or 'en').strip()
         image    = request.files.get('image')
 
         reply = ""
+        image_bytes = None
+        image_mime  = None
 
+        # Read image bytes if provided
         if image:
-            filename = secure_filename(image.filename)
-            reply = f"I have received your image '{filename}'. \n\n"
-            reply += "🔍 **Visual Analysis:**\n"
+            image_bytes = image.read()
+            image_mime  = image.content_type or 'image/jpeg'
 
-            if "leaf" in filename.lower() or "plant" in filename.lower():
-                reply += "The plant appears healthy, but check for spots which might indicate early fungal infection. Ensure proper drainage."
-            elif "soil" in filename.lower():
-                reply += "The soil texture looks good. If too dry, consider irrigating soon."
-            else:
-                reply += "This looks like a crop field. Crop density seems optimal."
-
-            reply += "\n\n📋 **Guidelines:**\n1. Monitor water levels daily.\n2. Check for pests under leaves.\n3. Ensure adequate sunlight."
-
-        elif message:
-            # ── Try Gemini AI first ──────────────────────────────────
-            if GEMINI_API_KEY and GEMINI_API_KEY != 'YOUR_GEMINI_API_KEY':
-                gemini_reply = call_gemini(message, language)
-                if gemini_reply:
-                    reply = gemini_reply
-                    print(f"✅ Gemini replied in {LANG_NAMES.get(language, language)}")
-
-            # ── Fallback to keyword-based if Gemini unavailable ──────
-            if not reply:
-                print("⚠️ Gemini unavailable, using keyword fallback")
-                reply = get_fallback_reply(message)
-                
-        else:
+        if not message and not image_bytes:
             return jsonify({'error': 'No input provided'}), 400
-            
+
+        # ── Try Gemini AI (with vision if image provided) ─────────
+        if GEMINI_API_KEY and GEMINI_API_KEY != 'YOUR_GEMINI_API_KEY':
+            gemini_reply = call_gemini(message, language, image_bytes, image_mime)
+            if gemini_reply:
+                reply = gemini_reply
+                print(f"✅ Gemini replied [{LANG_NAMES.get(language, language)}] — {'image+text' if image_bytes else 'text'}")
+
+        # ── Fallback: keyword-based reply ─────────────────────────
+        if not reply:
+            print("⚠️ Gemini unavailable — using keyword fallback")
+            if image_bytes:
+                reply = (
+                    f"🔍 **Image Received!**\n\n"
+                    f"I can see your uploaded image. While detailed AI vision analysis requires the Gemini API, "
+                    f"here are general tips:\n\n"
+                    f"• **Leaf yellowing** → Check N/Fe deficiency or overwatering\n"
+                    f"• **Brown spots** → Likely fungal — apply Mancozeb spray\n"
+                    f"• **Holes in leaves** → Caterpillar/insect damage — apply Spinosad\n"
+                    f"• **Wilting** → Check soil moisture and root health\n\n"
+                    f"For accurate diagnosis, describe the symptoms in text!"
+                )
+            else:
+                reply = get_fallback_reply(message)
+
         return jsonify({'status': 'success', 'reply': reply})
-        
+
     except Exception as e:
-        print(f"Chat Error: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/apmc', methods=['GET'])
