@@ -31,12 +31,227 @@
         </nav>
     </header>
 
-    <main class="container">
-        <h2 data-lang="market_header">Live Market Prices (Mandi Rates)</h2>
-        <div class="card">
-            <div class="form-group">
-                <label for="marketCrop" data-lang="select_crop_label">Select Crop</label>
-                <select id="marketCrop">
+    <style>
+        /* Market Dashboard Specific Styles */
+        .market-hero {
+            background: linear-gradient(135deg, #1e3c2f 0%, #1abc9c 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(26, 188, 156, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .market-hero h2 {
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .market-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .market-hero .hero-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12rem;
+            color: rgba(255,255,255,0.1);
+            z-index: 1;
+        }
+
+        .filter-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 0;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid #ecf0f1;
+            background: #f8fcf9;
+            font-size: 1rem;
+            color: #34495e;
+            transition: all 0.3s;
+        }
+
+        .filter-input:focus {
+            border-color: #2ecc71;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+            outline: none;
+            background: white;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 14px 30px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f4f7f6;
+            padding-bottom: 15px;
+        }
+
+        .results-header h3 {
+            margin: 0;
+            color: #1e3c2f;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-badge {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 600px;
+            margin-top: 0;
+            box-shadow: none;
+        }
+
+        .styled-table th {
+            padding: 15px 20px;
+            text-align: left;
+            color: #7f8c8d;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            background: #f8fcf9;
+        }
+
+        .styled-table th:first-child { border-top-left-radius: 10px; }
+        .styled-table th:last-child { border-top-right-radius: 10px; }
+
+        .styled-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f4f7f6;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .styled-table tbody tr:hover td {
+            background-color: #f8fcf9;
+        }
+
+        /* Value coloring mock - assumes JS will inject rows, but gives a fallback style */
+        .styled-table td:nth-child(3) {
+            color: #27ae60;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+
+    <main class="dashboard-container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px; min-height: 80vh;">
+        
+        <!-- Hero / Header Section -->
+        <div class="market-hero">
+            <h2 data-lang="market_header">Live Market Prices (Mandi Rates)</h2>
+            <p>Real-time access to APMC mandi rates to help you decide when and where to sell your harvest for the highest profit.</p>
+            <i class="material-icons hero-icon">storefront</i>
+        </div>
+
+        <!-- Filter Control Panel -->
+        <div class="filter-panel">
+            <div class="filter-group">
+                <label for="marketCrop" data-lang="select_crop_label">
+                    <i class="material-icons" style="color: #2ecc71;">eco</i> Select Crop
+                </label>
+                <select id="marketCrop" class="filter-input" style="appearance: auto; cursor: pointer;">
                     <option value="wheat">Wheat</option>
                     <option value="rice">Rice</option>
                     <option value="onion">Onion</option>
@@ -44,28 +259,46 @@
                     <option value="tomato">Tomato</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label for="marketName" data-lang="market_name_label">Market / APMC Name</label>
-                <input type="text" id="marketName" placeholder="e.g. Nashik APMC">
+
+            <div class="filter-group" style="flex: 2;">
+                <label for="marketName" data-lang="market_name_label">
+                    <i class="material-icons" style="color: #3498db;">location_on</i> Market / APMC Name
+                </label>
+                <input type="text" id="marketName" class="filter-input" placeholder="e.g. Nashik APMC">
             </div>
-            <button id="getPriceBtn" class="btn" data-lang="get_prices_btn">Get Prices</button>
+
+            <button id="getPriceBtn" class="btn-search">
+                <i class="material-icons">search</i>
+                <span data-lang="get_prices_btn">Get Prices</span>
+            </button>
         </div>
 
-        <div id="priceResult" class="card" style="display: none;">
-            <h3 data-lang="price_list_title">Price List</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th data-lang="th_crop">Crop</th>
-                        <th data-lang="th_market">Market</th>
-                        <th data-lang="th_price">Price (per Quintal)</th>
-                        <th data-lang="th_date">Date</th>
-                    </tr>
-                </thead>
-                <tbody id="priceTableBody">
-                    <!-- Dynamic Data -->
-                </tbody>
-            </table>
+        <!-- Results Table -->
+        <div id="priceResult" class="results-card" style="display: none;">
+            <div class="results-header">
+                <h3 data-lang="price_list_title">
+                    <i class="material-icons" style="color: #f39c12;">analytics</i> Price List Insights
+                </h3>
+                <span class="live-badge">
+                    <i class="material-icons" style="font-size: 16px;">fiber_manual_record</i> Live Updates
+                </span>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th data-lang="th_crop">Crop</th>
+                            <th data-lang="th_market">Market</th>
+                            <th data-lang="th_price">Price (per Quintal)</th>
+                            <th data-lang="th_date">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="priceTableBody">
+                        <!-- Dynamic Data -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
