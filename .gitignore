@@ -2,11 +2,24 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+
+# Environment files — real secrets, never commit
 .env
+backend/.env
+
+# Virtual environments
 .venv
 env/
 venv/
+
+# OS files
 node_modules/
 .DS_Store
 Thumbs.db
- 
+
+# ML model binaries — large, regenerate via train_crop_model.py
+*.pkl
+
+# Auto-generated / legacy data files
+farmer_stamina_data.csv
+backend/login_log.json

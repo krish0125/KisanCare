@@ -122,53 +122,53 @@ function generateAdvice() {
     // ── SECTION 2: Growth Stage Timeline ─────────────────────────
     var tls = {
         wheat: [
-            {e:'🌱',l:'Sowing (Buwai)',d:'Day 0',f:'DAP + NPK',hi:true},
-            {e:'🌿',l:'Tillering (Kalle Nikalna)',d:'Day 25-35',f:'Urea 1st Dose',hi:true},
-            {e:'🌾',l:'Jointing (Naali Banana)',d:'Day 45-55',f:'Urea 2nd Dose',hi:true},
-            {e:'🌸',l:'Flowering (Phool)',d:'Day 70-80',f:'No Fertilizer',hi:false},
-            {e:'🏆',l:'Harvest (Katai)',d:'Day 115-140',f:'Nil',hi:false}
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>yard</span>',l:'Sowing (Buwai)',d:'Day 0',f:'DAP + NPK',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>',l:'Tillering (Kalle Nikalna)',d:'Day 25-35',f:'Urea 1st Dose',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>',l:'Jointing (Naali Banana)',d:'Day 45-55',f:'Urea 2nd Dose',hi:true},
+            {e:'',l:'Flowering (Phool)',d:'Day 70-80',f:'No Fertilizer',hi:false},
+            {e:'',l:'Harvest (Katai)',d:'Day 115-140',f:'Nil',hi:false}
         ],
         paddy: [
-            {e:'🌱',l:'Transplanting (Ropai)',d:'Day 0',f:'DAP + MOP',hi:true},
-            {e:'🌿',l:'Tillering',d:'Day 25',f:'Urea 1st',hi:true},
-            {e:'🌾',l:'Panicle Initiation',d:'Day 55',f:'Urea 2nd',hi:true},
-            {e:'🌸',l:'Heading (Balian Nikalna)',d:'Day 80',f:'No Fertilizer',hi:false},
-            {e:'🏆',l:'Harvest',d:'Day 120-135',f:'Nil',hi:false}
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>yard</span>',l:'Transplanting (Ropai)',d:'Day 0',f:'DAP + MOP',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>',l:'Tillering',d:'Day 25',f:'Urea 1st',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>',l:'Panicle Initiation',d:'Day 55',f:'Urea 2nd',hi:true},
+            {e:'',l:'Heading (Balian Nikalna)',d:'Day 80',f:'No Fertilizer',hi:false},
+            {e:'',l:'Harvest',d:'Day 120-135',f:'Nil',hi:false}
         ],
         cotton: [
-            {e:'🌱',l:'Sowing (Buwai)',d:'Day 0',f:'NPK + DAP',hi:true},
-            {e:'🌿',l:'Vegetative (Bada Hona)',d:'Day 30',f:'Urea 1st Dose',hi:true},
-            {e:'🌸',l:'Boll Formation (Tinda)',d:'Day 60',f:'Urea + MOP',hi:true},
-            {e:'💠',l:'Boll Opening',d:'Day 90-110',f:'No Fertilizer',hi:false},
-            {e:'🏆',l:'Picking (Chugai)',d:'Day 150-180',f:'Nil',hi:false}
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>yard</span>',l:'Sowing (Buwai)',d:'Day 0',f:'NPK + DAP',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>',l:'Vegetative (Bada Hona)',d:'Day 30',f:'Urea 1st Dose',hi:true},
+            {e:'',l:'Boll Formation (Tinda)',d:'Day 60',f:'Urea + MOP',hi:true},
+            {e:'',l:'Boll Opening',d:'Day 90-110',f:'No Fertilizer',hi:false},
+            {e:'',l:'Picking (Chugai)',d:'Day 150-180',f:'Nil',hi:false}
         ],
         sugarcane: [
-            {e:'🌱',l:'Planting (Buwai)',d:'Month 0',f:'NPK + DAP',hi:true},
-            {e:'🌿',l:'Tillering (Kalle)',d:'Month 1-2',f:'Urea 1st Dose',hi:true},
-            {e:'🌾',l:'Grand Growth (Bada Hona)',d:'Month 4-5',f:'Urea 2nd Dose',hi:true},
-            {e:'🌿',l:'Maturation (Pakna)',d:'Month 8-9',f:'Urea 3rd (optional)',hi:false},
-            {e:'🏆',l:'Harvest (Katai)',d:'Month 12-14',f:'Nil',hi:false}
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>yard</span>',l:'Planting (Buwai)',d:'Month 0',f:'NPK + DAP',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>',l:'Tillering (Kalle)',d:'Month 1-2',f:'Urea 1st Dose',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>',l:'Grand Growth (Bada Hona)',d:'Month 4-5',f:'Urea 2nd Dose',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>',l:'Maturation (Pakna)',d:'Month 8-9',f:'Urea 3rd (optional)',hi:false},
+            {e:'',l:'Harvest (Katai)',d:'Month 12-14',f:'Nil',hi:false}
         ],
         tomato: [
-            {e:'🌱',l:'Transplanting (Ropai)',d:'Day 0',f:'NPK 10-26-26',hi:true},
-            {e:'🌿',l:'Vegetative (Bada Hona)',d:'Day 15-20',f:'Urea + Micro Spray',hi:true},
-            {e:'🌸',l:'Flowering (Phool Aana)',d:'Day 35-40',f:'Liquid NPK Spray',hi:true},
-            {e:'🍅',l:'Fruiting (Phal Ana)',d:'Day 55-65',f:'High K Spray',hi:true},
-            {e:'🏆',l:'Harvest (Todai)',d:'Day 75-90',f:'Nil',hi:false}
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>yard</span>',l:'Transplanting (Ropai)',d:'Day 0',f:'NPK 10-26-26',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>',l:'Vegetative (Bada Hona)',d:'Day 15-20',f:'Urea + Micro Spray',hi:true},
+            {e:'',l:'Flowering (Phool Aana)',d:'Day 35-40',f:'Liquid NPK Spray',hi:true},
+            {e:'',l:'Fruiting (Phal Ana)',d:'Day 55-65',f:'High K Spray',hi:true},
+            {e:'',l:'Harvest (Todai)',d:'Day 75-90',f:'Nil',hi:false}
         ],
         potato: [
-            {e:'🌱',l:'Sowing (Buwai)',d:'Day 0',f:'NPK + DAP',hi:true},
-            {e:'🌿',l:'Earthing Up (Mitti Chadana)',d:'Day 30',f:'Light Urea + Boron Spray',hi:true},
-            {e:'🟡',l:'Tuber Initiation',d:'Day 50',f:'MOP Application',hi:true},
-            {e:'🥔',l:'Tuber Growth',d:'Day 70-80',f:'No Heavy Dose',hi:false},
-            {e:'🏆',l:'Harvest (Khudai)',d:'Day 90-110',f:'Nil',hi:false}
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>yard</span>',l:'Sowing (Buwai)',d:'Day 0',f:'NPK + DAP',hi:true},
+            {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>',l:'Earthing Up (Mitti Chadana)',d:'Day 30',f:'Light Urea + Boron Spray',hi:true},
+            {e:'',l:'Tuber Initiation',d:'Day 50',f:'MOP Application',hi:true},
+            {e:'',l:'Tuber Growth',d:'Day 70-80',f:'No Heavy Dose',hi:false},
+            {e:'',l:'Harvest (Khudai)',d:'Day 90-110',f:'Nil',hi:false}
         ]
     };
     var tl = tls[cropKey] || [
-        {e:'🌱',l:'Sowing / Planting',d:'Day 0',f:(crop.basalFert[0]||{name:'Basal Dose'}).name,hi:true},
-        {e:'🌿',l:'Vegetative Stage',d:'Day 20-35',f:(crop.topDressFert[0]||{name:'Top Dress'}).name||'Top Dress',hi:true},
-        {e:'🌸',l:'Flowering Stage',d:'Day 45-60',f:'Foliar Spray',hi:false},
-        {e:'🏆',l:'Harvest',d:'As per crop',f:'Nil',hi:false}
+        {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>yard</span>',l:'Sowing / Planting',d:'Day 0',f:(crop.basalFert[0]||{name:'Basal Dose'}).name,hi:true},
+        {e:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>',l:'Vegetative Stage',d:'Day 20-35',f:(crop.topDressFert[0]||{name:'Top Dress'}).name||'Top Dress',hi:true},
+        {e:'',l:'Flowering Stage',d:'Day 45-60',f:'Foliar Spray',hi:false},
+        {e:'',l:'Harvest',d:'As per crop',f:'Nil',hi:false}
     ];
     var tlHtml = tl.map(function(t) {
         return '<div class="timeline-step">' +

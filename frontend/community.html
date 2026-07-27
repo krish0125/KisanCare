@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Forum | KisanCare</title>
+    <meta name="description" content="Connect with expert agronomists and fellow farmers. Ask questions about crops, pests, market prices, and government schemes.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body { background: #f4f7f6; margin: 0; font-family: 'Poppins', sans-serif; }
+
+        /* ── Hero ── */
+        .forum-hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 60%, #818cf8 100%);
+            border-radius: 20px;
+            margin: 24px;
+            padding: 36px 44px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .forum-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='20' cy='20' r='8'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        .forum-hero-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+        .forum-hero h1 { font-size: 1.9rem; font-weight: 800; margin: 0 0 8px; }
+        .forum-hero p { opacity: 0.85; font-size: 0.93rem; margin: 0 0 20px; }
+        .forum-stats { display: flex; gap: 32px; margin-top: 16px; flex-wrap: wrap; }
+        .forum-stat span { font-size: 1.6rem; font-weight: 800; display: block; }
+        .forum-stat small { opacity: 0.75; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ── Layout ── */
+        .forum-body { max-width: 1100px; margin: 0 auto; padding: 0 24px 60px; display: grid; grid-template-columns: 240px 1fr; gap: 24px; }
+        @media (max-width: 768px) { .forum-body { grid-template-columns: 1fr; } }
+
+        /* ── Sidebar ── */
+        .sidebar-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 20px;
+            height: fit-content;
+        }
+        .sidebar-card h3 { font-size: 0.85rem; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 14px; }
+        .category-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 10px; border-radius: 8px; cursor: pointer;
+            font-size: 0.85rem; color: #374151; font-weight: 500;
+            transition: background 0.15s;
+        }
+        .category-item:hover { background: #f3f4f6; }
+        .category-item.active { background: #ede9fe; color: #6d28d9; }
+        .category-item .material-icons { font-size: 18px; }
+        .cat-count { margin-left: auto; font-size: 0.72rem; background: #f3f4f6; padding: 2px 7px; border-radius: 10px; color: #6b7280; }
+        .category-item.active .cat-count { background: #ddd6fe; color: #5b21b6; }
+
+        /* ── Main feed ── */
+        .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .feed-header h2 { font-size: 1.2rem; font-weight: 700; color: #111827; margin: 0; }
+        .btn-ask {
+            background: linear-gradient(135deg, #4338ca, #6d28d9);
+            color: white; border: none; border-radius: 20px;
+            padding: 9px 20px; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: opacity 0.2s; box-shadow: 0 3px 10px rgba(99,102,241,0.3);
+        }
+        .btn-ask:hover { opacity: 0.88; }
+
+        /* ── Post card ── */
+        .post-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 20px 22px;
+            margin-bottom: 14px;
+            transition: box-shadow 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .post-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); }
+        .post-card.answered  { border-left-color: #16a34a; }
+        .post-card.unanswered{ border-left-color: #f59e0b; }
+        .post-card.expert    { border-left-color: #6d28d9; }
+
+        .post-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+        .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; font-weight: 700; color: white; flex-shrink: 0;
+        }
+        .post-author { font-size: 0.82rem; font-weight: 600; color: #374151; }
+        .post-role { font-size: 0.7rem; color: #6b7280; }
+        .post-time { font-size: 0.72rem; color: #9ca3af; margin-left: auto; }
+        .post-badge {
+            font-size: 0.65rem; font-weight: 700; padding: 2px 8px;
+            border-radius: 10px; text-transform: uppercase; letter-spacing: 0.3px;
+        }
+        .badge-expert { background: #ede9fe; color: #6d28d9; }
+        .badge-farmer { background: #dcfce7; color: #166534; }
+
+        .post-title { font-size: 0.98rem; font-weight: 600; color: #111827; margin: 0 0 6px; cursor: pointer; }
+        .post-title:hover { color: #4338ca; text-decoration: underline; }
+        .post-body { font-size: 0.83rem; color: #6b7280; line-height: 1.6; margin: 0 0 14px; }
+
+        .post-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+        .tag {
+            font-size: 0.7rem; padding: 3px 10px;
+            background: #f3f4f6; color: #374151; border-radius: 12px;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .tag:hover { background: #ede9fe; color: #6d28d9; }
+
+        .post-footer { display: flex; gap: 16px; align-items: center; }
+        .action-btn {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 0.78rem; color: #6b7280; cursor: pointer;
+            background: none; border: none; padding: 4px 8px; border-radius: 6px;
+            transition: all 0.15s; font-family: 'Poppins', sans-serif;
+        }
+        .action-btn:hover { background: #f3f4f6; color: #4338ca; }
+        .action-btn .material-icons { font-size: 16px; }
+        .action-btn.voted { color: #4338ca; }
+
+        /* ── Answer section ── */
+        .answers-section {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f3f4f6;
+        }
+        .answers-section.open { display: block; }
+
+        .answer-card {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border-left: 3px solid #d1d5db;
+        }
+        .answer-card.best { border-left-color: #16a34a; background: #f0fdf4; }
+        .best-badge { font-size: 0.7rem; font-weight: 700; color: #16a34a; margin-left: 6px; }
+
+        /* ── Ask Modal ── */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: white; border-radius: 18px;
+            padding: 32px; width: 540px; max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .modal-box h2 { font-size: 1.3rem; margin: 0 0 20px; }
+        .modal-field { margin-bottom: 16px; }
+        .modal-field label { display: block; font-size: 0.82rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+        .modal-field input, .modal-field textarea, .modal-field select {
+            width: 100%; padding: 10px 12px;
+            border: 1.5px solid #d1d5db; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem;
+            outline: none; transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .modal-field input:focus, .modal-field textarea:focus, .modal-field select:focus { border-color: #4338ca; }
+        .modal-field textarea { resize: vertical; min-height: 100px; }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+        .btn-cancel { background: #f3f4f6; border: none; padding: 9px 20px; border-radius: 20px; font-family: 'Poppins', sans-serif; cursor: pointer; font-weight: 500; }
+        .btn-post { background: linear-gradient(135deg,#4338ca,#6d28d9); color: white; border: none; padding: 9px 24px; border-radius: 20px; font-family: 'Poppins', sans-serif; cursor: pointer; font-weight: 600; }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="logo"><span class="material-icons">eco</span> KisanCare</div>
+    <ul class="nav-links">
+        <li><a href="home.html"><span class="material-icons">home</span> Home</a></li>
+        <li><a href="crop.html"><span class="material-icons">grass</span> Crop Advisory</a></li>
+        <li><a href="weather.html"><span class="material-icons">cloud</span> Weather Alerts</a></li>
+        <li><a href="disease.html"><span class="material-icons">biotech</span> Crop Doctor</a></li>
+        <li><a href="crop-calendar.html"><span class="material-icons">calendar_month</span> Crop Calendar</a></li>
+        <li><a href="community.html" class="active"><span class="material-icons">forum</span> Community</a></li>
+        <li><a href="market.html"><span class="material-icons">storefront</span> Market Prices</a></li>
+        <li><a href="schemes.html"><span class="material-icons">account_balance</span> Govt Schemes</a></li>
+        <li><a href="index.html"><span class="material-icons">login</span> Login</a></li>
+    </ul>
+</nav>
+
+<!-- Hero -->
+<div class="forum-hero">
+    <div class="forum-hero-inner">
+        <div>
+            <h1><span class="material-icons" style="font-size:2rem;vertical-align:middle;">forum</span> Farmer Community</h1>
+            <p>Ask questions, share experiences, and get expert agronomist advice — in your language.</p>
+            <div class="forum-stats">
+                <div class="forum-stat"><span id="statPosts">2,841</span><small>Questions Asked</small></div>
+                <div class="forum-stat"><span id="statAnswers">8,204</span><small>Answers Given</small></div>
+                <div class="forum-stat"><span id="statExperts">143</span><small>Expert Agronomists</small></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="forum-body">
+    <!-- Sidebar -->
+    <aside>
+        <div class="sidebar-card">
+            <h3>Categories</h3>
+            <div class="category-item active" data-cat="all">
+                <span class="material-icons">apps</span> All Topics
+                <span class="cat-count" id="cnt-all">24</span>
+            </div>
+            <div class="category-item" data-cat="Crop Disease">
+                <span class="material-icons" style="color:#dc2626;">pest_control</span> Crop Disease
+                <span class="cat-count">8</span>
+            </div>
+            <div class="category-item" data-cat="Irrigation">
+                <span class="material-icons" style="color:#0ea5e9;">water_drop</span> Irrigation
+                <span class="cat-count">5</span>
+            </div>
+            <div class="category-item" data-cat="Fertilizers">
+                <span class="material-icons" style="color:#16a34a;">science</span> Fertilizers
+                <span class="cat-count">4</span>
+            </div>
+            <div class="category-item" data-cat="Market Prices">
+                <span class="material-icons" style="color:#f59e0b;">storefront</span> Market Prices
+                <span class="cat-count">3</span>
+            </div>
+            <div class="category-item" data-cat="Govt Schemes">
+                <span class="material-icons" style="color:#6d28d9;">account_balance</span> Govt Schemes
+                <span class="cat-count">4</span>
+            </div>
+        </div>
+
+        <div class="sidebar-card" style="margin-top:16px;">
+            <h3>Expert Agronomists</h3>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar" style="background:#4338ca;font-size:0.8rem;">DS</div>
+                    <div>
+                        <p style="margin:0;font-size:0.83rem;font-weight:600;color:#374151;">Dr. Sharma</p>
+                        <p style="margin:0;font-size:0.7rem;color:#6b7280;">Soil Science, ICAR</p>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar" style="background:#16a34a;font-size:0.8rem;">PM</div>
+                    <div>
+                        <p style="margin:0;font-size:0.83rem;font-weight:600;color:#374151;">Prof. Mishra</p>
+                        <p style="margin:0;font-size:0.7rem;color:#6b7280;">Plant Pathology, PAU</p>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar" style="background:#d97706;font-size:0.8rem;">AP</div>
+                    <div>
+                        <p style="margin:0;font-size:0.83rem;font-weight:600;color:#374151;">Amrita Patel</p>
+                        <p style="margin:0;font-size:0.7rem;color:#6b7280;">Agronomy, ANGRAU</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Feed -->
+    <main>
+        <div class="feed-header">
+            <h2 id="feedTitle">All Discussions</h2>
+            <button class="btn-ask" id="askBtn">
+                <span class="material-icons" style="font-size:17px;">add</span>
+                Ask a Question
+            </button>
+        </div>
+
+        <div id="postFeed"></div>
+    </main>
+</div>
+
+<!-- Ask Modal -->
+<div class="modal-overlay" id="askModal">
+    <div class="modal-box">
+        <h2><span class="material-icons" style="vertical-align:middle;margin-right:8px;color:#4338ca;">help_outline</span>Ask the Community</h2>
+        <div class="modal-field">
+            <label>Question Title *</label>
+            <input id="qTitle" type="text" placeholder="e.g. Why are my wheat leaves turning yellow?">
+        </div>
+        <div class="modal-field">
+            <label>Category</label>
+            <select id="qCat">
+                <option>Crop Disease</option>
+                <option>Irrigation</option>
+                <option>Fertilizers</option>
+                <option>Market Prices</option>
+                <option>Govt Schemes</option>
+            </select>
+        </div>
+        <div class="modal-field">
+            <label>Describe the problem *</label>
+            <textarea id="qBody" placeholder="Provide details — crop type, location, symptoms, images if possible..."></textarea>
+        </div>
+        <div class="modal-field">
+            <label>Your Name</label>
+            <input id="qName" type="text" placeholder="e.g. Ramesh from Gujarat">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="cancelAsk">Cancel</button>
+            <button class="btn-post" id="postQuestion">Post Question</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/i18n.js"></script>
+<script>
+/* ── Sample Posts Data ── */
+const POSTS = [
+    {
+        id: 1,
+        title: "Yellow rust spots appearing on my wheat crop — what should I do?",
+        body: "I have 5 acres of wheat in Haryana. I noticed yellow-orange rust spots on the leaves 3 days ago. Temperature is around 18°C and there's been morning dew. Is this a fungal disease? What spray should I use?",
+        author: "Ramesh Singh", role: "farmer", avatar: "RS", avatarColor: "#16a34a",
+        category: "Crop Disease",
+        tags: ["wheat", "rust", "fungicide", "Haryana"],
+        time: "2 hours ago",
+        votes: 24, answers: 3, views: 187,
+        status: "answered",
+        answers: [
+            { author: "Dr. Sharma", role: "expert", avatar: "DS", avatarColor: "#4338ca", text: "This looks like Yellow Rust (Puccinia striiformis). Apply Propiconazole 25 EC @ 500ml/ha immediately. Ensure good air circulation. Follow up with Tebuconazole if severity exceeds 30% leaf area.", best: true, time: "1 hour ago" },
+            { author: "Suresh Kumar", role: "farmer", avatar: "SK", avatarColor: "#f59e0b", text: "I faced the same issue last year. Mancozeb fungicide worked for me at early stages.", best: false, time: "45 min ago" },
+        ]
+    },
+    {
+        id: 2,
+        title: "Best time to apply DAP fertilizer for cotton in Gujarat?",
+        body: "Planning to sow cotton in May. When should I apply DAP — at sowing time or 30 days later? My soil is black cotton soil with medium pH.",
+        author: "Amreli Farmer", role: "farmer", avatar: "AF", avatarColor: "#7c3aed",
+        category: "Fertilizers",
+        tags: ["cotton", "DAP", "Gujarat", "soil"],
+        time: "5 hours ago",
+        votes: 12, answers: 2, views: 94,
+        status: "answered",
+        answers: [
+            { author: "Amrita Patel", role: "expert", avatar: "AP", avatarColor: "#d97706", text: "For black cotton soil, apply half the dose of DAP at sowing and the remaining 30–35 DAS (Days After Sowing). Black soil retains nutrients well, so splitting is beneficial.", best: true, time: "3 hours ago" },
+        ]
+    },
+    {
+        id: 3,
+        title: "PM-Kisan installment not received — account is linked but no transfer",
+        body: "My PM-Kisan e-KYC is complete and bank account is seeded with Aadhaar, but the 2000 rupee installment for April–July has not come. How to raise a complaint?",
+        author: "Jagdish Patel", role: "farmer", avatar: "JP", avatarColor: "#dc2626",
+        category: "Govt Schemes",
+        tags: ["PM-Kisan", "e-KYC", "installment", "complaint"],
+        time: "Yesterday",
+        votes: 31, answers: 1, views: 312,
+        status: "answered",
+        answers: [
+            { author: "Dr. Sharma", role: "expert", avatar: "DS", avatarColor: "#4338ca", text: "Visit pmkisan.gov.in > Farmers Corner > Know Your Status. If it shows 'FTO Generated' but no credit, visit your local Agriculture office with Aadhaar + bank passbook. You can also call the PM-Kisan helpline: 155261.", best: true, time: "18 hours ago" },
+        ]
+    },
+    {
+        id: 4,
+        title: "Drip irrigation vs flood irrigation for sugarcane — water usage comparison?",
+        body: "I'm planning to switch from flood to drip for my 8-acre sugarcane plot. What is the approximate water saving percentage and ROI on drip installation in Maharashtra?",
+        author: "Kolhapur Farmer", role: "farmer", avatar: "KF", avatarColor: "#0ea5e9",
+        category: "Irrigation",
+        tags: ["sugarcane", "drip", "water saving", "Maharashtra"],
+        time: "2 days ago",
+        votes: 45, answers: 0, views: 228,
+        status: "unanswered",
+        answers: []
+    },
+];
+
+/* ── Render posts ── */
+function renderPosts(posts) {
+    const feed = document.getElementById('postFeed');
+    feed.innerHTML = '';
+    if (!posts.length) {
+        feed.innerHTML = '<p style="color:#6b7280;text-align:center;padding:40px;">No posts found in this category.</p>';
+        return;
+    }
+    posts.forEach(post => feed.appendChild(createPostCard(post)));
+}
+
+function createPostCard(post) {
+    const card = document.createElement('div');
+    card.className = `post-card ${post.answers.length > 0 ? (post.answers.some(a=>a.best) ? 'answered' : 'answered') : 'unanswered'}`;
+    card.dataset.cat = post.category;
+
+    card.innerHTML = `
+        <div class="post-meta">
+            <div class="avatar" style="background:${post.avatarColor}">${post.avatar}</div>
+            <div>
+                <div class="post-author">${post.author}</div>
+                <div class="post-role">${post.role === 'expert' ? '<span class="post-badge badge-expert">Expert</span>' : '<span class="post-badge badge-farmer">Farmer</span>'}</div>
+            </div>
+            <span class="post-time">${post.time}</span>
+        </div>
+        <div class="post-title">${post.title}</div>
+        <div class="post-body">${post.body}</div>
+        <div class="post-tags">${post.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>
+        <div class="post-footer">
+            <button class="action-btn vote-btn" data-id="${post.id}">
+                <span class="material-icons">thumb_up</span> <span class="vote-count">${post.votes}</span>
+            </button>
+            <button class="action-btn toggle-ans" data-id="${post.id}">
+                <span class="material-icons">chat_bubble_outline</span> ${post.answers.length} Answers
+            </button>
+            <span style="font-size:0.75rem;color:#9ca3af;margin-left:auto;">
+                <span class="material-icons" style="font-size:13px;vertical-align:middle;">visibility</span> ${post.views} views
+            </span>
+            ${post.status === 'unanswered' ? '<span style="font-size:0.72rem;color:#f59e0b;font-weight:600;"><span class="material-icons" style="font-size:13px;vertical-align:middle;">help_outline</span> Awaiting Answer</span>' : ''}
+        </div>
+        <div class="answers-section" id="ans-${post.id}">
+            ${post.answers.map(a => `
+                <div class="answer-card ${a.best ? 'best' : ''}">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                        <div class="avatar" style="background:${a.avatarColor};width:28px;height:28px;font-size:0.72rem;">${a.avatar}</div>
+                        <strong style="font-size:0.82rem;color:#374151;">${a.author}</strong>
+                        ${a.role === 'expert' ? '<span class="post-badge badge-expert">Expert</span>' : ''}
+                        ${a.best ? '<span class="best-badge"><span class="material-icons" style="font-size:13px;vertical-align:middle;">verified</span> Best Answer</span>' : ''}
+                        <span style="font-size:0.72rem;color:#9ca3af;margin-left:auto;">${a.time}</span>
+                    </div>
+                    <p style="margin:0;font-size:0.83rem;color:#374151;line-height:1.6;">${a.text}</p>
+                </div>
+            `).join('')}
+            <div style="margin-top:10px;">
+                <input type="text" placeholder="Write your answer..." id="reply-${post.id}"
+                    style="width:100%;padding:9px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.84rem;outline:none;box-sizing:border-box;">
+                <button onclick="submitReply(${post.id})"
+                    style="margin-top:8px;background:#4338ca;color:white;border:none;padding:7px 18px;border-radius:16px;font-family:'Poppins',sans-serif;cursor:pointer;font-size:0.82rem;">
+                    Post Reply
+                </button>
+            </div>
+        </div>
+    `;
+    return card;
+}
+
+/* ── Interactions ── */
+document.addEventListener('click', e => {
+    // Toggle answers
+    if (e.target.closest('.toggle-ans')) {
+        const id = e.target.closest('.toggle-ans').dataset.id;
+        document.getElementById(`ans-${id}`).classList.toggle('open');
+    }
+    // Vote
+    if (e.target.closest('.vote-btn')) {
+        const btn = e.target.closest('.vote-btn');
+        const countEl = btn.querySelector('.vote-count');
+        if (!btn.classList.contains('voted')) {
+            btn.classList.add('voted');
+            countEl.textContent = parseInt(countEl.textContent) + 1;
+        }
+    }
+    // Category filter
+    if (e.target.closest('.category-item')) {
+        document.querySelectorAll('.category-item').forEach(c => c.classList.remove('active'));
+        const item = e.target.closest('.category-item');
+        item.classList.add('active');
+        const cat = item.dataset.cat;
+        document.getElementById('feedTitle').textContent = cat === 'all' ? 'All Discussions' : cat;
+        renderPosts(cat === 'all' ? POSTS : POSTS.filter(p => p.category === cat));
+    }
+});
+
+/* ── Submit reply ── */
+window.submitReply = (id) => {
+    const inp = document.getElementById(`reply-${id}`);
+    if (!inp.value.trim()) return;
+    const post = POSTS.find(p => p.id === id);
+    const user = JSON.parse(localStorage.getItem('kisanUser') || '{"name":"Anonymous"}');
+    const initials = user.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    post.answers.push({ author: user.name, role: 'farmer', avatar: initials, avatarColor: '#16a34a', text: inp.value.trim(), best: false, time: 'Just now' });
+    inp.value = '';
+    renderPosts(POSTS);
+    // Re-open the answers
+    setTimeout(() => document.getElementById(`ans-${id}`).classList.add('open'), 50);
+};
+
+/* ── Ask Modal ── */
+document.getElementById('askBtn').addEventListener('click', () => {
+    document.getElementById('askModal').classList.add('open');
+    const user = JSON.parse(localStorage.getItem('kisanUser') || '{}');
+    if (user.name) document.getElementById('qName').value = user.name;
+});
+document.getElementById('cancelAsk').addEventListener('click', () => document.getElementById('askModal').classList.remove('open'));
+document.getElementById('postQuestion').addEventListener('click', () => {
+    const title = document.getElementById('qTitle').value.trim();
+    const body  = document.getElementById('qBody').value.trim();
+    const name  = document.getElementById('qName').value.trim() || 'Anonymous Farmer';
+    const cat   = document.getElementById('qCat').value;
+    if (!title || !body) { alert('Please fill in the title and description.'); return; }
+    const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    POSTS.unshift({
+        id: Date.now(), title, body, author: name, role: 'farmer',
+        avatar: initials, avatarColor: '#6d28d9',
+        category: cat, tags: [cat.toLowerCase()], time: 'Just now',
+        votes: 0, views: 1, status: 'unanswered', answers: []
+    });
+    document.getElementById('askModal').classList.remove('open');
+    renderPosts(POSTS);
+    document.getElementById('statPosts').textContent = (parseInt(document.getElementById('statPosts').textContent.replace(',','')) + 1).toLocaleString();
+});
+
+/* ── Initial render ── */
+renderPosts(POSTS);
+</script>
+</body>
+</html>

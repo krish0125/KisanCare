@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense & Profit Tracker | KisanCare</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .expenses-container { max-width: 1200px; margin: 40px auto; padding: 20px; display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
+        .panel { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .section-title { font-size: 1.2rem; border-bottom: 2px solid var(--primary-green); padding-bottom: 5px; margin-bottom: 15px; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Cycles List */
+        .cycle-list { display: flex; flex-direction: column; gap: 10px; max-height: 500px; overflow-y: auto; }
+        .cycle-card { padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
+        .cycle-card:hover { border-color: #ccc; }
+        .cycle-card.active { border-left-color: var(--primary-green); background: #f1f8e9; border-color: #c5e1a5; }
+        .cycle-card h4 { margin: 0 0 5px 0; color: #333; }
+        .cycle-card p { margin: 0; font-size: 0.85rem; color: #666; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-weight: 500; color: #555; }
+        .form-group input, .form-group select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+        
+        /* Main View */
+        .main-view { display: flex; flex-direction: column; gap: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .stat-card { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; margin: 10px 0 0 0; }
+        .stat-value.profit { color: #2e7d32; }
+        .stat-value.loss { color: #d32f2f; }
+        
+        /* Expense Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f5f5f5; color: #555; font-weight: 600; }
+        .btn-delete { color: #d32f2f; cursor: pointer; border: none; background: none; font-size: 1rem; }
+        
+        /* Action buttons */
+        .actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-outline { border: 1px solid var(--primary-green); color: var(--primary-green); background: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-outline:hover { background: var(--primary-green); color: white; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 25px; border-radius: 10px; width: 400px; max-width: 90%; }
+        
+        @media (max-width: 900px) {
+            .expenses-container { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">eco</span> KisanCare</div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="crop.html">Crop Advisory</a>
+            <a href="weather.html">Weather Alerts</a>
+            <a href="market.html">Market Prices</a>
+            <a href="disease.html">Disease Detection</a>
+            <a href="crop-care.html">Crop Care</a>
+            <a href="fertilizer.html">Fertilizers</a>
+            <a href="schemes.html">Gov Schemes</a>
+            <a href="profile.html">‍<span class="material-icons" style="vertical-align: middle; font-size: inherit;">grass</span> Profile</a>
+            <a href="history.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">history</span> History</a>
+            <a href="fertilizer-calc.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">calculate</span> Fert. Calc.</a>
+            <a href="expenses.html" class="active"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">payments</span> Expenses</a>
+        </div>
+    </nav>
+
+    <div class="expenses-container">
+        <!-- Sidebar: Cycles -->
+        <div class="panel">
+            <div class="section-title">
+                Crop Cycles
+                <button class="btn" style="padding:5px 10px; font-size:0.9rem;" onclick="openNewCycleModal()">+ New</button>
+            </div>
+            <div class="cycle-list" id="cycleList">
+                <p style="text-align:center; color:#888;">Loading cycles...</p>
+            </div>
+        </div>
+        
+        <!-- Main Panel -->
+        <div class="panel main-view" id="mainView" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h2 id="viewCycleName" style="margin-top:0;">Cycle Name</h2>
+                    <p id="viewCycleMeta" style="color:#666;">Crop | Area | Start Date</p>
+                </div>
+                <button class="btn-outline" onclick="openEditMetaModal()">Edit Yield/Price</button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div>Total Investment</div>
+                    <div class="stat-value" id="statInvest">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Est. Revenue</div>
+                    <div class="stat-value" id="statRev">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Profit / Loss</div>
+                    <div class="stat-value" id="statProfit">₹0</div>
+                </div>
+            </div>
+            
+            <div class="section-title" style="margin-top:20px;">
+                Expense Items
+                <button class="btn" style="padding:5px 10px; font-size:0.9rem;" onclick="openAddExpenseModal()">+ Add Expense</button>
+            </div>
+            
+            <div style="overflow-x:auto;">
+                <table id="expenseTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount (₹)</th>
+                            <th>Note</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenseTbody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="actions">
+                <button class="btn-outline" onclick="downloadReport('pdf')"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">description</span> Download PDF</button>
+                <button class="btn-outline" onclick="downloadReport('xlsx')"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">bar_chart</span> Download Excel</button>
+            </div>
+        </div>
+        
+        <div class="panel" id="emptyView" style="display:flex; align-items:center; justify-content:center; flex-direction:column; color:#888;">
+            <h2 style="color:#ccc;">Select or create a crop cycle</h2>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- New Cycle Modal -->
+    <div class="modal" id="newCycleModal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;">Create Crop Cycle</h3>
+            <form id="newCycleForm">
+                <div class="form-group">
+                    <label>Cycle Name</label>
+                    <input type="text" id="ncName" placeholder="e.g. Wheat Rabi 2026" required>
+                </div>
+                <div class="form-group">
+                    <label>Crop</label>
+                    <input type="text" id="ncCrop" required>
+                </div>
+                <div class="form-group">
+                    <label>Land Area (Acres)</label>
+                    <input type="number" step="0.1" id="ncArea" required>
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" id="ncDate" required>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="submit" class="btn" style="flex:1;">Create</button>
+                    <button type="button" class="btn-outline" style="flex:1;" onclick="closeModal('newCycleModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal" id="addExpenseModal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;">Add Expense</h3>
+            <form id="addExpenseForm">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="aeCategory" required>
+                        <option value="seeds">Seeds</option>
+                        <option value="fertilizer">Fertilizer</option>
+                        <option value="labour">Labour</option>
+                        <option value="machinery">Machinery</option>
+                        <option value="irrigation">Irrigation</option>
+                        <option value="transport">Transport</option>
+                        <option value="miscellaneous">Miscellaneous</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" step="1" id="aeAmount" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="aeDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Note</label>
+                    <input type="text" id="aeNote" placeholder="Optional details">
+                </div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="submit" class="btn" style="flex:1;">Add</button>
+                    <button type="button" class="btn-outline" style="flex:1;" onclick="closeModal('addExpenseModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Meta Modal -->
+    <div class="modal" id="editMetaModal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;">Update Yield & Price</h3>
+            <p style="font-size:0.85rem; color:#666;">Enter expected values if crop is still growing, or actual values after harvest.</p>
+            <form id="editMetaForm">
+                <div class="form-group">
+                    <label>Expected Sale Price (₹/Quintal)</label>
+                    <input type="number" step="0.1" id="emExpPrice">
+                </div>
+                <div class="form-group">
+                    <label>Actual Sale Price (₹/Quintal)</label>
+                    <input type="number" step="0.1" id="emActPrice">
+                </div>
+                <div class="form-group">
+                    <label>Actual Yield (Quintals)</label>
+                    <input type="number" step="0.1" id="emYield">
+                </div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="submit" class="btn" style="flex:1;">Save</button>
+                    <button type="button" class="btn-outline" style="flex:1;" onclick="closeModal('editMetaModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/expenses.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/i18n.js"></script>
+</body>
+</html>

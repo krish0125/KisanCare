@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification History - KisanCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/chat.css">
+    <style>
+        :root {
+            --bg: #f8fbfa; --text: #2c3e50; --primary: #2ecc71; --dark-green: #27ae60;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+        
+        header {
+            background: linear-gradient(135deg, #1a7a45, #27ae60);
+            color: #fff; padding: 1rem 0; position: sticky; top: 0; z-index: 1000;
+        }
+        nav { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .nav-links { list-style: none; display: flex; gap: 24px; }
+        .nav-links a { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500; padding: 6px 12px; border-radius: 8px; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #fff; background: rgba(255,255,255,0.15); }
+        
+        .container { max-width: 800px; margin: 40px auto; padding: 20px; }
+        .page-title { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; font-size: 2rem; color: #1a7a45; }
+        
+        .notification-list { display: flex; flex-direction: column; gap: 15px; }
+        .notification-card {
+            background: #fff; padding: 20px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid #2ecc71;
+        }
+        .notification-card.error { border-left-color: #e74c3c; }
+        .notification-card.warning { border-left-color: #f39c12; }
+        
+        .notif-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .notif-title { font-weight: 600; font-size: 1.1rem; }
+        .notif-date { font-size: 0.85rem; color: #7f8c8d; }
+        .notif-body { font-size: 0.95rem; color: #555; white-space: pre-wrap; line-height: 1.5; }
+        
+        .empty-state { text-align: center; padding: 40px; color: #7f8c8d; }
+        .empty-state .material-icons { font-size: 4rem; color: #bdc3c7; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo"><span class="material-icons">eco</span> KisanCare</div>
+            <ul class="nav-links">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="notifications.html" class="active">Notifications</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title"><span class="material-icons">notifications_active</span> Notification History</h1>
+        
+        <div class="notification-list" id="notificationList">
+            <div class="empty-state">
+                <span class="material-icons">hourglass_empty</span>
+                <p>Loading notifications...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/notifications.js"></script>
+</body>
+</html>

@@ -45,13 +45,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user && loginLink) {
             // Cut "Demo" button -> Paste "Settings" Option
             // Instead of showing name, show Settings trigger
-            loginLink.innerHTML = `⚙️ Settings`;
+            loginLink.innerHTML = `<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> Settings`;
             loginLink.href = '#';
             loginLink.id = 'navSettingsBtn'; // Add ID for the listener
             loginLink.setAttribute('data-lang', 'settings'); // FIX: Update data-lang so translation works correctly
 
             // Remove any potential href navigation behavior manually if needed
             loginLink.addEventListener('click', (e) => e.preventDefault());
+        }
+        // 4. Inject Notifications link for logged in users
+        const navLinksList = document.querySelector('.nav-links');
+        const token = localStorage.getItem('kisanToken'); // JWT token
+        if (token && navLinksList && !document.querySelector('a[href="notifications.html"]')) {
+            const notifLi = document.createElement('li');
+            const isActive = currentPage === 'notifications.html' ? 'class="active"' : '';
+            notifLi.innerHTML = `<a href="notifications.html" ${isActive}><span class="material-icons">notifications</span> Notifications</a>`;
+            
+            // Try to insert it before the login/settings link or at the end
+            const loginLi = loginLink ? loginLink.parentElement : null;
+            if (loginLi) {
+                navLinksList.insertBefore(notifLi, loginLi);
+            } else {
+                navLinksList.appendChild(notifLi);
+            }
         }
     }
 
@@ -123,18 +139,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="setting-item" style="flex-direction: column; align-items: start;">
                         <span class="setting-label" style="margin-bottom: 10px;">Language / भाषा</span>
                         <select id="languageSelect" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                            <option value="en">🇬🇧 English</option>
-                            <option value="hi">🇮🇳 Hindi (हिंदी)</option>
-                            <option value="gu">🇮🇳 Gujarati (ગુજરાતી)</option>
-                            <option value="mr">🇮🇳 Marathi (मराठी)</option>
-                            <option value="pa">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
-                            <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
-                            <option value="te">🇮🇳 Telugu (తెలుగు)</option>
-                            <option value="bn">🇮🇳 Bengali (বাংলা)</option>
-                            <option value="kn">🇮🇳 Kannada (ಕನ್ನಡ)</option>
-                            <option value="ml">🇮🇳 Malayalam (മലയാളം)</option>
-                            <option value="or">🇮🇳 Odia (ଓଡ଼ିଆ)</option>
-                            <option value="ur">🇮🇳 Urdu (اردو)</option>
+                            <option value="en"> English</option>
+                            <option value="hi"> Hindi (हिंदी)</option>
+                            <option value="gu"> Gujarati (ગુજરાતી)</option>
+                            <option value="mr"> Marathi (मराठी)</option>
+                            <option value="pa"> Punjabi (ਪੰਜਾਬੀ)</option>
+                            <option value="ta"> Tamil (தமிழ்)</option>
+                            <option value="te"> Telugu (తెలుగు)</option>
+                            <option value="bn"> Bengali (বাংলা)</option>
+                            <option value="kn"> Kannada (ಕನ್ನಡ)</option>
+                            <option value="ml"> Malayalam (മലയാളം)</option>
+                            <option value="or"> Odia (ଓଡ଼ିଆ)</option>
+                            <option value="ur"> Urdu (اردو)</option>
                         </select>
                     </div>
 
@@ -191,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newLogoutBtn.addEventListener('click', () => {
                 if (confirm("Are you sure you want to logout?")) {
                     localStorage.removeItem('kisanUser');
+                    localStorage.removeItem('kisanToken'); // BUG FIX: also clear JWT token
                     window.location.href = 'index.html';
                 }
             });
@@ -201,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "Crop Advisory",
                 weather_alerts: "Weather Alerts",
                 market_prices: "Market Prices",
-                settings: "⚙️ Settings",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> Settings",
                 login: "Login",
                 logout: "Logout",
                 welcome: "Welcome to KisanCare",
@@ -224,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "Admin",
                 welcome_back: "Welcome Back",
                 feedback_nav: "Feedback",
-                feedback_title: "📩 Send Us Feedback",
+                feedback_title: " Send Us Feedback",
                 feedback_desc: "We value your input. Tell us how to improve.",
                 send_feedback_btn: "Send Feedback",
                 email_label: "Email",
@@ -274,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "फसल सलाह",
                 weather_alerts: "मौसम अलर्ट",
                 market_prices: "बाजार भाव",
-                settings: "⚙️ सेटिंग्स",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> सेटिंग्स",
                 login: "लॉग इन",
                 logout: "लॉग आउट",
                 welcome: "किसानकेयर में आपका स्वागत है",
@@ -297,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "एडमिन",
                 welcome_back: "वापसी पर स्वागत है",
                 feedback_nav: "प्रतिक्रिया",
-                feedback_title: "📩 सुझाव भेजें",
+                feedback_title: " सुझाव भेजें",
                 feedback_desc: "हम आपकी राय का सम्मान करते हैं। हमें बताएं कि सुधार कैसे करें।",
                 send_feedback_btn: "सुझाव भेजें",
                 email_label: "ईमेल",
@@ -347,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "પાક સલાહ",
                 weather_alerts: "હવામાન ચેતવણી",
                 market_prices: "બજાર ભાવ",
-                settings: "⚙️ સેટિંગ્સ",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> સેટિંગ્સ",
                 login: "લૉગ ઇન",
                 logout: "લોગ આઉટ",
                 welcome: "કિસાનકેરમાં આપનું સ્વાગત છે",
@@ -370,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "એડમિન",
                 welcome_back: "સ્વાગત છે",
                 feedback_nav: "પ્રતિસાદ",
-                feedback_title: "📩 પ્રતિસાદ મોકલો",
+                feedback_title: " પ્રતિસાદ મોકલો",
                 feedback_desc: "અમને સુધારવા માટે જણાવો.",
                 send_feedback_btn: "મોકલો",
                 email_label: "ઇમેઇલ",
@@ -420,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "पीक सल्ला",
                 weather_alerts: "हवामान अलर्ट",
                 market_prices: "बाजार भाव",
-                settings: "⚙️ सेटिंग्ज",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> सेटिंग्ज",
                 login: "लॉग इन करा",
                 logout: "लॉग आउट",
                 welcome: "किसानकेअर मध्ये आपले स्वागत आहे",
@@ -443,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "प्रशासन",
                 welcome_back: "पुन्हा स्वागत आहे",
                 feedback_nav: "प्रतिक्रिया",
-                feedback_title: "📩 प्रतिक्रिया पाठवा",
+                feedback_title: " प्रतिक्रिया पाठवा",
                 feedback_desc: "आम्ही तुमच्या मताची कदर करतो.",
                 send_feedback_btn: "प्रतिक्रिया पाठवा",
                 email_label: "ईमेल",
@@ -493,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "பயிர் ஆலோசனை",
                 weather_alerts: "வானிலை எச்சரிக்கைகள்",
                 market_prices: "சந்தை விலைகள்",
-                settings: "⚙️ அமைப்புகள்",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> அமைப்புகள்",
                 login: "உள்நுழைய",
                 logout: "வெளியேறு",
                 welcome: "கிசான்கேருக்கு வரவேற்கிறோம்",
@@ -516,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "நிர்வாகம்",
                 welcome_back: "மீண்டும் வருக",
                 feedback_nav: "கருத்து",
-                feedback_title: "📩 கருத்து அனுப்பவும்",
+                feedback_title: " கருத்து அனுப்பவும்",
                 feedback_desc: "உங்கள் கருத்தை மதிக்கிறோம்.",
                 send_feedback_btn: "அனுப்பவும்",
                 email_label: "மின்னஞ்சல்",
@@ -566,7 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "ਫ਼ਸਲ ਸਲਾਹ",
                 weather_alerts: "ਮੌਸਮ ਚੇਤਾਵਨੀਆਂ",
                 market_prices: "ਬਾਜ਼ਾਰ ਭਾਅ",
-                settings: "⚙️ ਸੈਟਿੰਗਜ਼",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> ਸੈਟਿੰਗਜ਼",
                 login: "ਲੌਗ ਇਨ",
                 logout: "ਲੌਗ ਆਊਟ",
                 welcome: "ਕਿਸਾਨਕੇਅਰ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ",
@@ -589,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "ਐਡਮਿਨ",
                 welcome_back: "ਵਾਪਸ ਆਉਣ 'ਤੇ ਸੁਆਗਤ ਹੈ",
                 feedback_nav: "ਫ਼ੀਡਬੈਕ",
-                feedback_title: "📩 ਫ਼ੀਡਬੈਕ ਭੇਜੋ",
+                feedback_title: " ਫ਼ੀਡਬੈਕ ਭੇਜੋ",
                 feedback_desc: "ਅਸੀਂ ਤੁਹਾਡੀ ਰਾਏ ਦੀ ਕਦਰ ਕਰਦੇ ਹਾਂ।",
                 send_feedback_btn: "ਭੇਜੋ",
                 email_label: "ਈਮੇਲ",
@@ -636,7 +653,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "ফসল পরামর্শ",
                 weather_alerts: "আবহাওয়া সতর্কতা",
                 market_prices: "বাজার মূল্য",
-                settings: "⚙️ সেটিংস",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> সেটিংস",
                 login: "লগ ইন",
                 logout: "লগ আউট",
                 welcome: "কিসানকেয়ারে আপনাকে স্বাগতম",
@@ -659,7 +676,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "অ্যাডমিন",
                 welcome_back: "ফিরে আসায় স্বাগতম",
                 feedback_nav: "মতামত",
-                feedback_title: "📩 মতামত পাঠান",
+                feedback_title: " মতামত পাঠান",
                 feedback_desc: "আমরা আপনার মতামত মূল্য দিই।",
                 send_feedback_btn: "পাঠান",
                 email_label: "ইমেইল",
@@ -706,7 +723,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "ಬೆಳೆ ಸಲಹೆ",
                 weather_alerts: "ಹವಾಮಾನ ಎಚ್ಚರಿಕೆಗಳು",
                 market_prices: "ಮಾರುಕಟ್ಟೆ ಬೆಲೆಗಳು",
-                settings: "⚙️ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
                 login: "ಲಾಗಿನ್",
                 logout: "ಲಾಗ್ ಔಟ್",
                 welcome: "ಕಿಸಾನ್‌ಕೇರ್‌ಗೆ ಸ್ವಾಗತ",
@@ -729,7 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "ಅಡ್ಮಿನ್",
                 welcome_back: "ಮರಳಿ ಸ್ವಾಗತ",
                 feedback_nav: "ಅಭಿಪ್ರಾಯ",
-                feedback_title: "📩 ಅಭಿಪ್ರಾಯ ಕಳುಹಿಸಿ",
+                feedback_title: " ಅಭಿಪ್ರಾಯ ಕಳುಹಿಸಿ",
                 feedback_desc: "ನಿಮ್ಮ ಅಭಿಪ್ರಾಯ ನಮಗೆ ಮುಖ್ಯ.",
                 send_feedback_btn: "ಕಳುಹಿಸಿ",
                 email_label: "ಇಮೇಲ್",
@@ -776,7 +793,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "വിള ഉപദേശം",
                 weather_alerts: "കാലാവസ്ഥ മുന്നറിയിപ്പുകൾ",
                 market_prices: "വിപണി വിലകൾ",
-                settings: "⚙️ ക്രമീകരണങ്ങൾ",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> ക്രമീകരണങ്ങൾ",
                 login: "ലോഗിൻ",
                 logout: "ലോഗ് ഔട്ട്",
                 welcome: "കിസാൻകെയറിലേക്ക് സ്വാഗതം",
@@ -799,7 +816,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "അഡ്മിൻ",
                 welcome_back: "തിരിച്ചു സ്വാഗതം",
                 feedback_nav: "ഫീഡ്‌ബാക്ക്",
-                feedback_title: "📩 ഫീഡ്‌ബാക്ക് അയക്കൂ",
+                feedback_title: " ഫീഡ്‌ബാക്ക് അയക്കൂ",
                 feedback_desc: "നിങ്ങളുടെ അഭിപ്രായം ഞങ്ങൾക്ക് പ്രധാനമാണ്.",
                 send_feedback_btn: "അയക്കൂ",
                 email_label: "ഇമെയിൽ",
@@ -846,7 +863,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "ଫସଲ ପରାମର୍ଶ",
                 weather_alerts: "ପାଣିପାଗ ସତର୍କତା",
                 market_prices: "ବଜାର ମୂଲ୍ୟ",
-                settings: "⚙️ ସେଟିଂ",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> ସେଟିଂ",
                 login: "ଲଗ ଇନ",
                 logout: "ଲଗ ଆଉଟ",
                 welcome: "କିସାନକେୟାରରେ ଆପଣଙ୍କୁ ସ୍ୱାଗତ",
@@ -869,7 +886,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "ଆଡ୍ମିନ",
                 welcome_back: "ପୁଣି ସ୍ୱାଗତ",
                 feedback_nav: "ମତାମତ",
-                feedback_title: "📩 ମତାମତ ପଠାନ୍ତୁ",
+                feedback_title: " ମତାମତ ପଠାନ୍ତୁ",
                 feedback_desc: "ଆମ ଉନ୍ନତି ପାଇଁ ବୁଝାଇ ଦିଅନ୍ତୁ।",
                 send_feedback_btn: "ପଠାନ୍ତୁ",
                 email_label: "ଇ-ମେଲ",
@@ -916,7 +933,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "فصل مشورہ",
                 weather_alerts: "موسم انتباہات",
                 market_prices: "بازار قیمتیں",
-                settings: "⚙️ ترتیبات",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> ترتیبات",
                 login: "لاگ ان",
                 logout: "لاگ آؤٹ",
                 welcome: "کسان کیئر میں خوش آمدید",
@@ -939,7 +956,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "ایڈمن",
                 welcome_back: "واپس خوش آمدید",
                 feedback_nav: "رائے",
-                feedback_title: "📩 رائے بھیجیں",
+                feedback_title: " رائے بھیجیں",
                 feedback_desc: "ہم آپ کی رائے کی قدر کرتے ہیں۔",
                 send_feedback_btn: "بھیجیں",
                 email_label: "ای میل",
@@ -986,7 +1003,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 crop_advisory: "పంట సలహా",
                 weather_alerts: "వాతావరణ హెచ్చరికలు",
                 market_prices: "మార్కెట్ ధరలు",
-                settings: "⚙️ సెట్టింగ్‌లు",
+                settings: "<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>settings</span> సెట్టింగ్‌లు",
                 login: "లాగిన్",
                 logout: "లాగ్ అవుట్",
                 welcome: "కిసాన్‌కేర్‌కు స్వాగతం",
@@ -1009,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 admin_panel: "అడ్మిన్",
                 welcome_back: "స్వాగతం",
                 feedback_nav: "అభిప్రాయం",
-                feedback_title: "📩 అభిప్రాయం పంపండి",
+                feedback_title: " అభిప్రాయం పంపండి",
                 feedback_desc: "మీ అభిప్రాయం మాకు ముఖ్యం.",
                 send_feedback_btn: "పంపండి",
                 email_label: "ఇమెయిల్",
@@ -1059,33 +1076,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const languageSelect = document.getElementById('languageSelect');
 
         const chatWelcomeMessages = {
-            en: "Hello! I am your Kisan AI assistant. Ask me about crops, fertilizers, or weather! 🌾",
-            hi: "नमस्ते! मैं आपका किसान AI सहायक हूँ। मुझसे फसल, खाद या मौसम के बारे में पूछें! 🌾",
-            gu: "નમસ્તે! હું તમારો કિસાન AI સહાયક છું. ખેડૂત, ખાતર અથવા હવામાન વિશે પૂછો! 🌾",
-            mr: "नमस्कार! मी तुमचा किसान AI सहाय्यक आहे. पीक, खत किंवा हवामानाबद्दल विचारा! 🌾",
-            pa: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡਾ ਕਿਸਾਨ AI ਸਹਾਇਕ ਹਾਂ। ਫ਼ਸਲ, ਖਾਦ ਜਾਂ ਮੌਸਮ ਬਾਰੇ ਪੁੱਛੋ! 🌾",
-            ta: "வணக்கம்! நான் உங்கள் கிசான் AI உதவியாளர். பயிர், உரம் அல்லது வானிலை பற்றி கேளுங்கள்! 🌾",
-            te: "నమస్కారం! నేను మీ కిసాన్ AI సహాయకుడిని. పంట, ఎరువు లేదా వాతావరణం గురించి అడగండి! 🌾",
-            bn: "নমস্কার! আমি আপনার কিসান AI সহকারী। ফসল, সার বা আবহাওয়া সম্পর্কে জিজ্ঞেস করুন! 🌾",
-            kn: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಕಿಸಾನ್ AI ಸಹಾಯಕ. ಬೆಳೆ, ಗೊಬ್ಬರ ಅಥವಾ ಹವಾಮಾನ ಬಗ್ಗೆ ಕೇಳಿ! 🌾",
-            ml: "നമസ്കാരം! ഞാൻ നിങ്ങളുടെ കിസാൻ AI സഹായകൻ. വിള, വളം അല്ലെങ്കിൽ കാലാവസ്ഥ ഒക്കെ ചോദിക്കൂ! 🌾",
-            or: "ନମସ୍କାର! ମୁଁ ଆପଣଙ୍କ କିସାନ AI ସହାୟକ। ଫସଲ, ସାର ବା ପାଣିପାଗ ବିଷୟରେ ପଚାରନ୍ତୁ! 🌾",
-            ur: "آداب! میں آپ کا کسان AI مددگار ہوں۔ فصل، کھاد یا موسم کے بارے میں پوچھیں! 🌾"
+            en: "Hello! I am your Kisan AI assistant. Ask me about crops, fertilizers, or weather! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            hi: "नमस्ते! मैं आपका किसान AI सहायक हूँ। मुझसे फसल, खाद या मौसम के बारे में पूछें! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            gu: "નમસ્તે! હું તમારો કિસાન AI સહાયક છું. ખેડૂત, ખાતર અથવા હવામાન વિશે પૂછો! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            mr: "नमस्कार! मी तुमचा किसान AI सहाय्यक आहे. पीक, खत किंवा हवामानाबद्दल विचारा! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            pa: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡਾ ਕਿਸਾਨ AI ਸਹਾਇਕ ਹਾਂ। ਫ਼ਸਲ, ਖਾਦ ਜਾਂ ਮੌਸਮ ਬਾਰੇ ਪੁੱਛੋ! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            ta: "வணக்கம்! நான் உங்கள் கிசான் AI உதவியாளர். பயிர், உரம் அல்லது வானிலை பற்றி கேளுங்கள்! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            te: "నమస్కారం! నేను మీ కిసాన్ AI సహాయకుడిని. పంట, ఎరువు లేదా వాతావరణం గురించి అడగండి! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            bn: "নমস্কার! আমি আপনার কিসান AI সহকারী। ফসল, সার বা আবহাওয়া সম্পর্কে জিজ্ঞেস করুন! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            kn: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಕಿಸಾನ್ AI ಸಹಾಯಕ. ಬೆಳೆ, ಗೊಬ್ಬರ ಅಥವಾ ಹವಾಮಾನ ಬಗ್ಗೆ ಕೇಳಿ! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            ml: "നമസ്കാരം! ഞാൻ നിങ്ങളുടെ കിസാൻ AI സഹായകൻ. വിള, വളം അല്ലെങ്കിൽ കാലാവസ്ഥ ഒക്കെ ചോദിക്കൂ! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            or: "ନମସ୍କାର! ମୁଁ ଆପଣଙ୍କ କିସାନ AI ସହାୟକ। ଫସଲ, ସାର ବା ପାଣିପାଗ ବିଷୟରେ ପଚାରନ୍ତୁ! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>",
+            ur: "آداب! میں آپ کا کسان AI مددگار ہوں۔ فصل، کھاد یا موسم کے بارے میں پوچھیں! <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>"
         };
 
         const chatPlaceholders = {
-            en: "Type or 🎤 speak your farming question...",
-            hi: "अपना खेती सवाल टाइप करें या 🎤 बोलें...",
-            gu: "ખેડૂત સવાલ ટાઈપ કરો અથવા 🎤 બોલો...",
-            mr: "शेती प्रश्न टाइप करा किंवा 🎤 बोला...",
-            pa: "ਖੇਤੀ ਸਵਾਲ ਟਾਈਪ ਕਰੋ ਜਾਂ 🎤 ਬੋਲੋ...",
-            ta: "உங்கள் கேள்வியை தட்டச்சு செய்யுங்கள் அல்லது 🎤 பேசுங்கள்...",
-            te: "మీ ప్రశ్న టైప్ చేయండి లేదా 🎤 మాట్లాడండి...",
-            bn: "আপনার প্রশ্ন টাইপ করুন বা 🎤 বলুন...",
-            kn: "ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಟೈಪ್ ಮಾಡಿ ಅಥವಾ 🎤 ಮಾತಾಡಿ...",
-            ml: "നിങ്ങളുടെ ചോദ്യം ടൈപ്പ് ചെയ്യൂ അല്ലെങ്കിൽ 🎤 സംസാരിക്കൂ...",
-            or: "ଆପଣଙ୍କ ପ୍ରଶ୍ନ ଟାଇପ କରନ୍ତୁ ବା 🎤 କୁହନ୍ତୁ...",
-            ur: "اپنا سوال ٹائپ کریں یا 🎤 بولیں..."
+            en: "Type or  speak your farming question...",
+            hi: "अपना खेती सवाल टाइप करें या  बोलें...",
+            gu: "ખેડૂત સવાલ ટાઈપ કરો અથવા  બોલો...",
+            mr: "शेती प्रश्न टाइप करा किंवा  बोला...",
+            pa: "ਖੇਤੀ ਸਵਾਲ ਟਾਈਪ ਕਰੋ ਜਾਂ  ਬੋਲੋ...",
+            ta: "உங்கள் கேள்வியை தட்டச்சு செய்யுங்கள் அல்லது  பேசுங்கள்...",
+            te: "మీ ప్రశ్న టైప్ చేయండి లేదా  మాట్లాడండి...",
+            bn: "আপনার প্রশ্ন টাইপ করুন বা  বলুন...",
+            kn: "ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಟೈಪ್ ಮಾಡಿ ಅಥವಾ  ಮಾತಾಡಿ...",
+            ml: "നിങ്ങളുടെ ചോദ്യം ടൈപ്പ് ചെയ്യൂ അല്ലെങ്കിൽ  സംസാരിക്കൂ...",
+            or: "ଆପଣଙ୍କ ପ୍ରଶ୍ନ ଟାଇପ କରନ୍ତୁ ବା  କୁହନ୍ତୁ...",
+            ur: "اپنا سوال ٹائپ کریں یا  بولیں..."
         };
 
         const applyLanguage = (lang) => {
@@ -1142,214 +1159,358 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ===========================
        Crop Advisory Logic
        =========================== */
-    const cropForm = document.getElementById('cropForm');
-    const cropResult = document.getElementById('cropResult');
-    const recommendationText = document.getElementById('recommendationText');
-    const fertilizerText = document.getElementById('fertilizerText');
-
-    if (cropForm) {
-        cropForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Simulation of API Call
-            const soil = document.getElementById('soilType').value;
-            const season = document.getElementById('season').value;
-
-            if (!soil || !season) {
-                alert("Please fill all required fields!");
-                return;
-            }
-
-            // Mock Data Logic
-            let crop = "Wheat";
-            let fertilizer = "NPK 14:35:14";
-
-            if (season === "Kharif") {
-                crop = "Rice (Paddy)";
-                fertilizer = "Urea + DAP";
-            } else if (season === "Zaid") {
-                crop = "Watermelon / Cucumber";
-                fertilizer = "Potash rich";
-            } else if (soil === "Black") {
-                crop = "Cotton";
-                fertilizer = "Nitrogen + Phosphorus";
-            }
-
-            // Show Loading State
-            cropResult.style.display = 'block';
-            recommendationText.innerText = "Analyzing soil and season...";
-            fertilizerText.innerText = "...";
-
-            setTimeout(() => {
-                recommendationText.innerText = `${crop}`;
-                fertilizerText.innerText = `${fertilizer}`;
-            }, 1000);
-        });
-    }
+    // NOTE: Crop form logic is now handled by an inline <script> in crop.html.
+    // It calls POST /predict with 7 soil/climate features and renders the
+    // ML-based recommendation with confidence score. No code needed here.
 
     /* ===========================
-       Weather Logic
+       Weather Logic — Phase 2
+       All calls go through the KisanCare backend (/api/weather).
+       No API key is present in this file.
        =========================== */
-    const getWeatherBtn = document.getElementById('getWeatherBtn');
-    const weatherLocation = document.getElementById('weatherLocation');
 
-    // Helper function for weather search
-    const fetchWeather = async () => {
-        const location = weatherLocation.value;
-        if (!location) {
-            alert("Please enter a location");
+    const WEATHER_BACKEND = 'http://localhost:5001';
+
+    // ── OWM icon code → emoji ──────────────────────────────────────────────
+    const owmIconEmoji = (icon) => {
+        if (!icon) return '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>thermostat</span>';
+        const code = icon.slice(0, 2);
+        const map = {
+            '01': '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>wb_sunny</span>', '02': '️', '03': '', '04': '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>cloud</span>',
+            '09': '️', '10': '️', '11': '', '13': '', '50': '️'
+        };
+        return map[code] || '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>thermostat</span>';
+    };
+
+    // ── Advisory card class ────────────────────────────────────────────────
+    const advClass = (status) => {
+        const map = {
+            good:             'good',
+            normal:           'good',
+            recommended:      'caution',
+            defer_rain_coming:'info',
+            not_needed:       'info',
+            caution:          'caution',
+            not_advised:      'bad',
+        };
+        return map[status] || 'info';
+    };
+
+    const advLabel = (status) => {
+        const map = {
+            good:             '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>check_circle</span> Good Conditions',
+            normal:           '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>check_circle</span> Normal',
+            recommended:      '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>warning</span> Recommended',
+            defer_rain_coming:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>water_drop</span> Defer — Rain Coming',
+            not_needed:       '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>water_drop</span> Not Needed',
+            caution:          '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>warning</span> Use Caution',
+            not_advised:      ' Not Advised',
+        };
+        return map[status] || status;
+    };
+
+    // ── Alert badge config ─────────────────────────────────────────────────
+    const alertConfig = {
+        frost_warning:             { emoji:'', label:'Frost Warning',   cls:'info' },
+        heatwave:                  { emoji:'', label:'Heatwave Alert',  cls:'danger' },
+        heavy_rain:                { emoji:'️', label:'Heavy Rain',      cls:'warn' },
+        high_humidity_fungal_risk: { emoji:'', label:'Fungal Risk',     cls:'warn' },
+        storm_warning:             { emoji:'', label:'Storm Warning',   cls:'danger' },
+    };
+
+    // ── Render helpers ─────────────────────────────────────────────────────
+    const renderCurrent = (current, location, country) => {
+        document.getElementById('displayLocation').textContent  = `${location}, ${country}`;
+        document.getElementById('displayTemp').textContent      = `${Math.round(current.temp)}°C`;
+        document.getElementById('displayCondition').textContent = current.description || current.conditions;
+        document.getElementById('displaySunrise').textContent   = current.sunrise || '—';
+        document.getElementById('displaySunset').textContent    = current.sunset  || '—';
+        document.getElementById('displayFeels').textContent     = `${current.feels_like}°C`;
+        document.getElementById('displayHumidity').textContent  = `${current.humidity}%`;
+        document.getElementById('displayWind').textContent      = `${(current.wind_speed * 3.6).toFixed(0)} km/h`;
+        document.getElementById('displayRain').textContent      = `${current.rain_1h} mm`;
+        document.getElementById('displayHiLo').textContent      = `${current.temp_max}° / ${current.temp_min}°`;
+    };
+
+    const renderAlerts = (alerts) => {
+        const row = document.getElementById('alertsRow');
+        if (!alerts || alerts.length === 0) {
+            row.innerHTML = '<span class="no-alerts"><span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>check_circle</span> No severe weather alerts today.</span>';
             return;
         }
+        row.innerHTML = alerts.map(a => {
+            const cfg = alertConfig[a] || { emoji:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>warning</span>', label: a.replace(/_/g,' '), cls:'warn' };
+            return `<span class="alert-badge ${cfg.cls}">${cfg.emoji} ${cfg.label}</span>`;
+        }).join('');
+    };
 
-        const weatherDisplay = document.getElementById('weatherDisplay');
-        const displayLocation = document.getElementById('displayLocation');
-        const displayTemp = document.getElementById('displayTemp');
-        const displayCondition = document.getElementById('displayCondition');
-        const alertBox = document.getElementById('alertBox');
+    const renderAdvisory = (advisory) => {
+        const grid = document.getElementById('advisoryGrid');
+        const cards = [
+            { key:'irrigation', icon:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>water_drop</span>', title:'Irrigation' },
+            { key:'sowing',     icon:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>yard</span>', title:'Sowing'     },
+            { key:'spraying',   icon:'<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>eco</span>', title:'Spraying'   },
+        ];
+        grid.innerHTML = cards.map(({ key, icon, title }) => {
+            const status  = advisory[key] || 'info';
+            const cls     = advClass(status);
+            const label   = advLabel(status);
+            const summary = advisory.summaries?.[key] || '';
+            return `
+              <div class="advisory-card ${cls}">
+                <div class="adv-title">${icon} ${title}</div>
+                <div class="adv-status">${label}</div>
+                <div class="adv-text">${summary}</div>
+              </div>`;
+        }).join('');
+    };
 
-        // ---------------------------------------------------------
-        // 🔑 PRIMARY API: OpenWeatherMap
-        // ---------------------------------------------------------
-        const API_KEY = "caa30be46e4869ad3f56a29f5949304c";
+    const renderHourly = (hourly) => {
+        const row = document.getElementById('hourlyRow');
+        row.innerHTML = hourly.map(h => `
+          <div class="hour-chip">
+            <div class="h-time">${h.time}</div>
+            <div class="h-icon">${owmIconEmoji(h.icon)}</div>
+            <div class="h-temp">${Math.round(h.temp)}°</div>
+            <div class="h-rain">${h.rain_mm > 0 ? h.rain_mm + ' mm' : (h.rain_prob > 0 ? Math.round(h.rain_prob * 100) + '% <span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>water_drop</span>' : '--')}</div>
+          </div>`).join('');
+    };
 
-        // Show loading
-        weatherDisplay.style.display = 'flex';
-        displayCondition.innerText = "Loading...";
+    const renderDaily = (daily) => {
+        const list = document.getElementById('dailyList');
+        list.innerHTML = daily.map(d => `
+          <div class="day-row">
+            <div class="day-name">${d.date}</div>
+            <div class="day-icon">${owmIconEmoji(d.icon)}</div>
+            <div class="day-desc">${d.description || d.conditions}</div>
+            <div class="day-rain">${d.rain_mm > 0 ? '️ ' + d.rain_mm + ' mm' : ''} ${d.rain_prob > 0.1 ? Math.round(d.rain_prob * 100) + '%' : ''}</div>
+            <div class="day-temps">${Math.round(d.temp_max)}° / ${Math.round(d.temp_min)}°</div>
+          </div>`).join('');
+    };
+
+    // ── Main fetch function ────────────────────────────────────────────────
+    const fetchWeather = async () => {
+        const location = (document.getElementById('weatherLocation')?.value || '').trim();
+        if (!location) { alert('Please enter a city or district name.'); return; }
+
+        const btn        = document.getElementById('getWeatherBtn');
+        const display    = document.getElementById('weatherDisplay');
+        const errBox     = document.getElementById('weatherError');
+        const mockBanner = document.getElementById('mockBanner');
+
+        btn.disabled = true;
+        btn.textContent = 'Loading...';
+        errBox.style.display    = 'none';
+        mockBanner.classList.remove('visible');
 
         try {
-            // TRY 1: OpenWeatherMap
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${API_KEY}&units=metric`);
+            const res  = await fetch(`${WEATHER_BACKEND}/api/weather?city=${encodeURIComponent(location)}`);
+            const data = await res.json();
 
-            if (!response.ok) {
-                console.warn("OpenWeatherMap Failed (Invalid Key/City), trying backup...");
-                throw new Error("OWM Failed");
+            if (!res.ok || data.status === 'error') {
+                throw new Error(data.message || `Server error ${res.status}`);
             }
 
-            const data = await response.json();
-
-            // Update UI with REAL Data from OWM
-            displayLocation.innerText = `${data.name}, ${data.sys.country}`;
-            displayTemp.innerText = `${Math.round(data.main.temp)}°C`;
-            displayCondition.innerText = data.weather[0].main;
-
-            // Alert Logic
-            updateAlerts(data.main.temp, data.weather[0].main);
-
-        } catch (error) {
-            // TRY 2: Open-Meteo (Free Backup, No Key)
-            console.log("Switching to Open-Meteo Backup because:", error.message);
-            try {
-                // Step A: Geocoding (Get Lat/Lon for city)
-                const geoResp = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${location}&count=1&language=en&format=json`);
-                const geoData = await geoResp.json();
-
-                if (!geoData.results || geoData.results.length === 0) {
-                    throw new Error("City not found in Backup");
-                }
-
-                const { latitude, longitude, name, country } = geoData.results[0];
-
-                // Step B: Get Weather
-                const meteoResp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
-                const meteoData = await meteoResp.json();
-
-                const current = meteoData.current_weather;
-                const conditionText = getWeatherCondition(current.weathercode);
-
-                // Update UI with BACKUP Data
-                displayLocation.innerText = `${name}, ${country}`;
-                displayTemp.innerText = `${Math.round(current.temperature)}°C`;
-                displayCondition.innerText = conditionText;
-
-                updateAlerts(current.temperature, conditionText);
-
-            } catch (backupError) {
-                console.error("All Weather APIs failed.");
-                alert("❌ Could not fetch weather. Please check your internet connection.");
-                displayLocation.innerText = "Error";
-                displayCondition.innerText = "--";
-                displayTemp.innerText = "--";
+            // Show mock banner if demo data
+            if (data.status === 'mock') {
+                document.getElementById('mockBannerText').textContent =
+                    data.data_note || 'Demo weather data — connect a live API key for real forecasts.';
+                mockBanner.classList.add('visible');
             }
+
+            renderCurrent(data.current, data.location, data.country);
+            renderAlerts(data.advisory?.alerts);
+            renderAdvisory(data.advisory);
+            renderHourly(data.hourly);
+            renderDaily(data.daily);
+
+            display.style.display = 'block';
+            display.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        } catch (err) {
+            console.error('Weather fetch error:', err);
+            errBox.innerHTML = `<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>cancel</span> ${err.message || 'Could not connect to the weather server. Is the backend running?'}`;
+            errBox.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-icons">search</span> Search';
         }
     };
 
-    // Helper to map WMO codes to text (for Open-Meteo)
-    const getWeatherCondition = (code) => {
-        if (code === 0) return "Clear Sky";
-        if (code >= 1 && code <= 3) return "Partly Cloudy";
-        if (code >= 45 && code <= 48) return "Fog";
-        if (code >= 51 && code <= 67) return "Drizzle/Rain";
-        if (code >= 71 && code <= 77) return "Snow";
-        if (code >= 80 && code <= 82) return "Showers";
-        if (code >= 95) return "Thunderstorm";
-        return "Unknown";
-    };
-
-    // Helper for Alerts
-    const updateAlerts = (temp, condition) => {
-        const alertBox = document.getElementById('alertBox');
-        condition = condition.toLowerCase();
-
-        if (condition.includes('rain') || condition.includes('drizzle') || condition.includes('thunderstorm') || condition.includes('showers')) {
-            alertBox.className = "alert-box alert-danger";
-            alertBox.innerText = "🌧️ Rainfall Alert: Protect harvested crops!";
-        } else if (temp > 35) {
-            alertBox.className = "alert-box alert-warning";
-            alertBox.innerText = "⚠️ High Heat Alert: Ensure irrigation.";
-        } else if (temp < 5) {
-            alertBox.className = "alert-box alert-warning";
-            alertBox.innerText = "❄️ Frost Warning: Protect sensitive plants.";
-        } else {
-            alertBox.className = "alert-box alert-safe";
-            alertBox.innerText = "✅ Weather is favorable for farming.";
-        }
-    };
+    // ── Event listeners ────────────────────────────────────────────────────
+    const getWeatherBtn      = document.getElementById('getWeatherBtn');
+    const weatherLocationInp = document.getElementById('weatherLocation');
+    const subAlertsBtn       = document.getElementById('subAlertsBtn');
 
     if (getWeatherBtn) {
         getWeatherBtn.addEventListener('click', fetchWeather);
-
-        // Allow Enter key to trigger search
-        if (weatherLocation) {
-            weatherLocation.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    fetchWeather();
-                }
-            });
-        }
+    }
+    if (weatherLocationInp) {
+        weatherLocationInp.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') fetchWeather();
+        });
+    }
+    if (subAlertsBtn) {
+        subAlertsBtn.addEventListener('click', () => {
+            // Fake push notification opt-in for demo purposes
+            if (Notification.permission === 'granted') {
+                alert('You are already subscribed to weather alerts for this device.');
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        alert('Success! You will now receive push notifications for severe weather alerts in your area.');
+                        subAlertsBtn.innerHTML = '<span class="material-icons">notifications_active</span> Subscribed';
+                        subAlertsBtn.style.background = '#dcfce7';
+                        subAlertsBtn.style.color = '#166534';
+                        subAlertsBtn.style.borderColor = '#bbf7d0';
+                    }
+                });
+            } else {
+                alert('Notifications are blocked. Please enable them in your browser settings.');
+            }
+        });
     }
 
     /* ===========================
        Market Prices Logic
        =========================== */
+    let trendChartInstance = null;
     const getPriceBtn = document.getElementById('getPriceBtn');
+    
     if (getPriceBtn) {
-        getPriceBtn.addEventListener('click', () => {
+        getPriceBtn.addEventListener('click', async () => {
             const crop = document.getElementById('marketCrop').value;
+            const marketName = document.getElementById('marketName').value || 'Gujarat';
+            
             const priceResult = document.getElementById('priceResult');
             const tableBody = document.getElementById('priceTableBody');
-
+            const trendSection = document.getElementById('trendSection');
+            const historyBanner = document.getElementById('historyBanner');
+            
+            getPriceBtn.disabled = true;
+            getPriceBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Loading...';
+            
             priceResult.style.display = 'block';
-            tableBody.innerHTML = '<tr><td colspan="4">Loading prices...</td></tr>';
+            trendSection.style.display = 'none';
+            historyBanner.style.display = 'none';
+            tableBody.innerHTML = `
+                <tr>
+                    <td><div class="skeleton-box" style="width: 80px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 120px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 90px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 100px; height: 20px;"></div></td>
+                </tr>
+                <tr>
+                    <td><div class="skeleton-box" style="width: 70px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 140px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 80px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 90px; height: 20px;"></div></td>
+                </tr>
+                <tr>
+                    <td><div class="skeleton-box" style="width: 85px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 110px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 85px; height: 20px;"></div></td>
+                    <td><div class="skeleton-box" style="width: 95px; height: 20px;"></div></td>
+                </tr>
+            `;
 
-            setTimeout(() => {
-                const today = new Date().toLocaleDateString();
-                const priceBase = Math.floor(Math.random() * 2000) + 1000; // 1000-3000 range
-
-                tableBody.innerHTML = `
-                    <tr>
-                        <td>${crop.charAt(0).toUpperCase() + crop.slice(1)}</td>
-                        <td>Local Mandi</td>
-                        <td>₹${priceBase}</td>
-                        <td>${today}</td>
-                    </tr>
-                     <tr>
-                        <td>${crop.charAt(0).toUpperCase() + crop.slice(1)}</td>
-                        <td>District APMC</td>
-                        <td>₹${priceBase + 50}</td>
-                        <td>${today}</td>
-                    </tr>
-                `;
-            }, 800);
+            try {
+                // Fetch today's snapshot
+                const res = await fetch(`http://localhost:5001/api/apmc?commodity=${encodeURIComponent(crop)}&state=${encodeURIComponent(marketName)}`);
+                const data = await res.json();
+                
+                if (data.error) throw new Error(data.error);
+                
+                tableBody.innerHTML = '';
+                
+                if (data.records && data.records.length > 0) {
+                    data.records.forEach(r => {
+                        const mName = r.market || 'Unknown Market';
+                        const mPrice = r.modal_price ? `₹${r.modal_price}` : 'N/A';
+                        const today = new Date().toLocaleDateString();
+                        
+                        tableBody.innerHTML += `
+                            <tr>
+                                <td>${crop.charAt(0).toUpperCase() + crop.slice(1)}</td>
+                                <td>${mName}</td>
+                                <td>${mPrice}</td>
+                                <td>${today}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="4">No data found for this crop/market today.</td></tr>';
+                }
+                
+                // Fetch trend analysis
+                const trendRes = await fetch(`http://localhost:5001/api/apmc/trend?commodity=${encodeURIComponent(crop)}&district=${encodeURIComponent(marketName)}`);
+                const trendData = await trendRes.json();
+                
+                if (trendData.status === 'success') {
+                    trendSection.style.display = 'grid';
+                    
+                    if (trendData.days_available < 7) {
+                        document.getElementById('historyBannerText').textContent = `Building price history... Only ${trendData.days_available} days collected so far. Check back daily.`;
+                        historyBanner.style.display = 'flex';
+                    }
+                    
+                    document.getElementById('statHighest').textContent = trendData.highest ? `₹${trendData.highest}` : 'N/A';
+                    document.getElementById('statLowest').textContent = trendData.lowest ? `₹${trendData.lowest}` : 'N/A';
+                    document.getElementById('statAverage').textContent = trendData.average ? `₹${trendData.average}` : 'N/A';
+                    document.getElementById('trendSuggestion').textContent = trendData.suggestion;
+                    
+                    // Render Chart.js
+                    const ctx = document.getElementById('trendChart').getContext('2d');
+                    
+                    if (trendChartInstance) {
+                        trendChartInstance.destroy();
+                    }
+                    
+                    const labels = trendData.history.map(h => h.date.slice(5)); // MM-DD
+                    const prices = trendData.history.map(h => h.modal_price);
+                    
+                    trendChartInstance = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: `Avg Modal Price (₹)`,
+                                data: prices,
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                borderWidth: 2,
+                                pointBackgroundColor: '#059669',
+                                pointRadius: 4,
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    grid: { color: '#f1f5f9' }
+                                },
+                                x: {
+                                    grid: { display: false }
+                                }
+                            }
+                        }
+                    });
+                }
+                
+            } catch (err) {
+                console.error("Market fetch error:", err);
+                tableBody.innerHTML = `<tr><td colspan="4" style="color:red;">Error loading prices: ${err.message}</td></tr>`;
+            } finally {
+                getPriceBtn.disabled = false;
+                getPriceBtn.innerHTML = '<i class="material-icons">search</i><span data-lang="get_prices_btn">Get Prices</span>';
+            }
         });
     }
 
@@ -1369,7 +1530,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div id="feedbackModal" class="settings-modal-overlay" style="z-index: 10000;">
                     <div class="settings-modal">
                         <div class="settings-header">
-                            <h2 data-lang="feedback_title">📩 Send Us Feedback</h2>
+                            <h2 data-lang="feedback_title"> Send Us Feedback</h2>
                             <button id="closeFeedbackBtn" class="close-btn">&times;</button>
                         </div>
                         <div class="settings-content">
@@ -1418,14 +1579,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const result = await response.json();
                         if (result.status === 'success') {
-                            alert("✅ " + result.message);
+                            alert("<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>check_circle</span> " + result.message);
                             document.getElementById('feedbackModal').remove();
                         } else {
-                            alert("❌ Error: " + result.error);
+                            alert("<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>cancel</span> Error: " + result.error);
                         }
                     } catch (err) {
                         console.error(err);
-                        alert("❌ Failed to connect to server.");
+                        alert("<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>cancel</span> Failed to connect to server.");
                     } finally {
                         btn.innerText = originalText;
                         btn.disabled = false;

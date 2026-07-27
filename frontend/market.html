@@ -1,350 +1,1396 @@
 <!DOCTYPE html>
+
+
 <html lang="en">
 
+
+
+
+
 <head>
+
+
     <meta charset="UTF-8">
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <title>Market Prices - KisanCare</title>
+
+
     <link rel="stylesheet" href="css/style.css">
+
+
     <link rel="stylesheet" href="css/chat.css">
+
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 </head>
+
+
+
+
 
 <body>
 
+
+
+
+
     <header>
+
+
         <nav>
-            <div class="logo">🌿 KisanCare</div>
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar">☰</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="home.html">Home</a></li>
-                <li><a href="crop.html">Crop Advisory</a></li>
-                <li><a href="weather.html">Weather Alerts</a></li>
-                <li><a href="market.html" data-lang="market_prices" class="active">Market Prices</a></li>
-                <li><a href="fertilizer.html">🌱 Fertilizers</a></li>
-                <li><a href="#" id="navFeedbackLink" data-lang="feedback_nav">Feedback</a></li>
-                <li><a href="index.html" data-lang="login">Login</a></li>
-            </ul>
-        </nav>
+
+        <div class="logo"><span class="material-icons">eco</span> KisanCare</div>
+
+        <div class="menu-toggle" id="mobile-menu"><span class="material-icons">menu</span></div>
+
+        <ul class="nav-links">
+
+            <li><a href="home.html" data-i18n="nav_home"><span class="material-icons">home</span> Home</a></li>
+
+            <li><a href="crop.html" data-i18n="nav_crop_advisory"><span class="material-icons">grass</span> Crop Advisory</a></li>
+
+            <li><a href="weather.html" data-i18n="nav_weather_alerts"><span class="material-icons">cloud</span> Weather Alerts</a></li>
+
+            <li><a href="crop-care.html" data-i18n="nav_crop_care"><span class="material-icons">local_florist</span> Crop Care</a></li>
+
+            <li><a href="market.html" class="active" data-i18n="nav_market_prices"><span class="material-icons">storefront</span> Market Prices</a></li>
+
+            <li><a href="schemes.html" data-i18n="nav_schemes"><span class="material-icons">account_balance</span> Govt Schemes</a></li>
+
+            <li><a href="fertilizer.html" data-i18n="nav_fertilizers"><span class="material-icons">science</span> Fertilizers</a></li>
+
+            <li><a href="#" id="navFeedbackLink" data-i18n="nav_feedback"><span class="material-icons">feedback</span> Feedback</a></li>
+
+            <li><a href="profile.html" data-i18n="nav_profile"><span class="material-icons">person</span> Profile</a></li>
+
+            <li><a href="history.html" data-i18n="nav_history"><span class="material-icons">history</span> History</a></li>
+
+            <li><a href="fertilizer-calc.html" data-i18n="nav_fert_calc"><span class="material-icons">calculate</span> Fert. Calc.</a></li>
+
+            <li><a href="expenses.html" data-i18n="nav_expenses"><span class="material-icons">payments</span> Expenses</a></li>
+
+            <li><a href="index.html" data-i18n="nav_login"><span class="material-icons">login</span> Login</a></li>
+
+            <li>
+
+                <select id="langSwitcher" class="lang-switcher">
+
+                    <option value="en">EN</option>
+
+                    <option value="hi">HI</option>
+
+                    <option value="gu">GU</option>
+
+                </select>
+
+            </li>
+
+        </ul>
+
+    </nav>
+
+
     </header>
 
+
+
+
+
     <style>
+
+
         /* Market Dashboard Specific Styles */
+
+
         .market-hero {
+
+
             background: linear-gradient(135deg, #1e3c2f 0%, #1abc9c 100%);
+
+
             color: white;
+
+
             border-radius: 20px;
+
+
             padding: 40px;
+
+
             margin-bottom: 30px;
+
+
             box-shadow: 0 10px 30px rgba(26, 188, 156, 0.2);
+
+
             position: relative;
+
+
             overflow: hidden;
+
+
             animation: fadeIn 0.8s ease-out forwards;
+
+
         }
+
+
+
+
 
         .market-hero h2 {
+
+
             font-size: 2.5rem;
+
+
             margin-top: 0;
+
+
             margin-bottom: 10px;
+
+
             color: #fff;
+
+
             position: relative;
+
+
             z-index: 2;
+
+
         }
+
+
+
+
 
         .market-hero p {
+
+
             font-size: 1.1rem;
+
+
             opacity: 0.9;
+
+
             margin: 0;
+
+
             position: relative;
+
+
             z-index: 2;
+
+
             max-width: 600px;
+
+
         }
+
+
+
+
 
         .market-hero .hero-icon {
+
+
             position: absolute;
+
+
             right: 20px;
+
+
             top: 50%;
+
+
             transform: translateY(-50%);
+
+
             font-size: 12rem;
+
+
             color: rgba(255,255,255,0.1);
+
+
             z-index: 1;
+
+
         }
+
+
+
+
 
         .filter-panel {
+
+
             background: white;
+
+
             border-radius: 16px;
+
+
             padding: 30px;
+
+
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+
+
             border: 1px solid rgba(0,0,0,0.05);
+
+
             margin-bottom: 30px;
+
+
             display: flex;
+
+
             gap: 20px;
+
+
             align-items: flex-end;
+
+
             flex-wrap: wrap;
+
+
             animation: slideUp 0.6s ease-out forwards;
+
+
         }
+
+
+
+
 
         .filter-group {
+
+
             flex: 1;
+
+
             min-width: 200px;
+
+
             margin-bottom: 0;
+
+
         }
+
+
+
+
 
         .filter-group label {
+
+
             font-weight: 600;
+
+
             color: #2c3e50;
+
+
             margin-bottom: 8px;
+
+
             display: flex;
+
+
             align-items: center;
+
+
             gap: 5px;
+
+
         }
+
+
+
+
 
         .filter-input {
+
+
             width: 100%;
+
+
             padding: 12px 15px;
+
+
             border-radius: 10px;
+
+
             border: 2px solid #ecf0f1;
+
+
             background: #f8fcf9;
+
+
             font-size: 1rem;
+
+
             color: #34495e;
+
+
             transition: all 0.3s;
+
+
         }
+
+
+
+
 
         .filter-input:focus {
+
+
             border-color: #2ecc71;
+
+
             box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+
+
             outline: none;
+
+
             background: white;
+
+
         }
+
+
+
+
 
         .btn-search {
+
+
             background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+
+
             color: white;
+
+
             padding: 14px 30px;
+
+
             border-radius: 10px;
+
+
             border: none;
+
+
             font-size: 1.1rem;
+
+
             font-weight: bold;
+
+
             cursor: pointer;
+
+
             display: flex;
+
+
             align-items: center;
+
+
             gap: 8px;
+
+
             box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+
+
             transition: transform 0.2s, box-shadow 0.2s;
+
+
             white-space: nowrap;
+
+
         }
+
+
+
+
 
         .btn-search:hover {
+
+
             transform: translateY(-2px);
+
+
             box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+
+
         }
+
+
+
+
 
         .results-card {
+
+
             background: white;
+
+
             border-radius: 16px;
+
+
             padding: 30px;
+
+
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+
+
             border: 1px solid rgba(0,0,0,0.05);
+
+
             overflow: hidden;
+
+
             animation: slideUp 0.8s ease-out forwards;
+
+
         }
+
+
+
+
 
         .results-header {
+
+
             display: flex;
+
+
             justify-content: space-between;
+
+
             align-items: center;
+
+
             margin-bottom: 20px;
+
+
             border-bottom: 2px solid #f4f7f6;
+
+
             padding-bottom: 15px;
+
+
         }
+
+
+
+
 
         .results-header h3 {
+
+
             margin: 0;
+
+
             color: #1e3c2f;
+
+
             font-size: 1.5rem;
+
+
             display: flex;
+
+
             align-items: center;
+
+
             gap: 10px;
+
+
         }
+
+
+
+
 
         .live-badge {
+
+
             background: rgba(46, 204, 113, 0.1);
+
+
             color: #27ae60;
+
+
             padding: 6px 15px;
+
+
             border-radius: 20px;
+
+
             font-weight: bold;
+
+
             font-size: 0.9rem;
+
+
             display: flex;
+
+
             align-items: center;
+
+
             gap: 5px;
+
+
         }
+
+
+
+
 
         .styled-table {
+
+
             width: 100%;
+
+
             border-collapse: separate;
+
+
             border-spacing: 0;
+
+
             min-width: 600px;
+
+
             margin-top: 0;
+
+
             box-shadow: none;
+
+
         }
+
+
+
+
 
         .styled-table th {
+
+
             padding: 15px 20px;
+
+
             text-align: left;
+
+
             color: #7f8c8d;
+
+
             font-weight: 600;
+
+
             text-transform: uppercase;
+
+
             font-size: 0.85rem;
+
+
             letter-spacing: 1px;
+
+
             border-bottom: 2px solid #ecf0f1;
+
+
             background: #f8fcf9;
+
+
         }
+
+
+
+
 
         .styled-table th:first-child { border-top-left-radius: 10px; }
+
+
         .styled-table th:last-child { border-top-right-radius: 10px; }
 
+
+
+
+
         .styled-table td {
+
+
             padding: 15px 20px;
+
+
             border-bottom: 1px solid #f4f7f6;
+
+
             color: #2c3e50;
+
+
             font-weight: 500;
+
+
             transition: background 0.3s;
+
+
         }
+
+
+
+
 
         .styled-table tbody tr:hover td {
+
+
             background-color: #f8fcf9;
+
+
         }
+
+
+
+
 
         /* Value coloring mock - assumes JS will inject rows, but gives a fallback style */
+
+
         .styled-table td:nth-child(3) {
+
+
             color: #27ae60;
+
+
             font-weight: 700;
+
+
             font-size: 1.1rem;
+
+
         }
+
+
+
+
 
         @keyframes slideUp {
+
+
             from { opacity: 0; transform: translateY(20px); }
+
+
             to { opacity: 1; transform: translateY(0); }
+
+
         }
+
+
         
+
+
         @keyframes fadeIn {
+
+
             from { opacity: 0; }
+
+
             to { opacity: 1; }
+
+
         }
+
+
+
+
+
+        /* ?????? Trend & Summary Cards ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????? */
+
+
+        .trend-container {
+
+
+            display: grid;
+
+
+            grid-template-columns: 2fr 1fr;
+
+
+            gap: 24px;
+
+
+            margin-bottom: 30px;
+
+
+        }
+
+
+        @media (max-width: 900px) {
+
+
+            .trend-container { grid-template-columns: 1fr; }
+
+
+        }
+
+
+
+
+
+        .summary-cards {
+
+
+            display: flex;
+
+
+            flex-direction: column;
+
+
+            gap: 16px;
+
+
+        }
+
+
+
+
+
+        .stat-card {
+
+
+            background: #fff;
+
+
+            border-radius: 12px;
+
+
+            padding: 20px;
+
+
+            border: 1px solid var(--border);
+
+
+            display: flex;
+
+
+            align-items: center;
+
+
+            gap: 16px;
+
+
+        }
+
+
+        .stat-card .icon {
+
+
+            width: 48px;
+
+
+            height: 48px;
+
+
+            border-radius: 10px;
+
+
+            display: flex;
+
+
+            align-items: center;
+
+
+            justify-content: center;
+
+
+            font-size: 24px;
+
+
+        }
+
+
+        .stat-card.highest .icon { background: #fee2e2; color: #ef4444; }
+
+
+        .stat-card.lowest .icon { background: #dcfce7; color: #10b981; }
+
+
+        .stat-card.average .icon { background: #e0e7ff; color: #6366f1; }
+
+
+
+
+
+        .stat-card .info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+
+        .stat-card .info h4 { margin: 4px 0 0; font-size: 1.4rem; color: var(--text-dark); }
+
+
+
+
+
+        .suggestion-box {
+
+
+            background: #f8fafc;
+
+
+            border-left: 4px solid #3b82f6;
+
+
+            padding: 16px 20px;
+
+
+            border-radius: 8px;
+
+
+            margin-bottom: 20px;
+
+
+        }
+
+
+        .suggestion-box h4 { margin: 0 0 8px; font-size: 1rem; color: #1e40af; display: flex; align-items: center; gap: 6px; }
+
+
+        .suggestion-box p { margin: 0; font-size: 0.95rem; color: #334155; }
+
+
+
+
+
+        .history-banner {
+
+
+            background: #fef3c7;
+
+
+            border: 1px solid #fcd34d;
+
+
+            color: #92400e;
+
+
+            padding: 12px 20px;
+
+
+            border-radius: 8px;
+
+
+            margin-bottom: 20px;
+
+
+            display: none;
+
+
+            align-items: center;
+
+
+            gap: 10px;
+
+
+            font-size: 0.9rem;
+
+
+        }
+
+
     </style>
 
+
+
+
+
     <main class="dashboard-container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px; min-height: 80vh;">
+
+
         
+
+
         <!-- Hero / Header Section -->
+
+
         <div class="market-hero">
+
+
             <h2 data-lang="market_header">Live Market Prices (Mandi Rates)</h2>
+
+
             <p>Real-time access to APMC mandi rates to help you decide when and where to sell your harvest for the highest profit.</p>
+
+
             <i class="material-icons hero-icon">storefront</i>
+
+
         </div>
+
+
+
+
 
         <!-- Filter Control Panel -->
+
+
         <div class="filter-panel">
+
+
             <div class="filter-group">
+
+
                 <label for="marketCrop" data-lang="select_crop_label">
+
+
                     <i class="material-icons" style="color: #2ecc71;">eco</i> Select Crop
+
+
                 </label>
+
+
                 <select id="marketCrop" class="filter-input" style="appearance: auto; cursor: pointer;">
+
+
                     <option value="wheat">Wheat</option>
+
+
                     <option value="rice">Rice</option>
+
+
                     <option value="onion">Onion</option>
+
+
                     <option value="potato">Potato</option>
+
+
                     <option value="tomato">Tomato</option>
+
+
                 </select>
+
+
             </div>
+
+
+
+
 
             <div class="filter-group" style="flex: 2;">
+
+
                 <label for="marketName" data-lang="market_name_label">
+
+
                     <i class="material-icons" style="color: #3498db;">location_on</i> Market / APMC Name
+
+
                 </label>
+
+
                 <input type="text" id="marketName" class="filter-input" placeholder="e.g. Nashik APMC">
+
+
             </div>
+
+
+
+
 
             <button id="getPriceBtn" class="btn-search">
+
+
                 <i class="material-icons">search</i>
+
+
                 <span data-lang="get_prices_btn">Get Prices</span>
+
+
             </button>
+
+
         </div>
+
+
+
+
+
+        <div id="historyBanner" class="history-banner">
+
+
+            <i class="material-icons">info</i>
+
+
+            <span id="historyBannerText">Building price history... N days collected.</span>
+
+
+        </div>
+
+
+
+
+
+        <!-- Trend Section -->
+
+
+        <div id="trendSection" class="trend-container" style="display: none;">
+
+
+            <div class="results-card">
+
+
+                <div class="results-header">
+
+
+                    <h3><i class="material-icons" style="color: #3b82f6;">trending_up</i> 7-Day Price Trend</h3>
+
+
+                </div>
+
+
+                <div class="suggestion-box">
+
+
+                    <h4><i class="material-icons">lightbulb</i> AI Selling Suggestion</h4>
+
+
+                    <p id="trendSuggestion">Loading suggestion...</p>
+
+
+                </div>
+
+
+                <div style="height: 300px; width: 100%;">
+
+
+                    <canvas id="trendChart"></canvas>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <div class="summary-cards">
+
+
+                <div class="stat-card highest">
+
+
+                    <div class="icon"><i class="material-icons">arrow_upward</i></div>
+
+
+                    <div class="info">
+
+
+                        <p>Highest (7d)</p>
+
+
+                        <h4 id="statHighest">???--</h4>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="stat-card lowest">
+
+
+                    <div class="icon"><i class="material-icons">arrow_downward</i></div>
+
+
+                    <div class="info">
+
+
+                        <p>Lowest (7d)</p>
+
+
+                        <h4 id="statLowest">???--</h4>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="stat-card average">
+
+
+                    <div class="icon"><i class="material-icons">functions</i></div>
+
+
+                    <div class="info">
+
+
+                        <p>Average (7d)</p>
+
+
+                        <h4 id="statAverage">???--</h4>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
 
         <!-- Results Table -->
+
+
         <div id="priceResult" class="results-card" style="display: none;">
+
+
             <div class="results-header">
+
+
                 <h3 data-lang="price_list_title">
+
+
                     <i class="material-icons" style="color: #f39c12;">analytics</i> Price List Insights
+
+
                 </h3>
+
+
                 <span class="live-badge">
+
+
                     <i class="material-icons" style="font-size: 16px;">fiber_manual_record</i> Live Updates
+
+
                 </span>
+
+
             </div>
+
+
             
+
+
             <div style="overflow-x: auto;">
+
+
                 <table class="styled-table">
+
+
                     <thead>
+
+
                         <tr>
+
+
                             <th data-lang="th_crop">Crop</th>
+
+
                             <th data-lang="th_market">Market</th>
+
+
                             <th data-lang="th_price">Price (per Quintal)</th>
+
+
                             <th data-lang="th_date">Date</th>
+
+
                         </tr>
+
+
                     </thead>
+
+
                     <tbody id="priceTableBody">
+
+
                         <!-- Dynamic Data -->
+
+
                     </tbody>
+
+
                 </table>
+
+
             </div>
+
+
         </div>
+
+
     </main>
 
+
+
+
+
     <!-- Chat Widget -->
+
+
     <div class="chat-btn" id="chat-toggle-btn">
+
+
         <span class="material-icons">chat</span>
+
+
     </div>
+
+
     <div class="chat-container" id="chat-container">
+
+
         <div class="chat-header">
+
+
             <span>Kisan AI Assistant</span>
+
+
             <span class="material-icons close-btn" id="close-chat">close</span>
+
+
         </div>
+
+
         <div class="chat-lang-bar">
-            <label>🌐 Language:</label>
+
+
+            <label>??? Language:</label>
+
+
             <select id="chat-lang-select">
-                <option value="en">🇬🇧 English</option>
-                <option value="hi">🇮🇳 हिन्दी (Hindi)</option>
-                <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
-                <option value="mr">🇮🇳 मराठी (Marathi)</option>
-                <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
-                <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
-                <option value="te">🇮🇳 తెలుగు (Telugu)</option>
-                <option value="bn">🇮🇳 বাংলা (Bengali)</option>
-                <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
-                <option value="ml">🇮🇳 മലయാളം (Malayalam)</option>
-                <option value="or">🇮🇳 ଓଡ଼ିଆ (Odia)</option>
-                <option value="ur">🇮🇳 اردو (Urdu)</option>
+
+
+                <option value="en">?????? English</option>
+
+
+                <option value="hi">?????? हिन?द??? (Hindi)</option>
+
+
+                <option value="gu">?????? ??????રાત??? (Gujarati)</option>
+
+
+                <option value="mr">?????? मराठ??? (Marathi)</option>
+
+
+                <option value="pa">?????? ਪੰ??ਾਬ??? (Punjabi)</option>
+
+
+                <option value="ta">?????? தமிழ? (Tamil)</option>
+
+
+                <option value="te">?????? త???ల????? (Telugu)</option>
+
+
+                <option value="bn">?????? বা???লা (Bengali)</option>
+
+
+                <option value="kn">?????? ???ನ?ನಡ (Kannada)</option>
+
+
+                <option value="ml">?????? മലయാള??? (Malayalam)</option>
+
+
+                <option value="or">?????? ???ଡ଼ି??? (Odia)</option>
+
+
+                <option value="ur">?????? ?????????? (Urdu)</option>
+
+
             </select>
+
+
         </div>
+
+
         <div class="chat-messages" id="chat-messages">
+
+
             <div class="message bot">
-                <p>Hello! Ask me about crop prices, fertilizers, or farming tips! 🌾</p>
+
+
+                <p>Hello! Ask me about crop prices, fertilizers, or farming tips! ??</p>
+
+
             </div>
+
+
         </div>
+
+
         <div class="chat-input-area">
+
+
             <label for="chat-file-input" class="file-upload-label">
+
+
                 <span class="material-icons">attach_file</span>
+
+
             </label>
+
+
             <input type="file" id="chat-file-input" accept="image/*" hidden>
+
+
             <input type="text" id="chat-input" placeholder="Type a message...">
+
+
             <button id="voice-btn" class="voice-btn" title="Voice Input"><span class="material-icons">mic</span></button>
+
+
             <button id="send-btn"><span class="material-icons">send</span></button>
+
+
         </div>
+
+
     </div>
+
+
     <script src="js/app.js"></script>
+
+
     <script src="js/chat.js"></script>
+
+
+    <script src="js/i18n.js"></script>
+
 </body>
 
+
+
+
+
 </html>
+
+
+
+
+

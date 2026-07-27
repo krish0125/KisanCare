@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop History | KisanCare</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .history-container { max-width: 800px; margin: 40px auto; padding: 20px; }
+        .history-header { text-align: center; margin-bottom: 30px; }
+        .filters { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
+        .filter-chip { padding: 8px 16px; background: white; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .filter-chip.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+        .timeline { display: flex; flex-direction: column; gap: 20px; }
+        .history-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid var(--primary-green); display: flex; flex-direction: column; gap: 10px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .card-title { font-weight: bold; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+        .card-date { font-size: 0.9rem; color: #888; }
+        .card-body { font-size: 0.95rem; color: #555; }
+        .badge { display: inline-block; padding: 3px 8px; background: #e8f5e9; color: #2e7d32; border-radius: 12px; font-size: 0.8rem; margin-right: 5px; }
+        .load-more { text-align: center; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">eco</span> KisanCare</div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="crop.html">Crop Advisory</a>
+            <a href="weather.html">Weather Alerts</a>
+            <a href="market.html">Market Prices</a>
+            <a href="disease.html">Disease Detection</a>
+            <a href="crop-care.html">Crop Care</a>
+            <a href="fertilizer.html">Fertilizers</a>
+            <a href="schemes.html">Gov Schemes</a>
+            <a href="profile.html">‍<span class="material-icons" style="vertical-align: middle; font-size: inherit;">grass</span> Profile</a>
+            <a href="history.html" class="active"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">history</span> History</a>
+            <a href="fertilizer-calc.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">calculate</span> Fert. Calc.</a>
+            <a href="expenses.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">payments</span> Expenses</a>
+        </div>
+    </nav>
+
+    <div class="history-container">
+        <div class="history-header">
+            <h2>Activity History</h2>
+            <p>Your previous predictions, advisories, and detections.</p>
+        </div>
+
+        <div class="filters" id="filters">
+            <div class="filter-chip active" data-type="all">All Activity</div>
+            <div class="filter-chip" data-type="crop_prediction"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">grass</span> Crop Rec</div>
+            <div class="filter-chip" data-type="disease_detection"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">pest_control</span> Disease</div>
+            <div class="filter-chip" data-type="irrigation_advice"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">water_drop</span> Irrigation</div>
+            <div class="filter-chip" data-type="pest_risk"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">bug_report</span> Pest Risk</div>
+            <div class="filter-chip" data-type="fertilizer_calc"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">calculate</span> Fertilizer</div>
+        </div>
+
+        <div class="timeline" id="timeline">
+            <!-- Populated by JS -->
+        </div>
+
+        <div class="load-more">
+            <button class="btn" id="loadMoreBtn" style="display:none;">Load More</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/i18n.js"></script>
+</body>
+</html>

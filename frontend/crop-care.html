@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Care &mdash; Smart Irrigation &amp; Pest Risk Advisor | KisanCare</title>
+    <meta name="description" content="Rule-based irrigation advisor and pest risk checker for Indian farmers. Get personalised irrigation timing and water-quantity guidance, plus common pest risk factors for your crop based on current weather.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        /* â”€â”€ CSS custom properties â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        :root {
+            --green:        #16a34a;
+            --green-light:  #22c55e;
+            --green-dark:   #14532d;
+            --green-bg:     #f0fdf4;
+            --amber:        #d97706;
+            --amber-light:  #f59e0b;
+            --amber-bg:     #fffbeb;
+            --sky:          #0ea5e9;
+            --sky-bg:       #f0f9ff;
+            --danger:       #dc2626;
+            --danger-bg:    #fef2f2;
+            --border:       #e5e7eb;
+            --text-dark:    #111827;
+            --text-muted:   #6b7280;
+            --card-shadow:  0 4px 24px rgba(0,0,0,0.07);
+        }
+
+        /* â”€â”€ Page hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .care-hero {
+            background: linear-gradient(135deg, #052e16 0%, #16a34a 60%, #4ade80 100%);
+            border-radius: 22px;
+            padding: 40px 44px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+        }
+        .care-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='15'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .care-hero::after {
+            content: '';
+            position: absolute;
+            right: 36px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 8rem;
+            opacity: 0.12;
+        }
+        .care-hero h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 8px;
+            position: relative;
+            z-index: 1;
+        }
+        .care-hero p {
+            opacity: 0.88;
+            font-size: 0.95rem;
+            max-width: 560px;
+            margin: 0;
+            line-height: 1.65;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-badge {
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        /* â”€â”€ Mock data banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        #mockBanner {
+            display: none;
+            background: linear-gradient(90deg, #fef3c7, #fffbeb);
+            border: 1.5px solid #fcd34d;
+            border-radius: 14px;
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #92400e;
+            align-items: center;
+            gap: 10px;
+        }
+        #mockBanner .material-icons { color: #f59e0b; font-size: 1.1rem; }
+
+        /* â”€â”€ Input card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .input-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px 36px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 28px;
+        }
+
+        .section-heading {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--green-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 18px;
+        }
+        .section-heading .material-icons { font-size: 1.1rem; color: var(--green); }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 16px 20px;
+            margin-bottom: 20px;
+        }
+        .field-group { display: flex; flex-direction: column; gap: 6px; }
+        .field-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .field-input {
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 11px;
+            font-size: 0.92rem;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            background: #fafafa;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .field-input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
+            background: #fff;
+        }
+
+        /* â”€â”€ Soil moisture radio segmented control â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .moisture-group {
+            display: flex;
+            gap: 0;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .moisture-option {
+            flex: 1;
+            text-align: center;
+        }
+        .moisture-option input[type="radio"] { display: none; }
+        .moisture-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 11px 8px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #fafafa;
+            border-right: 1.5px solid var(--border);
+            transition: background 0.2s, color 0.2s;
+            user-select: none;
+        }
+        .moisture-option:last-child label { border-right: none; }
+        .moisture-option input:checked + label {
+            background: var(--green-bg);
+            color: var(--green-dark);
+        }
+        .moisture-option label .emoji { font-size: 1.4rem; line-height: 1; }
+        .moisture-disclaimer {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+        .moisture-disclaimer .material-icons { font-size: 0.9rem; color: var(--amber); }
+
+        /* â”€â”€ Phase 6 TODO note â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .phase6-note {
+            background: var(--sky-bg);
+            border: 1px solid #bae6fd;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.77rem;
+            color: #0c4a6e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+        .phase6-note .material-icons { font-size: 0.95rem; color: var(--sky); }
+
+        /* â”€â”€ Submit button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .btn-submit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 15px 28px;
+            background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+            box-shadow: 0 4px 16px rgba(22,163,74,0.30);
+        }
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(22,163,74,0.38);
+        }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-submit .btn-spinner {
+            display: none;
+            width: 20px; height: 20px;
+            border: 2.5px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* â”€â”€ Form error â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        #formError {
+            display: none;
+            background: var(--danger-bg);
+            border: 1px solid #fca5a5;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.83rem;
+            color: var(--danger);
+            margin-bottom: 12px;
+        }
+
+        /* â”€â”€ Results section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        #resultsSection { display: none; }
+
+        .result-card {
+            display: none;
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px 32px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .result-card.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .result-card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 20px;
+        }
+        .result-card-title .material-icons { color: var(--green); font-size: 1.3rem; }
+
+        /* â”€â”€ Irrigation recommendation badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .rec-badge-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .rec-badge-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+        .rec-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 22px;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+        .badge-danger   { background: var(--danger-bg);  color: var(--danger);  }
+        .badge-danger .rec-badge-icon   { background: #fee2e2; color: var(--danger);  }
+        .badge-warning  { background: var(--amber-bg);   color: var(--amber);   }
+        .badge-warning .rec-badge-icon  { background: #fef3c7; color: var(--amber);  }
+        .badge-info     { background: var(--sky-bg);     color: #0369a1; }
+        .badge-info .rec-badge-icon     { background: #e0f2fe; color: #0369a1; }
+        .badge-success  { background: var(--green-bg);   color: var(--green-dark); }
+        .badge-success .rec-badge-icon  { background: #dcfce7; color: var(--green-dark); }
+
+        /* â”€â”€ Info rows (quantity, timing) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .info-rows { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--green-bg);
+            border-radius: 12px;
+            font-size: 0.88rem;
+        }
+        .info-row .material-icons { color: var(--green); font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
+        .info-row-label { font-weight: 600; color: var(--green-dark); display: block; }
+        .info-row-val   { color: #374151; }
+
+        /* â”€â”€ Reasoning block â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .reasoning-block {
+            background: #f9fafb;
+            border-left: 4px solid var(--green);
+            border-radius: 0 12px 12px 0;
+            padding: 14px 18px;
+            font-size: 0.88rem;
+            line-height: 1.65;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+
+        /* â”€â”€ Water saving tip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .tip-block {
+            display: flex;
+            gap: 12px;
+            background: var(--amber-bg);
+            border: 1px solid #fde68a;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 0.85rem;
+            color: #78350f;
+            margin-bottom: 18px;
+        }
+        .tip-block .material-icons { color: var(--amber-light); font-size: 1.2rem; flex-shrink: 0; }
+
+        /* â”€â”€ Weather context chips â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .weather-context {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .weather-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f3f4f6;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 5px 13px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .weather-chip .material-icons { font-size: 0.9rem; }
+        .weather-context-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 8px;
+        }
+
+        /* â”€â”€ Pest section header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .pest-section-header {
+            margin-bottom: 16px;
+        }
+        .pest-disclaimer {
+            background: var(--sky-bg);
+            border: 1px solid #bae6fd;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.78rem;
+            color: #0c4a6e;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .pest-disclaimer .material-icons { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+        /* â”€â”€ Empty pest state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        #pestEmpty {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        #pestEmpty .empty-icon {
+            width: 64px; height: 64px;
+            background: var(--green-bg);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+        }
+        #pestEmpty .empty-title { font-weight: 700; color: var(--green-dark); }
+
+        /* â”€â”€ Pest card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .pest-card {
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            animation: slideUp 0.35s ease both;
+            background: #fff;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        .pest-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            cursor: pointer;
+            user-select: none;
+            gap: 12px;
+            transition: background 0.15s;
+        }
+        .pest-card-header:hover { background: #fafafa; }
+
+        .pest-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .pest-icon {
+            font-size: 1.5rem;
+            width: 40px; height: 40px;
+            background: var(--green-bg);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--green);
+            flex-shrink: 0;
+        }
+        .pest-name { font-weight: 700; color: var(--text-dark); font-size: 0.95rem; }
+        .pest-local-name { font-size: 0.75rem; color: var(--text-muted); }
+
+        .risk-badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .risk-high     { background: #fee2e2; color: var(--danger);      }
+        .risk-moderate { background: var(--amber-bg); color: var(--amber); }
+        .risk-low      { background: var(--green-bg); color: var(--green-dark); }
+
+        .risk-bar-wrap {
+            width: 60px; height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .risk-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+        .risk-bar-fill.risk-high     { background: var(--danger);      }
+        .risk-bar-fill.risk-moderate { background: var(--amber-light);  }
+        .risk-bar-fill.risk-low      { background: var(--green-light);  }
+
+        .expand-icon {
+            color: var(--text-muted);
+            transition: transform 0.25s;
+        }
+
+        /* â”€â”€ Pest card body (collapsed by default) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .pest-card-body {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding: 0 20px;
+            border-top: 1.5px solid transparent;
+            transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.25s, border-color 0.25s;
+        }
+        /* The body becomes visible via JS max-height/opacity toggle */
+        .pest-card-body[style*="opacity: 1"] {
+            border-top-color: var(--border);
+            padding-top: 18px;
+            padding-bottom: 18px;
+        }
+
+        .off-season-note {
+            background: var(--amber-bg);
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.78rem;
+            color: #78350f;
+            margin-bottom: 12px;
+        }
+        .pest-description {
+            color: #374151;
+            font-size: 0.87rem;
+            line-height: 1.65;
+            margin: 0 0 16px;
+        }
+
+        /* â”€â”€ Two-column pest detail grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .pest-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 640px) { .pest-detail-grid { grid-template-columns: 1fr; } }
+
+        .pest-detail-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .pest-prevention-list {
+            padding-left: 18px;
+            margin: 0;
+            font-size: 0.82rem;
+            color: #374151;
+            line-height: 1.7;
+        }
+        .pest-prevention-list li { margin-bottom: 6px; }
+
+        /* â”€â”€ Treatment tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .treatment-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .treatment-tab {
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            background: #f9fafb;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .treatment-tab.active {
+            background: var(--green);
+            color: #fff;
+            border-color: var(--green);
+        }
+        .treatment-content {
+            font-size: 0.82rem;
+            color: #374151;
+            line-height: 1.65;
+        }
+
+        /* â”€â”€ Responsive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        @media (max-width: 700px) {
+            .care-hero    { padding: 24px 20px; }
+            .care-hero h1 { font-size: 1.5rem; }
+            .input-card   { padding: 22px 18px; }
+            .result-card  { padding: 20px 16px; }
+            .care-hero::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+        <div class="logo"><span class="material-icons">eco</span> KisanCare</div>
+        <div class="menu-toggle" id="mobile-menu"><span class="material-icons">menu</span></div>
+        <ul class="nav-links">
+            <li><a href="home.html" data-i18n="nav_home"><span class="material-icons">home</span> Home</a></li>
+            <li><a href="crop.html" data-i18n="nav_crop_advisory"><span class="material-icons">grass</span> Crop Advisory</a></li>
+            <li><a href="weather.html" data-i18n="nav_weather_alerts"><span class="material-icons">cloud</span> Weather Alerts</a></li>
+            <li><a href="crop-care.html" class="active" data-i18n="nav_crop_care"><span class="material-icons">local_florist</span> Crop Care</a></li>
+            <li><a href="market.html" data-i18n="nav_market_prices"><span class="material-icons">storefront</span> Market Prices</a></li>
+            <li><a href="schemes.html" data-i18n="nav_schemes"><span class="material-icons">account_balance</span> Govt Schemes</a></li>
+            <li><a href="fertilizer.html" data-i18n="nav_fertilizers"><span class="material-icons">science</span> Fertilizers</a></li>
+            <li><a href="#" id="navFeedbackLink" data-i18n="nav_feedback"><span class="material-icons">feedback</span> Feedback</a></li>
+            <li><a href="profile.html" data-i18n="nav_profile"><span class="material-icons">person</span> Profile</a></li>
+            <li><a href="history.html" data-i18n="nav_history"><span class="material-icons">history</span> History</a></li>
+            <li><a href="fertilizer-calc.html" data-i18n="nav_fert_calc"><span class="material-icons">calculate</span> Fert. Calc.</a></li>
+            <li><a href="expenses.html" data-i18n="nav_expenses"><span class="material-icons">payments</span> Expenses</a></li>
+            <li><a href="index.html" data-i18n="nav_login"><span class="material-icons">login</span> Login</a></li>
+            <li>
+                <select id="langSwitcher" class="lang-switcher">
+                    <option value="en">EN</option>
+                    <option value="hi">HI</option>
+                    <option value="gu">GU</option>
+                </select>
+            </li>
+        </ul>
+    </nav>
+    </header>
+
+    <main class="container" style="max-width:960px;margin:0 auto;">
+
+        <!-- Hero -->
+        <div class="care-hero">
+            <h1> Crop Care Advisor</h1>
+            <p>
+                Get personalised irrigation timing and water-quantity guidance, plus
+                common pest risk factors &mdash; all based on live weather at your location.
+            </p>
+            <div class="hero-badges">
+                <span class="hero-badge"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">water_drop</span> Irrigation Advisor</span>
+                <span class="hero-badge">ðŸ› Pest Risk Checker</span>
+                <span class="hero-badge">â˜ Live Weather</span>
+            </div>
+        </div>
+
+        <!-- Mock data banner -->
+        <div id="mockBanner" style="display:none;">
+            <span class="material-icons">info</span>
+            <span>
+                <strong>Demo data</strong> &mdash; No live weather available (API key not configured).
+                Results below are based on sample conditions for demonstration.
+            </span>
+        </div>
+
+        <!-- Form -->
+        <div class="input-card">
+
+            <!-- Phase 6 note hidden from live UI -->
+            <div class="phase6-note" style="display:none;">
+                <span class="material-icons">schedule</span>
+                <span>
+                    <strong>Coming in Phase 6:</strong> Growth stage and soil type will be
+                    pre-filled from your saved crop history — no need to enter them every time.
+                </span>
+            </div>
+
+            <form id="cropCareForm" novalidate>
+
+                <!-- Row 1: Location + Crop -->
+                <div class="section-heading">
+                    <span class="material-icons">location_on</span>
+                    Location &amp; Crop
+                </div>
+                <div class="field-grid">
+                    <div class="field-group">
+                        <label class="field-label" for="ccCity"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">location_city</span> City / District</label>
+                        <input type="text" id="ccCity" class="field-input"
+                               placeholder="e.g. Vadodara, Pune, Nagpur" autocomplete="off">
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label" for="ccCrop"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">grass</span> Crop</label>
+                        <select id="ccCrop" class="field-input">
+                            <option value="">&mdash; Select crop &mdash;</option>
+                            <option value="rice">Rice</option>
+                            <option value="wheat">Wheat</option>
+                            <option value="cotton">Cotton</option>
+                            <option value="maize">Maize</option>
+                            <option value="sugarcane">Sugarcane</option>
+                            <option value="tomato">Tomato</option>
+                            <option value="potato">Potato</option>
+                            <option value="chickpea">Chickpea</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Growth stage + Soil type -->
+                <div class="section-heading" style="margin-top:8px;">
+                    <span class="material-icons">grass</span>
+                    Crop Stage &amp; Soil
+                </div>
+                <div class="field-grid">
+                    <div class="field-group">
+                        <label class="field-label" for="ccGrowthStage">
+                            <span class="material-icons" style="font-size: 1rem; vertical-align: middle;">calendar_month</span> Growth Stage
+                            <!-- TODO: Phase 6 &mdash; pre-fill from saved crop history -->
+                        </label>
+                        <select id="ccGrowthStage" class="field-input">
+                            <option value="">&mdash; Select stage &mdash;</option>
+                            <option value="sowing">🌱 Sowing / Germination</option>
+                            <option value="vegetative">🌿<span class="material-icons" style="font-size: 1rem; vertical-align: middle;">nature</span> Vegetative Growth</option>
+                            <option value="flowering">🌸 Flowering / Reproductive</option>
+                            <option value="maturity">🌾 Maturity / Harvest</option>
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label" for="ccSoilType">
+                            <span class="material-icons" style="font-size: 1rem; vertical-align: middle;">landscape</span> Soil Type
+                        </label>
+                        <select id="ccSoilType" class="field-input">
+                            <option value="">&mdash; Select soil type &mdash;</option>
+                            <option value="sandy">Sandy</option>
+                            <option value="loamy">Loamy</option>
+                            <option value="clay">Clay</option>
+                            <option value="black_cotton">Black Cotton (Vertisol)</option>
+                            <option value="red_laterite">Red / Laterite</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Soil moisture estimate -->
+                <div class="section-heading" style="margin-top:4px;">
+                    <span class="material-icons">water</span>
+                    Soil Moisture Estimate
+                </div>
+                <div class="moisture-group">
+                    <div class="moisture-option">
+                        <input type="radio" id="mDry" name="soilMoisture" value="dry">
+                        <label for="mDry">
+                            <span class="material-icons" style="font-size: 1rem; vertical-align: middle;">wb_sunny</span>
+                            Dry
+                        </label>
+                    </div>
+                    <div class="moisture-option">
+                        <input type="radio" id="mMoist" name="soilMoisture" value="moist" checked>
+                        <label for="mMoist">
+                            <span class="material-icons" style="font-size: 1rem; vertical-align: middle;">water_drop</span>
+                            Moist
+                        </label>
+                    </div>
+                    <div class="moisture-option">
+                        <input type="radio" id="mWet" name="soilMoisture" value="wet">
+                        <label for="mWet">
+                            <span class="material-icons" style="font-size: 1rem; vertical-align: middle;">waves</span>
+                            Wet
+                        </label>
+                    </div>
+                </div>
+                <div class="moisture-disclaimer">
+                    <span class="material-icons">info</span>
+                    Based on your visual estimate &mdash; not live soil sensor data.
+                </div>
+
+                <div id="formError"></div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span id="btnText" style="display:flex;align-items:center;gap:8px;">
+                        <span class="material-icons">auto_awesome</span>
+                        Get Irrigation &amp; Pest Advice
+                    </span>
+                    <div class="btn-spinner" id="btnSpinner"></div>
+                </button>
+
+            </form>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsSection">
+
+            <!-- â”€â”€ Irrigation Advisory Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <div class="result-card" id="irrigationSection">
+                <div class="result-card-title">
+                    <span class="material-icons">water_drop</span>
+                    Irrigation Advisory
+                </div>
+
+                <!-- Recommendation badge -->
+                <div class="rec-badge-wrap">
+                    <div class="rec-badge-icon badge-success" id="irrBadgeIcon">
+                        <span class="material-icons" id="irrBadgeIcon">check_circle</span>
+                    </div>
+                    <span class="rec-badge badge-success" id="irrBadge">&mdash;</span>
+                </div>
+
+                <!-- Quantity + Timing rows -->
+                <div class="info-rows">
+                    <div class="info-row" id="irrQuantityRow">
+                        <span class="material-icons">water_drop</span>
+                        <div>
+                            <span class="info-row-label">Recommended Water Quantity</span>
+                            <span class="info-row-val" id="irrQuantity">&mdash;</span>
+                            <span style="font-size:0.75rem;color:var(--text-muted);display:block;">
+                                Estimated per irrigation event &middot; adjusted for soil type &amp; growth stage
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-row" id="irrTimingRow">
+                        <span class="material-icons">schedule</span>
+                        <div>
+                            <span class="info-row-label">Best Timing</span>
+                            <span class="info-row-val" id="irrTiming">&mdash;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reasoning -->
+                <div class="reasoning-block" id="irrReasoning">&mdash;</div>
+
+                <!-- Water saving tip -->
+                <div class="tip-block">
+                    <span class="material-icons">eco</span>
+                    <div>
+                        <strong style="display:block;margin-bottom:4px;"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">lightbulb</span> Water-Saving Tip</strong>
+                        <span id="irrTip">&mdash;</span>
+                    </div>
+                </div>
+
+                <!-- Weather context -->
+                <div class="weather-context-label">Weather data used for this advice</div>
+                <div class="weather-context">
+                    <span class="weather-chip">
+                        <span class="material-icons">device_thermostat</span>
+                        Temp: <strong id="irrWeatherTemp">&mdash;</strong>
+                    </span>
+                    <span class="weather-chip">
+                        <span class="material-icons">water</span>
+                        Humidity: <strong id="irrWeatherHumid">&mdash;</strong>
+                    </span>
+                    <span class="weather-chip">
+                        <span class="material-icons">grain</span>
+                        Rain (48h): <strong id="irrWeatherRain">&mdash;</strong>
+                    </span>
+                    <span class="weather-chip">
+                        <span class="material-icons">umbrella</span>
+                        Rain prob: <strong id="irrWeatherProb">&mdash;</strong>
+                    </span>
+                </div>
+            </div>
+
+            <!-- â”€â”€ Pest Risk Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <div class="result-card" id="pestSection">
+                <div class="pest-section-header">
+                    <div class="result-card-title">
+                        <span class="material-icons">bug_report</span>
+                        Common Pest Risk Factors
+                    </div>
+                    <div class="pest-disclaimer">
+                        <span class="material-icons">info</span>
+                        <span>
+                            <strong>Rule-based lookup, not an AI prediction.</strong>
+                            Risk scores show how closely current weather conditions match
+                            the known favourable range for each pest, based on ICAR and
+                            FAO extension guidance. Actual incidence depends on many local
+                            factors not captured here.
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Weather context -->
+                <div class="weather-context-label" style="margin-bottom:8px;">
+                    Weather data used
+                </div>
+                <div class="weather-context" style="margin-bottom:18px;">
+                    <span class="weather-chip">
+                        <span class="material-icons">device_thermostat</span>
+                        Temp: <strong id="pestWeatherTemp">&mdash;</strong>
+                    </span>
+                    <span class="weather-chip">
+                        <span class="material-icons">water</span>
+                        Humidity: <strong id="pestWeatherHumid">&mdash;</strong>
+                    </span>
+                </div>
+
+                <!-- Empty state -->
+                <div id="pestEmpty">
+                    <div class="empty-icon"></div>
+                    <div class="empty-title">No Elevated Pest Risk Detected</div>
+                    <div style="font-size:0.85rem;max-width:320px;">
+                        Current weather conditions do not fall within the known favourable
+                        range for common pests of this crop. Continue regular monitoring.
+                    </div>
+                </div>
+
+                <!-- Pest list -->
+                <div id="pestList"></div>
+
+            </div>
+
+        </div><!-- /resultsSection -->
+
+    </main>
+
+    <!-- Chat Widget -->
+    <div class="chat-btn" id="chat-toggle-btn">
+        <span class="material-icons">chat</span>
+    </div>
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <span> KisanCare Assistant</span>
+            <button class="chat-close" id="chat-close-btn">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Ask about irrigation or pests...">
+            <button id="chat-send-btn">
+                <span class="material-icons">send</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Nav mobile toggle (reuse existing app.js logic) -->
+    <script>
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks   = document.querySelector('.nav-links');
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+        }
+    </script>
+
+    <script src="js/crop-care.js"></script>
+    <script src="js/chat.js"></script>
+
+    <script src="js/i18n.js"></script>
+</body>
+</html>
+
+

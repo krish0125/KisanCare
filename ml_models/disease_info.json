@@ -1,0 +1,30 @@
+{
+  "Tomato___Early_blight": {
+    "cause": "Fungal infection (Alternaria solani) typically favored by warm temperatures and high humidity.",
+    "prevention": "Use certified disease-free seeds. Practice crop rotation and ensure adequate spacing for airflow.",
+    "organic_treatment": "Remove affected leaves immediately. Spray 5% Neem Seed Kernel Extract (NSKE) at 10-day intervals.",
+    "chemical_treatment": "Spray Mancozeb 75% WP @ 2g per litre of water or Chlorothalonil 75% WP.",
+    "fertilizer_suggestion": "Ensure balanced nutrition; avoid excessive nitrogen which can make plants susceptible."
+  },
+  "Tomato___healthy": {
+    "cause": "None.",
+    "prevention": "Maintain current good agricultural practices.",
+    "organic_treatment": "Not required.",
+    "chemical_treatment": "Not required.",
+    "fertilizer_suggestion": "Continue standard NPK schedule."
+  },
+  "Potato___Late_blight": {
+    "cause": "Water mold (Phytophthora infestans) thriving in cool, wet weather.",
+    "prevention": "Plant resistant varieties. Avoid overhead irrigation and destroy cull piles.",
+    "organic_treatment": "Copper-based fungicides can be used preventatively in organic systems.",
+    "chemical_treatment": "Apply systemic fungicides like Metalaxyl combined with Mancozeb.",
+    "fertilizer_suggestion": "Avoid excessive nitrogen."
+  },
+  "default": {
+    "cause": "General stress or infection.",
+    "prevention": "Maintain field sanitation and ensure proper spacing and drainage.",
+    "organic_treatment": "Neem oil spray is a good broad-spectrum organic preventative.",
+    "chemical_treatment": "Consult local agriculture officer for specific broad-spectrum fungicide/bactericide.",
+    "fertilizer_suggestion": "Maintain a balanced NPK ratio."
+  }
+}

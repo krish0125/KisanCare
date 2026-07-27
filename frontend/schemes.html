@@ -53,7 +53,7 @@
             overflow: hidden;
         }
         .scheme-hero::before {
-            content: '🏛️'; position: absolute; font-size: 18rem; top: -40px; right: -40px; opacity: 0.05; transform: rotate(-15deg);
+            content: 'ðŸ›'; position: absolute; font-size: 18rem; top: -40px; right: -40px; opacity: 0.05; transform: rotate(-15deg);
         }
         .scheme-hero h1 {
             font-size: 3rem; font-weight: 800; color: #2c3e50; margin-bottom: 15px;
@@ -139,7 +139,7 @@
             font-size: 0.85rem; color: #444; margin-bottom: 8px;
             display: flex; align-items: flex-start; gap: 8px;
         }
-        .scheme-details-list li::before { content: '✅'; font-size: 0.9rem; margin-top: 1px; }
+        .scheme-details-list li::before { content: ''; font-size: 0.9rem; margin-top: 1px; }
 
         .btn-check-scheme {
             background: linear-gradient(135deg, var(--primary), var(--dark-green));
@@ -188,15 +188,29 @@
 <!-- HEADER -->
 <header>
     <nav>
-        <div class="logo">🌿 KisanCare</div>
+        <div class="logo"><span class="material-icons">eco</span> KisanCare</div>
+        <div class="menu-toggle" id="mobile-menu"><span class="material-icons">menu</span></div>
         <ul class="nav-links">
-            <li><a href="home.html">Home</a></li>
-            <li><a href="crop.html">Crop Advisory</a></li>
-            <li><a href="weather.html">Weather Alerts</a></li>
-            <li><a href="market.html">Market Prices</a></li>
-            <li><a href="schemes.html" class="active">🏛️ Govt Schemes</a></li>
-            <li><a href="fertilizer.html">Fertilizers</a></li>
-            <li><a href="index.html">Login</a></li>
+            <li><a href="home.html" data-i18n="nav_home"><span class="material-icons">home</span> Home</a></li>
+            <li><a href="crop.html" data-i18n="nav_crop_advisory"><span class="material-icons">grass</span> Crop Advisory</a></li>
+            <li><a href="weather.html" data-i18n="nav_weather_alerts"><span class="material-icons">cloud</span> Weather Alerts</a></li>
+            <li><a href="crop-care.html" data-i18n="nav_crop_care"><span class="material-icons">local_florist</span> Crop Care</a></li>
+            <li><a href="market.html" data-i18n="nav_market_prices"><span class="material-icons">storefront</span> Market Prices</a></li>
+            <li><a href="schemes.html" class="active" data-i18n="nav_schemes"><span class="material-icons">account_balance</span> Govt Schemes</a></li>
+            <li><a href="fertilizer.html" data-i18n="nav_fertilizers"><span class="material-icons">science</span> Fertilizers</a></li>
+            <li><a href="#" id="navFeedbackLink" data-i18n="nav_feedback"><span class="material-icons">feedback</span> Feedback</a></li>
+            <li><a href="profile.html" data-i18n="nav_profile"><span class="material-icons">person</span> Profile</a></li>
+            <li><a href="history.html" data-i18n="nav_history"><span class="material-icons">history</span> History</a></li>
+            <li><a href="fertilizer-calc.html" data-i18n="nav_fert_calc"><span class="material-icons">calculate</span> Fert. Calc.</a></li>
+            <li><a href="expenses.html" data-i18n="nav_expenses"><span class="material-icons">payments</span> Expenses</a></li>
+            <li><a href="index.html" data-i18n="nav_login"><span class="material-icons">login</span> Login</a></li>
+            <li>
+                <select id="langSwitcher" class="lang-switcher">
+                    <option value="en">EN</option>
+                    <option value="hi">HI</option>
+                    <option value="gu">GU</option>
+                </select>
+            </li>
         </ul>
     </nav>
 </header>
@@ -209,10 +223,10 @@
 
 <!-- LIVE ALERT -->
 <div class="live-alert-banner">
-    <div class="alert-icon">🔔</div>
+    <div class="alert-icon">ðŸ””</div>
     <div>
         <h4>LATEST ALERT: PM-KISAN 16th Installment</h4>
-        <p>The ₹2000 direct transfer is being released. Ensure your e-KYC is completed to receive the funds directly in your bank account!</p>
+        <p>The â‚¹2000 direct transfer is being released. Ensure your e-KYC is completed to receive the funds directly in your bank account!</p>
     </div>
     <a href="https://pmkisan.gov.in/" class="apply-now-btn" target="_blank">Check Status</a>
 </div>
@@ -224,121 +238,27 @@
     </div>
 
     <div class="scheme-grid">
-        <!-- Card 1 -->
-        <div class="scheme-card">
-            <div class="card-top">
-                <div class="scheme-icon-wrapper" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); color: #1976d2;">💸</div>
-                <div class="fund-badge">₹6,000 / Year</div>
-            </div>
-            <h3>PM-KISAN Samman Nidhi</h3>
-            <p class="desc">Direct income support of ₹6,000 per year transferred entirely directly into the bank accounts of farmer families across the country in three equal installments.</p>
-            <ul class="scheme-details-list">
-                <li><strong>Eligibility:</strong> Landholding farmers</li>
-                <li><strong>Benefit:</strong> ₹2000 every 4 months</li>
-                <li><strong>Deadline:</strong> Open all year (eKYC mandatory)</li>
-            </ul>
-            <a href="https://pmkisan.gov.in/" class="btn-check-scheme" target="_blank">Apply / Check Status</a>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="scheme-card">
-            <div class="card-top">
-                <div class="scheme-icon-wrapper" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); color: #c2185b;">☂️</div>
-                <div class="fund-badge" style="background: #e91e63;">Full Protection</div>
-            </div>
-            <h3>Fasal Bima Yojana (PMFBY)</h3>
-            <p class="desc">A comprehensive crop insurance scheme to provide financial support to farmers suffering crop loss or damage arising out of unforeseen events.</p>
-            <ul class="scheme-details-list">
-                <li><strong>Premium:</strong> 1.5% - 2% (Rabi/Kharif)</li>
-                <li><strong>Coverage:</strong> Drought, Flood, Hailstorm</li>
-                <li><strong>Claim:</strong> Direct settlement to bank</li>
-            </ul>
-            <a href="https://pmfby.gov.in/" class="btn-check-scheme" target="_blank">Calculate Premium</a>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="scheme-card">
-            <div class="card-top">
-                <div class="scheme-icon-wrapper" style="background: linear-gradient(135deg, #e8f5e9, #a5d6a7); color: #2e7d32;">💳</div>
-                <div class="fund-badge" style="background: #27ae60;">Up to ₹3 Lakh</div>
-            </div>
-            <h3>Kisan Credit Card (KCC)</h3>
-            <p class="desc">Provides farmers with timely access to credit for agricultural expenses like seeds, fertilizers, pesticides, and other inputs at highly subsidized interest rates.</p>
-            <ul class="scheme-details-list">
-                <li><strong>Interest Rate:</strong> 4% (with prompt repayment)</li>
-                <li><strong>Limit:</strong> Up to ₹3 Lakhs collateral free</li>
-                <li><strong>Extras:</strong> Includes animal husbandry &amp; fishery</li>
-            </ul>
-            <a href="https://www.myscheme.gov.in/schemes/kcc" class="btn-check-scheme" target="_blank">Apply for KCC</a>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="scheme-card">
-            <div class="card-top">
-                <div class="scheme-icon-wrapper" style="background: linear-gradient(135deg, #fff3e0, #ffcc80); color: #e65100;">🚜</div>
-                <div class="fund-badge" style="background: #e67e22;">50-80% Subsidy</div>
-            </div>
-            <h3>Sub-Mission on Agricultural Mechanization</h3>
-            <p class="desc">Get massive financial assistance / subsidies on buying new tractors, rotavators, tillers, and modern farming equipment.</p>
-            <ul class="scheme-details-list">
-                <li><strong>Benefit:</strong> 50% to 80% Cost Covered</li>
-                <li><strong>Target:</strong> Small & Marginal Farmers</li>
-                <li><strong>Process:</strong> Apply via State Agri Portals</li>
-            </ul>
-            <a href="https://agrimachinery.nic.in/" class="btn-check-scheme" target="_blank">View Tractor Subsidies</a>
-        </div>
-
-        <!-- Card 5 -->
-        <div class="scheme-card">
-            <div class="card-top">
-                <div class="scheme-icon-wrapper" style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); color: #6a1b9a;">🌱</div>
-                <div class="fund-badge" style="background: #8e44ad;">₹50,000 / ha</div>
-            </div>
-            <h3>Paramparagat Krishi Vikas (PKVY)</h3>
-            <p class="desc">Promotes organic farming through a cluster approach. Government provides financial assistance to farmers shifting to chemical-free agriculture.</p>
-            <ul class="scheme-details-list">
-                <li><strong>Funding:</strong> ₹50,000 per hectare for 3 years</li>
-                <li><strong>Usage:</strong> For organic seeds, bio-fertilizers</li>
-                <li><strong>Market:</strong> Help with organic certification</li>
-            </ul>
-            <a href="https://pgsindia-ncof.gov.in/pkvy/index.aspx" class="btn-check-scheme" target="_blank">Join Cluster</a>
-        </div>
-
-        <!-- Card 6 -->
-        <div class="scheme-card">
-            <div class="card-top">
-                <div class="scheme-icon-wrapper" style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); color: #00695c;">💦</div>
-                <div class="fund-badge" style="background: #16a085;">Free Setup</div>
-            </div>
-            <h3>PM Krishi Sinchayee Yojana</h3>
-            <p class="desc">"Per Drop More Crop" - Subsidies on implementing micro-irrigation systems like Drip and Sprinkler irrigation in your fields to save water.</p>
-            <ul class="scheme-details-list">
-                <li><strong>Subsidy:</strong> 55% for small/marginal farmers</li>
-                <li><strong>Goal:</strong> Water conservation & yield boost</li>
-                <li><strong>Apply:</strong> District Horticulture Office</li>
-            </ul>
-            <a href="https://pmksy.gov.in/" class="btn-check-scheme" target="_blank">Get Drip Subsidy</a>
-        </div>
+        <!-- Cards will be dynamically injected here by schemes.js -->
     </div>
 
     <!-- Direct Money Section -->
     <div class="money-section">
         <div class="money-content">
             <h3>Did you know you can get Direct Cash Benefits?</h3>
-            <p>The Government of India has transferred over ₹2.6 Lakh Crores directly into the bank accounts of farmers. KisanCare bridges the gap by keeping you updated on when the next installment is dropping, how to fix your eKYC issues, and ensuring you never miss your rightful money.</p>
+            <p>The Government of India has transferred over â‚¹2.6 Lakh Crores directly into the bank accounts of farmers. KisanCare bridges the gap by keeping you updated on when the next installment is dropping, how to fix your eKYC issues, and ensuring you never miss your rightful money.</p>
             <div class="money-stats">
                 <div class="m-stat">
                     <h4>11+ Cr</h4>
                     <span>Farmers Benefitting</span>
                 </div>
                 <div class="m-stat">
-                    <h4>₹6000</h4>
+                    <h4>â‚¹6000</h4>
                     <span>Annual Income Support</span>
                 </div>
             </div>
         </div>
         <div class="money-icon-wrap">
-            <div class="money-img">🏦</div>
+            <div class="money-img">ðŸ¦</div>
         </div>
     </div>
 </div>
@@ -353,25 +273,25 @@
         <span class="material-icons close-btn" id="close-chat">close</span>
     </div>
     <div class="chat-lang-bar">
-        <label>🌐 Language:</label>
+        <label>ðŸŒ Language:</label>
         <select id="chat-lang-select">
-            <option value="en">🇬🇧 English</option>
-            <option value="hi">🇮🇳 हिन्दी (Hindi)</option>
-            <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
-            <option value="mr">🇮🇳 मराठी (Marathi)</option>
-            <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
-            <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
-            <option value="te">🇮🇳 తెలుగు (Telugu)</option>
-            <option value="bn">🇮🇳 বাংলা (Bengali)</option>
-            <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
-            <option value="ml">🇮🇳 മലയാളം (Malayalam)</option>
-            <option value="or">🇮🇳 ଓଡ଼ିଆ (Odia)</option>
-            <option value="ur">🇮🇳 اردو (Urdu)</option>
+            <option value="en">ðŸ‡¬ðŸ‡§ English</option>
+            <option value="hi">ðŸ‡®ðŸ‡³ à¤¹à¤¿à¤¨à¥à¤¦à¥€ (Hindi)</option>
+            <option value="gu">ðŸ‡®ðŸ‡³ àª—à«àªœàª°àª¾àª¤à«€ (Gujarati)</option>
+            <option value="mr">ðŸ‡®ðŸ‡³ à¤®à¤°à¤¾à¤ à¥€ (Marathi)</option>
+            <option value="pa">ðŸ‡®ðŸ‡³ à¨ªà©°à¨œà¨¾à¨¬à©€ (Punjabi)</option>
+            <option value="ta">ðŸ‡®ðŸ‡³ à®¤à®®à®¿à®´à¯ (Tamil)</option>
+            <option value="te">ðŸ‡®ðŸ‡³ à°¤à±†à°²à±à°—à± (Telugu)</option>
+            <option value="bn">ðŸ‡®ðŸ‡³ à¦¬à¦¾à¦‚à¦²à¦¾ (Bengali)</option>
+            <option value="kn">ðŸ‡®ðŸ‡³ à²•à²¨à³à²¨à²¡ (Kannada)</option>
+            <option value="ml">ðŸ‡®ðŸ‡³ à´®à´²à´¯à´¾à´³à´‚ (Malayalam)</option>
+            <option value="or">ðŸ‡®ðŸ‡³ à¬“à¬¡à¬¼à¬¿à¬† (Odia)</option>
+            <option value="ur">ðŸ‡®ðŸ‡³ Ø§Ø±Ø¯Ùˆ (Urdu)</option>
         </select>
     </div>
     <div class="chat-messages" id="chat-messages">
         <div class="message bot">
-            <p>Hello! Ask me about PM-Kisan, KCC, or any other Government Scheme! 🏛️</p>
+            <p>Hello! Ask me about PM-Kisan, KCC, or any other Government Scheme! ðŸ›</p>
         </div>
     </div>
     <div class="chat-input-area">
@@ -386,5 +306,11 @@
 </div>
 
 <script src="js/chat.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/schemes.js"></script>
 </body>
 </html>
+
+
+
+

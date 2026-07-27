@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KisanCare — Login & Sign Up</title>
+    <title>KisanCare â€” Login & Sign Up</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
@@ -28,15 +28,15 @@
             background: #f8fafc;
         }
 
-        /* ──────────────────────────────────────
-           LAYOUT  — Two-column split
-        ────────────────────────────────────── */
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+           LAYOUT  â€” Two-column split
+        â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         .page-wrap {
             display: flex;
             min-height: 100vh;
         }
 
-        /* ── LEFT BRANDING PANEL ── */
+        /* â”€â”€ LEFT BRANDING PANEL â”€â”€ */
         .brand-panel {
             width: 420px;
             flex-shrink: 0;
@@ -134,7 +134,7 @@
             color: rgba(255,255,255,0.5);
         }
 
-        /* ── RIGHT AUTH PANEL ── */
+        /* â”€â”€ RIGHT AUTH PANEL â”€â”€ */
         .auth-panel {
             flex: 1;
             display: flex;
@@ -150,7 +150,7 @@
             max-width: 480px;
         }
 
-        /* ── TABS ── */
+        /* â”€â”€ TABS â”€â”€ */
         .auth-tabs {
             display: flex;
             background: #fff;
@@ -180,7 +180,7 @@
             box-shadow: 0 4px 14px rgba(39,174,96,0.35);
         }
 
-        /* ── FORM CARD ── */
+        /* â”€â”€ FORM CARD â”€â”€ */
         .form-card {
             background: #fff;
             border: 1px solid var(--border);
@@ -216,7 +216,7 @@
         }
         .demo-badge strong { font-weight: 700; }
 
-        /* ── FIELD GROUP ── */
+        /* â”€â”€ FIELD GROUP â”€â”€ */
         .field-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -288,7 +288,7 @@
         .field-msg.err { color: var(--error); }
         .field-msg.ok  { color: var(--success); }
 
-        /* ── PASSWORD STRENGTH ── */
+        /* â”€â”€ PASSWORD STRENGTH â”€â”€ */
         .pw-meter {
             margin-top: 10px;
         }
@@ -328,7 +328,7 @@
         }
         .pw-rule.ok .dot { background: var(--success); }
 
-        /* ── DIVIDER ── */
+        /* â”€â”€ DIVIDER â”€â”€ */
         .or-divider {
             display: flex; align-items: center; gap: 12px;
             margin: 22px 0 18px;
@@ -339,32 +339,44 @@
         .or-divider span { font-size: 0.75rem; color: #9ca3af; font-weight: 500; }
 
         /* ── BUTTONS ── */
-        .btn-primary {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #27ae60, #1e8449);
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(39,174,96,0.38);
-            transition: all 0.25s ease;
-            margin-top: 6px;
-            display: flex;
+        .btn {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            position: relative;
-            overflow: hidden;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(39, 174, 96, 0.3);
         }
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(39,174,96,0.48);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.45);
         }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-block {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .btn-primary .spinner {
             display: none;
             width: 18px; height: 18px;
@@ -438,7 +450,7 @@
         }
         .btn-otp:hover { background: #d97706; transform: translateY(-1px); }
 
-        /* ── TOAST ── */
+        /* â”€â”€ TOAST â”€â”€ */
         .toast {
             position: fixed;
             top: 20px; right: 20px;
@@ -459,7 +471,7 @@
         .toast.success { background: linear-gradient(135deg, #22c55e, #16a34a); }
         .toast.info    { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
 
-        /* ── MODAL OVERLAY ── */
+        /* â”€â”€ MODAL OVERLAY â”€â”€ */
         .modal-overlay {
             display: none;
             position: fixed; inset: 0;
@@ -514,7 +526,7 @@
         .welcome-card p  { color:var(--muted); font-size:0.88rem; line-height:1.6; }
         .welcome-card strong { color:var(--green); }
 
-        /* ── RESPONSIVE ── */
+        /* â”€â”€ RESPONSIVE â”€â”€ */
         @media (max-width: 860px) {
             .brand-panel { display: none; }
         }
@@ -528,16 +540,16 @@
 
 <!-- Toast notifications -->
 <div class="toast" id="toast">
-    <span id="toast-icon">⚠️</span>
+    <span id="toast-icon"> </span>
     <span id="toast-msg">Message</span>
 </div>
 
 <div class="page-wrap">
 
-    <!-- ════════════ LEFT BRANDING PANEL ════════════ -->
+    <!-- LEFT BRANDING PANEL -->
     <aside class="brand-panel">
         <div class="brand-logo">
-            <div class="logo-icon">🌿</div>
+            <div class="logo-icon"></div>
             KisanCare
         </div>
 
@@ -550,46 +562,46 @@
             </p>
             <div class="brand-features">
                 <div class="feat-item">
-                    <div class="feat-icon">🌾</div>
+                    <div class="feat-icon"><span class="material-icons">grass</span></div>
                     Real-time crop advisory for all seasons
                 </div>
                 <div class="feat-item">
-                    <div class="feat-icon">💰</div>
+                    <div class="feat-icon"><span class="material-icons">payments</span></div>
                     Live mandi prices from 500+ markets
                 </div>
                 <div class="feat-item">
-                    <div class="feat-icon">🤖</div>
+                    <div class="feat-icon"><span class="material-icons">smart_toy</span></div>
                     Gemini AI chatbot in 12 Indian languages
                 </div>
                 <div class="feat-item">
-                    <div class="feat-icon">☀️</div>
+                    <div class="feat-icon"><span class="material-icons">wb_sunny</span></div>
                     Hyper-local weather alerts & forecasts
                 </div>
                 <div class="feat-item">
-                    <div class="feat-icon">🏛️</div>
+                    <div class="feat-icon"><span class="material-icons">account_balance</span></div>
                     Government scheme eligibility checker
                 </div>
             </div>
         </div>
 
-        <div class="brand-footer">© 2026 KisanCare — All rights reserved</div>
+        <div class="brand-footer">&copy; 2026 KisanCare &mdash; All rights reserved</div>
     </aside>
 
-    <!-- ════════════ RIGHT AUTH PANEL ════════════ -->
+    <!-- RIGHT AUTH PANEL -->
     <main class="auth-panel">
         <div class="auth-box">
 
             <!-- Tabs -->
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">
-                    🔑 Sign In
+                    <span class="material-icons" style="font-size: 1.1rem; vertical-align: middle;">login</span> Sign In
                 </button>
                 <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">
-                    ✏️ Create Account
+                       Create Account
                 </button>
             </div>
 
-            <!-- ══════ LOGIN FORM ══════ -->
+            <!-- LOGIN FORM -->
             <div id="login-view">
                 <div class="form-card">
                     <div class="form-title">Welcome Back 👋</div>
@@ -617,7 +629,7 @@
                                 <div class="field-label">🔒 Password</div>
                                 <div class="field-wrap">
                                     <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
-                                    <button type="button" class="toggle-pw-btn" onclick="togglePw('loginPassword',this)">👁️</button>
+                                    <button type="button" class="toggle-pw-btn" onclick="togglePw('loginPassword',this)">👁️ </button>
                                 </div>
                                 <div class="field-msg" id="loginPassMsg"></div>
                             </div>
@@ -626,13 +638,13 @@
                         <!-- Phone Login Group -->
                         <div id="phone-login-group" style="display:none;">
                             <div class="field-group">
-                                <div class="field-label">📱 Phone Number</div>
+                                <div class="field-label"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">phone_iphone</span> Phone Number</div>
                                 <div class="field-wrap">
                                     <input type="tel" id="loginPhone" placeholder="10-digit mobile number">
                                 </div>
                             </div>
                             <div class="field-group" id="otp-group" style="display:none;">
-                                <div class="field-label">🔢 OTP</div>
+                                <div class="field-label"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">password</span> OTP</div>
                                 <div class="field-wrap">
                                     <input type="text" id="loginOTP" placeholder="Enter 4-digit OTP" maxlength="4">
                                 </div>
@@ -640,8 +652,8 @@
                             <button type="button" class="btn-otp" id="sendOtpBtn">Send OTP</button>
                         </div>
 
-                        <button type="submit" class="btn-primary" id="loginBtn">
-                            <span class="btn-text">Sign In →</span>
+                        <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                            <span class="btn-text">Sign In &rarr;</span>
                             <div class="spinner"></div>
                         </button>
                     </form>
@@ -657,22 +669,22 @@
                 </div>
 
                 <div class="switch-text">
-                    Don't have an account? <a href="#" id="toSignup">Create one free →</a>
+                    Don't have an account? <a href="#" id="toSignup">Create one free &rarr;</a>
                 </div>
             </div>
 
-            <!-- ══════ SIGNUP FORM ══════ -->
+            <!-- SIGNUP FORM -->
             <div id="signup-view" style="display:none;">
                 <div class="form-card">
-                    <div class="form-title">Create Account 🌱</div>
-                    <div class="form-sub">Join KisanCare — it's free and takes 30 seconds</div>
+                    <div class="form-title">Create Account <span class="material-icons" style="font-size: 1.2rem; vertical-align: middle; color:#22c55e;">eco</span></div>
+                    <div class="form-sub">Join KisanCare &mdash; it's free and takes 30 seconds</div>
 
                     <form id="signupForm" autocomplete="on" novalidate>
 
                         <!-- Row 1: Name + Phone -->
                         <div class="field-row">
                             <div class="field-group">
-                                <div class="field-label">👤 Full Name</div>
+                                <div class="field-label"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">person</span> Full Name</div>
                                 <div class="field-wrap">
                                     <input type="text" id="signupName" placeholder="demo user" autocomplete="name">
                                     <span class="field-icon" id="nameIcon"></span>
@@ -680,7 +692,7 @@
                                 <div class="field-msg" id="nameMsg"></div>
                             </div>
                             <div class="field-group">
-                                <div class="field-label">📱 Phone</div>
+                                <div class="field-label"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">phone_iphone</span> Phone</div>
                                 <div class="field-wrap">
                                     <input type="tel" id="signupPhone" placeholder="9742276XXX">
                                     <span class="field-icon" id="phoneIcon"></span>
@@ -691,7 +703,7 @@
 
                         <!-- Email (full width) -->
                         <div class="field-group">
-                            <div class="field-label">📧 Email Address</div>
+                            <div class="field-label"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">email</span> Email Address</div>
                             <div class="field-wrap">
                                 <input type="email" id="signupEmail" placeholder="you@gmail.com or you@yahoo.com" autocomplete="email">
                                 <span class="field-icon" id="emailIcon"></span>
@@ -702,17 +714,17 @@
                         <!-- Row 2: Password + Confirm -->
                         <div class="field-row">
                             <div class="field-group">
-                                <div class="field-label">🔒 Password</div>
+                                <div class="field-label"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">lock</span> Password</div>
                                 <div class="field-wrap">
                                     <input type="password" id="signupPassword" placeholder="Min 8 chars" autocomplete="new-password">
-                                    <button type="button" class="toggle-pw-btn" onclick="togglePw('signupPassword',this)">👁️</button>
+                                    <button type="button" class="toggle-pw-btn" onclick="togglePw('signupPassword',this)"><span class="material-icons" style="font-size: 1.1rem; vertical-align: middle;">visibility</span></button>
                                 </div>
                             </div>
                             <div class="field-group">
-                                <div class="field-label">🔒 Confirm</div>
+                                <div class="field-label"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">lock</span> Confirm</div>
                                 <div class="field-wrap">
                                     <input type="password" id="signupConfirm" placeholder="Re-enter" autocomplete="new-password">
-                                    <button type="button" class="toggle-pw-btn" onclick="togglePw('signupConfirm',this)">👁️</button>
+                                    <button type="button" class="toggle-pw-btn" onclick="togglePw('signupConfirm',this)"><span class="material-icons" style="font-size: 1.1rem; vertical-align: middle;">visibility</span></button>
                                 </div>
                                 <div class="field-msg" id="confirmMsg"></div>
                             </div>
@@ -732,15 +744,15 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn-primary" id="signupBtn" style="margin-top:20px;">
-                            <span class="btn-text">Create Account →</span>
+                        <button type="submit" class="btn btn-primary btn-block" id="signupBtn" style="margin-top:20px;">
+                            <span class="btn-text">Create Account &rarr;</span>
                             <div class="spinner"></div>
                         </button>
                     </form>
                 </div>
 
                 <div class="switch-text">
-                    Already have an account? <a href="#" id="toLogin">Sign In →</a>
+                    Already have an account? <a href="#" id="toLogin">Sign In &rarr;</a>
                 </div>
             </div>
 
@@ -781,7 +793,7 @@
     <div class="modal-card welcome-card">
         <div class="emoji">🎉</div>
         <h2>Welcome!</h2>
-        <p>Hello, <strong id="welcomeName">User</strong>!<br>Redirecting to your dashboard…</p>
+        <p>Hello, <strong id="welcomeName">User</strong>!<br>Redirecting to your dashboard</p>
     </div>
 </div>
 
@@ -791,8 +803,8 @@
    UTILITY FUNCTIONS
 ============================================== */
 function toast(msg, type = 'error') {
-    const icons = { error:'❌', success:'✅', info:'ℹ️' };
-    document.getElementById('toast-icon').textContent = icons[type] || '⚠️';
+    const icons = { error:'âŒ', success:'', info:'â„¹' };
+    document.getElementById('toast-icon').textContent = icons[type] || '';
     document.getElementById('toast-msg').textContent = msg;
     const el = document.getElementById('toast');
     el.className = `toast ${type} show`;
@@ -803,7 +815,7 @@ function toast(msg, type = 'error') {
 function togglePw(id, btn) {
     const inp = document.getElementById(id);
     inp.type = inp.type === 'password' ? 'text' : 'password';
-    btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
+    btn.innerHTML = inp.type === 'password' ? '<span class="material-icons" style="font-size: 1.1rem; vertical-align: middle;">visibility</span>' : '<span class="material-icons" style="font-size: 1.1rem; vertical-align: middle;">visibility_off</span>';
 }
 
 function validEmail(e) {
@@ -844,17 +856,17 @@ function finishLogin(email, name, method = 'email') {
 }
 
 /* ==============================================
-   LOGIN — real-time email validation
+   LOGIN â€” real-time email validation
 ============================================== */
 document.getElementById('loginEmail').addEventListener('input', function() {
     const v = this.value.trim();
     const ok = validEmail(v);
     this.className = v ? (ok ? 'is-valid' : 'is-invalid') : '';
     const msg = document.getElementById('loginEmailMsg');
-    document.getElementById('loginEmailIcon').textContent = v ? (ok ? '✅' : '❌') : '';
+    document.getElementById('loginEmailIcon').textContent = v ? (ok ? '' : 'âŒ') : '';
     if (!v)      { msg.textContent = ''; msg.className = 'field-msg'; }
-    else if (!ok){ msg.textContent = '⚠️ Use a valid email like user@gmail.com'; msg.className = 'field-msg err'; }
-    else         { msg.textContent = '✅ Valid email'; msg.className = 'field-msg ok'; }
+    else if (!ok){ msg.textContent = ' Use a valid email like user@gmail.com'; msg.className = 'field-msg err'; }
+    else         { msg.textContent = ' Valid email'; msg.className = 'field-msg ok'; }
 });
 
 /* LOGIN SUBMIT */
@@ -886,7 +898,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     const pass  = document.getElementById('loginPassword').value;
 
     if (!email) { toast('Please enter your email address.'); return; }
-    if (!validEmail(email)) { toast('⚠️ Invalid email format. Use user@gmail.com or user@yahoo.com'); return; }
+    if (!validEmail(email)) { toast(' Invalid email format. Use user@gmail.com or user@yahoo.com'); return; }
     if (!pass)  { toast('Please enter your password.'); return; }
 
     const btn = document.getElementById('loginBtn');
@@ -899,45 +911,46 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
         });
         const data = await res.json();
         if (data.status === 'success') {
-            toast('Login successful! Redirecting…', 'success');
+            toast('Login successful! Redirecting', 'success');
+            if (data.token) localStorage.setItem('kisanToken', data.token);
             finishLogin(email, data.user?.name, 'email');
         } else {
             toast(data.message || 'Invalid credentials.');
         }
     } catch {
-        toast('⚠️ Cannot reach server. Is backend running on port 5001?', 'info');
+        toast('  Cannot reach server. Is backend running on port 5001?', 'info');
     } finally {
         btn.classList.remove('loading'); btn.disabled = false;
     }
 });
 
 /* ==============================================
-   SIGNUP — real-time validation
+   SIGNUP â€” real-time validation
 ============================================== */
 document.getElementById('signupName').addEventListener('input', function() {
     const ok = this.value.trim().length >= 3;
     this.className = this.value.trim() ? (ok ? 'is-valid' : 'is-invalid') : '';
-    document.getElementById('nameIcon').textContent = this.value.trim() ? (ok ? '✅' : '❌') : '';
+    document.getElementById('nameIcon').innerHTML = this.value.trim() ? (ok ? '<span class="material-icons" style="color:green;font-size:18px">check_circle</span>' : '<span class="material-icons" style="color:red;font-size:18px">cancel</span>') : '';
 });
 
 document.getElementById('signupEmail').addEventListener('input', function() {
     const v = this.value.trim(), ok = validEmail(v);
     this.className = v ? (ok ? 'is-valid' : 'is-invalid') : '';
     const msg = document.getElementById('emailMsg');
-    document.getElementById('emailIcon').textContent = v ? (ok ? '✅' : '❌') : '';
+    document.getElementById('emailIcon').innerHTML = v ? (ok ? '<span class="material-icons" style="color:green;font-size:18px">check_circle</span>' : '<span class="material-icons" style="color:red;font-size:18px">cancel</span>') : '';
     if (!v)      { msg.textContent = ''; msg.className = 'field-msg'; }
-    else if (!ok){ msg.textContent = '⚠️ Use user@gmail.com, user@yahoo.com, etc.'; msg.className = 'field-msg err'; }
-    else         { msg.textContent = '✅ Valid email'; msg.className = 'field-msg ok'; }
+    else if (!ok){ msg.innerHTML = '<span class="material-icons" style="font-size:14px;vertical-align:middle;">warning</span> Use user@gmail.com, user@yahoo.com, etc.'; msg.className = 'field-msg err'; }
+    else         { msg.innerHTML = '<span class="material-icons" style="font-size:14px;vertical-align:middle;">check_circle</span> Valid email'; msg.className = 'field-msg ok'; }
 });
 
 document.getElementById('signupPhone').addEventListener('input', function() {
     const v = this.value.trim(), ok = validPhone(v);
     this.className = v ? (ok ? 'is-valid' : 'is-invalid') : '';
     const msg = document.getElementById('phoneMsg');
-    document.getElementById('phoneIcon').textContent = v ? (ok ? '✅' : '❌') : '';
+    document.getElementById('phoneIcon').innerHTML = v ? (ok ? '<span class="material-icons" style="color:green;font-size:18px">check_circle</span>' : '<span class="material-icons" style="color:red;font-size:18px">cancel</span>') : '';
     if (!v)      { msg.textContent = ''; }
-    else if (!ok){ msg.textContent = '⚠️ 10-digit number starting with 6-9'; msg.className = 'field-msg err'; }
-    else         { msg.textContent = '✅ Valid'; msg.className = 'field-msg ok'; }
+    else if (!ok){ msg.innerHTML = '<span class="material-icons" style="font-size:14px;vertical-align:middle;">warning</span> 10-digit number starting with 6-9'; msg.className = 'field-msg err'; }
+    else         { msg.innerHTML = '<span class="material-icons" style="font-size:14px;vertical-align:middle;">check_circle</span> Valid'; msg.className = 'field-msg ok'; }
 });
 
 document.getElementById('signupPassword').addEventListener('input', function() {
@@ -968,7 +981,7 @@ function checkConfirm() {
     if (!cv) { msg.textContent = ''; inp.className = ''; return; }
     const ok = pw === cv;
     inp.className = ok ? 'is-valid' : 'is-invalid';
-    msg.textContent = ok ? '✅ Passwords match' : '❌ Passwords do not match';
+    msg.innerHTML = ok ? '<span class="material-icons" style="font-size:14px;vertical-align:middle;">check_circle</span> Passwords match' : '<span class="material-icons" style="font-size:14px;vertical-align:middle;">cancel</span> Passwords do not match';
     msg.className   = ok ? 'field-msg ok' : 'field-msg err';
 }
 
@@ -982,7 +995,7 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     const conf  = document.getElementById('signupConfirm').value;
 
     if (name.length < 3)    { toast('Full name must be at least 3 characters.'); return; }
-    if (!validEmail(email)) { toast('⚠️ Invalid email. Use formats like user@gmail.com'); return; }
+    if (!validEmail(email)) { toast(' Invalid email. Use formats like user@gmail.com'); return; }
     if (phone && !validPhone(phone)) { toast('Enter a valid 10-digit Indian mobile number.'); return; }
 
     const r = pwRules(pass);
@@ -990,7 +1003,7 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     if (!r.upper) { toast('Password needs at least one uppercase letter.'); return; }
     if (!r.lower) { toast('Password needs at least one lowercase letter.'); return; }
     if (!r.num)   { toast('Password needs at least one number (0-9).'); return; }
-    if (!r.sym)   { toast('Password needs at least one symbol (!@#$…).'); return; }
+    if (!r.sym)   { toast('Password needs at least one symbol (!@#$).'); return; }
     if (pass !== conf) { toast('Passwords do not match.'); return; }
 
     const btn = document.getElementById('signupBtn');
@@ -1010,7 +1023,7 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
             toast(data.message || 'Signup failed.');
         }
     } catch {
-        toast('⚠️ Cannot reach server. Is backend running on port 5001?', 'info');
+        toast(' Cannot reach server. Is backend running on port 5001?', 'info');
     } finally {
         btn.classList.remove('loading'); btn.disabled = false;
     }
@@ -1022,12 +1035,27 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
 document.getElementById('googleLoginBtn').addEventListener('click', () => {
     document.getElementById('googleModal').classList.add('show');
 });
-window.googleSelect = (email, name) => {
+window.googleSelect = async (email, name) => {
     document.getElementById('googleModal').classList.remove('show');
     const user = { name, email, loggedInAt: new Date().toISOString(), provider:'google' };
     localStorage.setItem('kisanUser', JSON.stringify(user));
     document.getElementById('welcomeName').textContent = name;
     document.getElementById('welcomeModal').classList.add('show');
+    // Request a server-side JWT for the Google user so auth guards on
+    // History / Profile / Expenses pages work correctly.
+    try {
+        const res = await fetch('http://localhost:5001/login-google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, name })
+        });
+        const data = await res.json();
+        if (data.token) localStorage.setItem('kisanToken', data.token);
+    } catch (_) {
+        // Backend unavailable — store a fallback marker so isLoggedIn() returns true.
+        // Pages that call authFetch() will handle the 401 gracefully.
+        localStorage.setItem('kisanToken', 'google-session-' + Date.now());
+    }
     setTimeout(() => { window.location.href = 'home.html'; }, 2000);
 };
 
@@ -1055,5 +1083,7 @@ document.getElementById('sendOtpBtn').addEventListener('click', () => {
     document.getElementById('sendOtpBtn').textContent = 'Resend OTP';
 });
 </script>
+    <script src="js/i18n.js"></script>
 </body>
 </html>
+

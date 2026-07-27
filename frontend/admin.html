@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - KisanCare</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         .admin-table {
             width: 100%;
@@ -27,256 +27,233 @@
             background-color: var(--primary-green);
             color: white;
         }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .admin-tab {
+            padding: 10px 20px;
+            background: #e8f5e9;
+            color: var(--primary-green);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .admin-tab.active {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .readonly-note {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-top: 10px;
+        }
     </style>
 </head>
-
 <body>
 
     <header>
         <nav>
-            <div class="logo">🌿 KisanCare Admin</div>
+            <div class="logo"><span class="material-icons">eco</span> KisanCare Admin</div>
             <ul class="nav-links">
-                <li><a href="home.html">Back to Home</a></li>
+                <li><a href="home.html" data-i18n="nav_back_home"><span class="material-icons">arrow_back</span> Back to Home</a></li>
+                <li>
+                    <select id="langSwitcher" class="lang-switcher">
+                        <option value="en">EN</option>
+                        <option value="hi">HI</option>
+                        <option value="gu">GU</option>
+                    </select>
+                </li>
             </ul>
         </nav>
     </header>
 
     <main class="container">
-        <h2>📊 User Login History (MongoDB)</h2>
-        <p>This data is fetched directly from your MongoDB database.</p>
+        <h2 style="margin-bottom: 20px;">Admin Dashboard</h2>
 
-        <button onclick="fetchHistory()" class="btn">🔄 Refresh Data</button>
-
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>Email</th>
-                    <th>Device</th>
-                    <th>Version</th>
-                </tr>
-            </thead>
-            <tbody id="logsBody">
-                <tr>
-                    <td colspan="4">Loading...</td>
-                </tr>
-            </tbody>
-        </table>
-        <h2 style="margin-top: 50px;">👨‍💻 Development Team</h2>
-        <p>Project maintainers and core developers behind KisanCare.</p>
-
-        <!-- Developer Cards Grid -->
-        <div style="background: linear-gradient(160deg, #0a1f0e 0%, #0d2b12 40%, #0b1e10 100%); padding: 40px; border-radius: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; position: relative; overflow: hidden; margin-top: 20px; font-family: 'Poppins', sans-serif;">
-            
-            <!-- Card 1: Patel Krish -->
-            <div style="background:rgba(255,255,255,.04);border:1px solid rgba(46,204,113,.22);border-radius:16px;padding:22px;position:relative;overflow:hidden;">
-                <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(46,204,113,.15) 0%,transparent 70%);pointer-events:none;"></div>
-
-                <div style="width:62px;height:62px;background:linear-gradient(135deg,#2ecc71,#1a7a45);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:800;color:white;margin-bottom:14px;box-shadow:0 4px 16px rgba(46,204,113,.4);">K</div>
-
-                <p style="margin:0 0 4px;font-size:1.05rem;font-weight:700;color:#e8f5e9;">Patel Krish</p>
-                <p style="margin:0 0 12px;font-size:0.78rem;color:#78ab82;">B.Tech CSE (AI & ML) — Parul University</p>
-
-                <div style="display:flex;flex-direction:column;gap:9px;">
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🎓</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Enrollment Number</p>
-                            <p style="margin:0;font-size:0.88rem;font-weight:600;color:#a8e063;font-family:monospace;letter-spacing:.5px;">2303031050426</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🏫</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">University</p>
-                            <p style="margin:0;font-size:0.85rem;font-weight:600;color:#cde8d0;">Parul University, Vadodara</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">📁</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Project Title</p>
-                            <p style="margin:0;font-size:0.85rem;font-weight:600;color:#cde8d0;">KisanCare — AI Smart Farming</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🛠️</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Tech Stack</p>
-                            <p style="margin:0;font-size:0.82rem;color:#cde8d0;">Python, Flask, MongoDB, AI</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2: Het Patel -->
-            <div style="background:rgba(255,255,255,.04);border:1px solid rgba(46,204,113,.22);border-radius:16px;padding:22px;position:relative;overflow:hidden;">
-                <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(46,204,113,.15) 0%,transparent 70%);pointer-events:none;"></div>
-
-                <div style="width:62px;height:62px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:800;color:white;margin-bottom:14px;box-shadow:0 4px 16px rgba(52,152,219,.4);">H</div>
-
-                <p style="margin:0 0 4px;font-size:1.05rem;font-weight:700;color:#e8f5e9;">Het Patel</p>
-                <p style="margin:0 0 12px;font-size:0.78rem;color:#78ab82;">B.Tech CSE (AI & ML) — Parul University</p>
-
-                <div style="display:flex;flex-direction:column;gap:9px;">
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🎓</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Enrollment Number</p>
-                            <p style="margin:0;font-size:0.88rem;font-weight:600;color:#a8e063;font-family:monospace;letter-spacing:.5px;">(Not Provided)</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🏫</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">University</p>
-                            <p style="margin:0;font-size:0.85rem;font-weight:600;color:#cde8d0;">Parul University, Vadodara</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">📁</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Project Title</p>
-                            <p style="margin:0;font-size:0.85rem;font-weight:600;color:#cde8d0;">KisanCare — AI Smart Farming</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🛠️</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Tech Stack</p>
-                            <p style="margin:0;font-size:0.82rem;color:#cde8d0;">Python, Flask, MongoDB, AI</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Taksh Pandya -->
-            <div style="background:rgba(255,255,255,.04);border:1px solid rgba(46,204,113,.22);border-radius:16px;padding:22px;position:relative;overflow:hidden;">
-                <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(46,204,113,.15) 0%,transparent 70%);pointer-events:none;"></div>
-
-                <div style="width:62px;height:62px;background:linear-gradient(135deg,#9b59b6,#8e44ad);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:800;color:white;margin-bottom:14px;box-shadow:0 4px 16px rgba(155,89,182,.4);">T</div>
-
-                <p style="margin:0 0 4px;font-size:1.05rem;font-weight:700;color:#e8f5e9;">Taksh Pandya</p>
-                <p style="margin:0 0 12px;font-size:0.78rem;color:#78ab82;">B.Tech CSE (AI & ML) — Parul University</p>
-
-                <div style="display:flex;flex-direction:column;gap:9px;">
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🎓</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Enrollment Number</p>
-                            <p style="margin:0;font-size:0.88rem;font-weight:600;color:#a8e063;font-family:monospace;letter-spacing:.5px;">(Not Provided)</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🏫</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">University</p>
-                            <p style="margin:0;font-size:0.85rem;font-weight:600;color:#cde8d0;">Parul University, Vadodara</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">📁</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Project Title</p>
-                            <p style="margin:0;font-size:0.85rem;font-weight:600;color:#cde8d0;">KisanCare — AI Smart Farming</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🛠️</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Tech Stack</p>
-                            <p style="margin:0;font-size:0.82rem;color:#cde8d0;">Python, Flask, MongoDB, AI</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4: Ronak Prajapati -->
-            <div style="background:rgba(255,255,255,.04);border:1px solid rgba(46,204,113,.22);border-radius:16px;padding:22px;position:relative;overflow:hidden;">
-                <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(46,204,113,.15) 0%,transparent 70%);pointer-events:none;"></div>
-
-                <div style="width:62px;height:62px;background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:800;color:white;margin-bottom:14px;box-shadow:0 4px 16px rgba(231,76,60,.4);">R</div>
-
-                <p style="margin:0 0 4px;font-size:1.05rem;font-weight:700;color:#e8f5e9;">Ronak Prajapati</p>
-                <p style="margin:0 0 12px;font-size:0.78rem;color:#78ab82;">B.Tech CSE (AI & ML) — Parul University</p>
-
-                <div style="display:flex;flex-direction:column;gap:9px;">
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🎓</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Enrollment Number</p>
-                            <p style="margin:0;font-size:0.88rem;font-weight:600;color:#a8e063;font-family:monospace;letter-spacing:.5px;">(Not Provided)</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🏫</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">University</p>
-                            <p style="margin:0;font-size:0.85rem;font-weight:600;color:#cde8d0;">Parul University, Vadodara</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">📁</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Project Title</p>
-                            <p style="margin:0;font-size:0.85rem;font-weight:600;color:#cde8d0;">KisanCare — AI Smart Farming</p>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border-radius:8px;padding:9px 12px;">
-                        <span style="font-size:1rem;">🛠️</span>
-                        <div>
-                            <p style="margin:0;font-size:0.68rem;color:#78ab82;text-transform:uppercase;letter-spacing:.4px;">Tech Stack</p>
-                            <p style="margin:0;font-size:0.82rem;color:#cde8d0;">Python, Flask, MongoDB, AI</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchTab('stats')">Stats</button>
+            <button class="admin-tab" onclick="switchTab('farmers')">Farmers</button>
+            <button class="admin-tab" onclick="switchTab('schemes')">Schemes</button>
+            <button class="admin-tab" onclick="switchTab('notifications')">Notifications</button>
+            <button class="admin-tab" onclick="switchTab('reference')">Reference Data</button>
         </div>
+
+        <!-- Stats Section -->
+        <div id="statsSection" class="admin-section active">
+            <h3>System Statistics</h3>
+            <button onclick="fetchStats()" class="btn"><span class="material-icons" style="vertical-align: middle;">refresh</span> Refresh</button>
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Farmers Section -->
+        <div id="farmersSection" class="admin-section">
+            <h3>Registered Farmers</h3>
+            <button onclick="fetchFarmers()" class="btn"><span class="material-icons" style="vertical-align: middle;">refresh</span> Refresh Data</button>
+            
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="farmersBody">
+                    <tr><td colspan="4">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Schemes Section -->
+        <div id="schemesSection" class="admin-section">
+            <h3>Manage Government Schemes</h3>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                <h4 id="schemeFormTitle">Add New Scheme</h4>
+                <form id="schemeForm" onsubmit="handleSchemeSubmit(event)">
+                    <input type="hidden" id="schemeId">
+                    <div class="form-group">
+                        <label>Scheme Name</label>
+                        <input type="text" id="schemeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="schemeDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL (Link)</label>
+                        <input type="url" id="schemeUrl">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="schemeActive" checked> Is Active
+                        </label>
+                    </div>
+                    <button type="submit" class="btn">Save Scheme</button>
+                    <button type="button" class="btn" style="background: #ccc;" onclick="resetSchemeForm()">Clear</button>
+                </form>
+            </div>
+
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="schemesBody">
+                    <tr><td colspan="3">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Notifications Section -->
+        <div id="notificationsSection" class="admin-section">
+            <h3>Global Notification Logs</h3>
+            <button onclick="fetchNotifications()" class="btn"><span class="material-icons" style="vertical-align: middle;">refresh</span> Refresh Logs</button>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>User ID</th>
+                        <th>Trigger</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody id="notificationsBody">
+                    <tr><td colspan="5">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Reference Data Section -->
+        <div id="referenceSection" class="admin-section">
+            <h3>Static Reference Data</h3>
+            <div class="readonly-note">
+                <span class="material-icons" style="vertical-align: middle;">info</span>
+                <strong>READ-ONLY:</strong> These values power the core ML models. To change these values, contact the development team to update the configuration files.
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button onclick="fetchReference('fertilizer')" class="btn" style="background: #6c757d;">Load Fertilizer Data</button>
+                <button onclick="fetchReference('pest')" class="btn" style="background: #6c757d;">Load Pest Data</button>
+            </div>
+
+            <pre id="referenceDataDisplay" style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto; max-height: 500px;">
+                Select a dataset above to view its contents.
+            </pre>
+        </div>
+
     </main>
 
-    <script>
-        async function fetchHistory() {
-            const tbody = document.getElementById('logsBody');
-            tbody.innerHTML = '<tr><td colspan="4">Loading data from MongoDB...</td></tr>';
-
-            try {
-                // Fetch from our Python Backend
-                const response = await fetch('http://localhost:5001/login-history');
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    const data = result.data;
-
-                    if (data.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4">No records found in database.</td></tr>';
-                        return;
-                    }
-
-                    let rows = '';
-                    data.forEach(item => {
-                        rows += `
-                            <tr>
-                                <td>${item.timestamp}</td>
-                                <td><b>${item.email || 'N/A'}</b></td>
-                                <td>${item.device || 'N/A'}</td>
-                                <td>${item.version || 'N/A'}</td>
-                            </tr>
-                        `;
-                    });
-                    tbody.innerHTML = rows;
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="4" style="color:red">Error: ${result.error}</td></tr>`;
-                }
-            } catch (error) {
-                console.error(error);
-                tbody.innerHTML = `<tr><td colspan="4" style="color:red">Failed to connect to backend. Is it running?</td></tr>`;
-            }
-        }
-
-        // Load on start
-        fetchHistory();
-    </script>
+    <script src="js/admin.js"></script>
+    <script src="js/i18n.js"></script>
 </body>
-
 </html>

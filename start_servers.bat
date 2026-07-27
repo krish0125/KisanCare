@@ -11,10 +11,10 @@ if exist ".venv\Scripts\activate.bat" (
     call .venv\Scripts\activate.bat
 )
 
-:: Start Backend
+:: Start Backend (Phase 1: PYTHONPATH required for backend.* package imports)
 if exist "backend\app.py" (
     echo Starting Backend - Flask on Port 5001...
-    start "Backend Server" cmd /k "if exist .venv\Scripts\activate.bat (call .venv\Scripts\activate.bat) & python backend/app.py"
+    start "Backend Server" cmd /k "if exist .venv\Scripts\activate.bat (call .venv\Scripts\activate.bat) & set PYTHONPATH=. & set PYTHONIOENCODING=utf-8 & python backend/app.py"
 ) else (
     echo Error: backend/app.py not found!
     pause

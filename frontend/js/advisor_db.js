@@ -8,7 +8,7 @@ function fetchLiveWeather() {
     }
     // Mock weather fetch
     liveWeather = { temp: 28, humidity: 65, rain1h: 0 };
-    document.getElementById('weatherStatus').innerHTML = `🌤️ Weather fetched for ${city}: 28°C, 65% Humidity, No Rain expected.`;
+    document.getElementById('weatherStatus').innerHTML = `️ Weather fetched for ${city}: 28°C, 65% Humidity, No Rain expected.`;
     document.getElementById('weatherStatus').style.color = '#2ecc71';
 }
 
@@ -21,11 +21,11 @@ const cropSoilDB = {
         name: 'Wheat',
         soilNeeds: { alluvial: 'Ideal', black: 'Good', red: 'Medium', sandy: 'Low', loamy: 'Ideal', laterite: 'Low' },
         basalFert: [
-            { name: 'DAP (18-46-0)', icon: '🌾', why: 'Essential for strong root establishment.', dose: '50 kg/acre', price: 1350 },
-            { name: 'MOP (0-0-60)', icon: '🧂', why: 'Increases grain size and disease resistance.', dose: '20 kg/acre', price: 950 }
+            { name: 'DAP (18-46-0)', icon: '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>', why: 'Essential for strong root establishment.', dose: '50 kg/acre', price: 1350 },
+            { name: 'MOP (0-0-60)', icon: '', why: 'Increases grain size and disease resistance.', dose: '20 kg/acre', price: 950 }
         ],
         topDressFert: [
-            { name: 'Urea (46-0-0)', icon: '❄️', why: 'Boosts vegetative growth and tillering.', dose: '45 kg/acre', price: 266 }
+            { name: 'Urea (46-0-0)', icon: '', why: 'Boosts vegetative growth and tillering.', dose: '45 kg/acre', price: 266 }
         ],
         simple: 'Gehu ke liye shuru mein root growth zaroori hai. DAP buwai pe dein, Urea pehle paani ke baad.',
         dos: ['Apply first irrigation after 21 days (CRI stage)', 'Use Neem Coated Urea'],
@@ -35,12 +35,12 @@ const cropSoilDB = {
         name: 'Paddy / Rice',
         soilNeeds: { alluvial: 'Good', black: 'Ideal', red: 'Medium', sandy: 'Low', loamy: 'Ideal', laterite: 'Low' },
         basalFert: [
-            { name: 'DAP (18-46-0)', icon: '🌾', why: 'For deep roots that withstand flooded conditions.', dose: '40 kg/acre', price: 1350 },
-            { name: 'MOP (0-0-60)', icon: '🧂', why: 'For stem strength to prevent lodging.', dose: '25 kg/acre', price: 950 }
+            { name: 'DAP (18-46-0)', icon: '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>grass</span>', why: 'For deep roots that withstand flooded conditions.', dose: '40 kg/acre', price: 1350 },
+            { name: 'MOP (0-0-60)', icon: '', why: 'For stem strength to prevent lodging.', dose: '25 kg/acre', price: 950 }
         ],
         topDressFert: [
-            { name: 'Urea (46-0-0)', icon: '❄️', why: 'For maximum tillers and greener leaves.', dose: '30 kg/acre in 2 splits', price: 266 },
-            { name: 'Zinc Sulphate', icon: '🔋', why: 'Crucial for rice. Prevents Khaira disease.', dose: '10 kg/acre', price: 450 }
+            { name: 'Urea (46-0-0)', icon: '', why: 'For maximum tillers and greener leaves.', dose: '30 kg/acre in 2 splits', price: 266 },
+            { name: 'Zinc Sulphate', icon: '', why: 'Crucial for rice. Prevents Khaira disease.', dose: '10 kg/acre', price: 450 }
         ],
         simple: 'Dhaan ko pani ki zyada zaroorat hoti hai. Khad pani khada hone par ya kachhi mitti mein dein.',
         dos: ['Maintain 2-3 cm water level for initial 15 days', 'Add Zinc to prevent Khaira disease'],
@@ -50,11 +50,11 @@ const cropSoilDB = {
         name: 'Cotton',
         soilNeeds: { alluvial: 'Good', black: 'Ideal', red: 'Medium', sandy: 'Low', loamy: 'Ideal', laterite: 'Low' },
         basalFert: [
-            { name: 'NPK 10-26-26', icon: '☁️', why: 'Balanced nutrition for longer tap roots.', dose: '50 kg/acre', price: 1470 }
+            { name: 'NPK 10-26-26', icon: '<span class=\x22material-icons\x22 style=\x22vertical-align: middle; font-size: inherit;\x22>cloud</span>', why: 'Balanced nutrition for longer tap roots.', dose: '50 kg/acre', price: 1470 }
         ],
         topDressFert: [
-            { name: 'Urea (46-0-0)', icon: '❄️', why: 'For robust plant canopy.', dose: '25 kg/acre', price: 266 },
-            { name: 'Liquid Boron Spray', icon: '🌸', why: 'Prevents boll shedding, increases retention.', dose: '2 ml/litre spray', price: 180 }
+            { name: 'Urea (46-0-0)', icon: '', why: 'For robust plant canopy.', dose: '25 kg/acre', price: 266 },
+            { name: 'Liquid Boron Spray', icon: '', why: 'Prevents boll shedding, increases retention.', dose: '2 ml/litre spray', price: 180 }
         ],
         simple: 'Kapas mein excessive nitrogen se avoid karein warna kide zyada lagte hain. Boron zaroori hai.',
         dos: ['Spray Boron at flowering to stop boll fall', 'Weed control is essential before top dressing'],
@@ -64,10 +64,10 @@ const cropSoilDB = {
         name: 'Sugarcane',
         soilNeeds: { alluvial: 'Ideal', black: 'Good', red: 'Medium', sandy: 'Low', loamy: 'Ideal', laterite: 'Low' },
         basalFert: [
-            { name: 'NPK 12-32-16', icon: '🎋', why: 'Complete nutrition for strong germination.', dose: '75 kg/acre', price: 1470 }
+            { name: 'NPK 12-32-16', icon: '', why: 'Complete nutrition for strong germination.', dose: '75 kg/acre', price: 1470 }
         ],
         topDressFert: [
-            { name: 'Urea (46-0-0)', icon: '❄️', why: 'High demand for vegetative growth.', dose: '60 kg/acre', price: 266 }
+            { name: 'Urea (46-0-0)', icon: '', why: 'High demand for vegetative growth.', dose: '60 kg/acre', price: 266 }
         ],
         simple: 'Ganne mein khad ki zaroorat zyada hoti hai kyonki yeh saal bhar ki fasal hai.',
         dos: ['Earthing up (mitti chadhana) after top dressing', 'Split nitrogen in 3 doses for high efficiency'],
@@ -77,11 +77,11 @@ const cropSoilDB = {
         name: 'Tomato',
         soilNeeds: { alluvial: 'Good', black: 'Medium', red: 'Good', sandy: 'Medium', loamy: 'Ideal', laterite: 'Low' },
         basalFert: [
-            { name: 'NPK 10-26-26', icon: '🍅', why: 'High P and K for flowering and fruit quality.', dose: '50 kg/acre', price: 1470 }
+            { name: 'NPK 10-26-26', icon: '', why: 'High P and K for flowering and fruit quality.', dose: '50 kg/acre', price: 1470 }
         ],
         topDressFert: [
-            { name: 'Urea (46-0-0)', icon: '❄️', why: 'Vegetative growth before flowering.', dose: '20 kg/acre', price: 266 },
-            { name: 'Liquid NPK 5-15-45', icon: '💦', why: 'Enhances fruit size and color.', dose: 'Spray at fruiting', price: 225 }
+            { name: 'Urea (46-0-0)', icon: '', why: 'Vegetative growth before flowering.', dose: '20 kg/acre', price: 266 },
+            { name: 'Liquid NPK 5-15-45', icon: '', why: 'Enhances fruit size and color.', dose: 'Spray at fruiting', price: 225 }
         ],
         simple: 'Tamatar mein potassium aur calcium zaruri hai achhe size aur shine ke liye.',
         dos: ['Use drip fertigation for maximum yield', 'Apply Calcium to avoid Blossom End Rot'],
@@ -91,11 +91,11 @@ const cropSoilDB = {
         name: 'Potato',
         soilNeeds: { alluvial: 'Ideal', black: 'Medium', red: 'Good', sandy: 'Good', loamy: 'Ideal', laterite: 'Low' },
         basalFert: [
-            { name: 'DAP (18-46-0)', icon: '🥔', why: 'For rapid early tuber initiation.', dose: '60 kg/acre', price: 1350 },
-            { name: 'MOP (0-0-60)', icon: '🧂', why: 'Essential for starch formation in tubers.', dose: '40 kg/acre', price: 950 }
+            { name: 'DAP (18-46-0)', icon: '', why: 'For rapid early tuber initiation.', dose: '60 kg/acre', price: 1350 },
+            { name: 'MOP (0-0-60)', icon: '', why: 'Essential for starch formation in tubers.', dose: '40 kg/acre', price: 950 }
         ],
         topDressFert: [
-            { name: 'Urea (46-0-0)', icon: '❄️', why: 'For canopy development.', dose: '30 kg/acre', price: 266 }
+            { name: 'Urea (46-0-0)', icon: '', why: 'For canopy development.', dose: '30 kg/acre', price: 266 }
         ],
         simple: 'Aloo ko bur-buri mitti aur P+K ki bahut zaroorat hoti hai chamakdar aloo ke liye.',
         dos: ['Apply full DAP+MOP dose at sowing', 'Do earthing up within 25 days'],

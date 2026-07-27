@@ -1,0 +1,19 @@
+{
+    "nav_home": "Home",
+    "nav_crop_advisory": "Crop Advisory",
+    "nav_weather_alerts": "Weather Alerts",
+    "nav_crop_care": "Crop Care",
+    "nav_market_prices": "Market Prices",
+    "nav_schemes": "Govt Schemes",
+    "nav_fertilizers": "Fertilizers",
+    "nav_feedback": "Feedback",
+    "nav_profile": "Profile",
+    "nav_history": "History",
+    "nav_fert_calc": "Fert. Calc.",
+    "nav_expenses": "Expenses",
+    "nav_login": "Login",
+    "nav_back_home": "Back to Home",
+    "lang_en": "EN",
+    "lang_hi": "HI",
+    "lang_gu": "GU"
+}

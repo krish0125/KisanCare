@@ -1,8 +1,17 @@
 flask
 flask-cors
+flask-jwt-extended
+flask-limiter
 pandas
 numpy
 scikit-learn
 joblib
 pymongo
 requests
+python-dotenv
+tensorflow
+pillow
+reportlab
+openpyxl
+
+APScheduler==3.10.4

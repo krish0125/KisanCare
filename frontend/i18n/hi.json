@@ -1,0 +1,19 @@
+{
+    "nav_home": "होम",
+    "nav_crop_advisory": "फसल सलाह",
+    "nav_weather_alerts": "मौसम अलर्ट",
+    "nav_crop_care": "फसल देखभाल",
+    "nav_market_prices": "बाजार भाव",
+    "nav_schemes": "सरकारी योजनाएं",
+    "nav_fertilizers": "उर्वरक",
+    "nav_feedback": "प्रतिक्रिया",
+    "nav_profile": "प्रोफ़ाइल",
+    "nav_history": "इतिहास",
+    "nav_fert_calc": "उर्वरक कैलकुलेटर",
+    "nav_expenses": "खर्चे",
+    "nav_login": "लॉग इन",
+    "nav_back_home": "होम पर वापस जाएं",
+    "lang_en": "EN",
+    "lang_hi": "HI",
+    "lang_gu": "GU"
+}

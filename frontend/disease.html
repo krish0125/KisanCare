@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Doctor (Disease Detection) â€” KisanCare</title>
+    <meta name="description" content="AI-powered crop disease detection and treatment recommendations. Upload a photo of your sick plant to get instant advice.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --bg-light: #f3f4f6;
+            --border: #e5e7eb;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        /* â”€â”€ Hero Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .disease-hero {
+            background: linear-gradient(135deg, #0f4c81 0%, #10b981 100%);
+            border-radius: 20px;
+            padding: 32px 36px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+        }
+        .disease-hero h1 { font-size: 1.8rem; font-weight: 700; margin: 0 0 6px; }
+        .disease-hero p  { opacity: 0.9; font-size: 0.95rem; margin: 0; max-width: 550px; line-height: 1.5; }
+        .disease-hero::after {
+            content: 'ðŸ©º';
+            position: absolute;
+            right: 28px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 7rem;
+            opacity: 0.15;
+        }
+
+        /* â”€â”€ Main Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .disease-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .disease-container { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title .material-icons { color: var(--primary); }
+
+        /* â”€â”€ File Uploader â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .upload-area.dragover {
+            background: #f0fdf4;
+            border-color: var(--primary);
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+        .upload-text {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        #fileInput { display: none; }
+
+        .image-preview-container {
+            display: none;
+            position: relative;
+            margin-top: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        #imagePreview {
+            width: 100%;
+            display: block;
+            max-height: 300px;
+            object-fit: cover;
+        }
+        .remove-img-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .remove-img-btn:hover { background: rgba(0,0,0,0.8); }
+
+        .btn-analyze {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-analyze:hover { background: var(--primary-dark); }
+        .btn-analyze:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        /* â”€â”€ Loading Spinner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* â”€â”€ Results Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        #resultsCard { display: none; }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .disease-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .badge.high { background: #fee2e2; color: #991b1b; }
+        .badge.medium { background: #fef3c7; color: #92400e; }
+        .badge.low { background: #dbeafe; color: #1e40af; }
+        .badge.none { background: #dcfce7; color: #166534; }
+
+        .treatment-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid;
+        }
+        .treatment-box.organic { border-color: #10b981; }
+        .treatment-box.chemical { border-color: #f59e0b; }
+        
+        .treatment-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .treatment-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* â”€â”€ Disclaimer & Mock Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .disclaimer {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+        }
+        
+        #mockBanner {
+            display: none;
+            background: linear-gradient(90deg, #fef3c7, #fffbeb);
+            border: 1.5px solid #fcd34d;
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #92400e;
+            align-items: center;
+            gap: 10px;
+        }
+        #mockBanner.visible { display: flex; }
+
+        /* Error message */
+        #errorMessage {
+            display: none;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #991b1b;
+            font-size: 0.85rem;
+            margin-top: 16px;
+        }
+        
+        .lang-selector {
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .lang-selector select {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-family: 'Poppins', sans-serif;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+        <div class="logo"><span class="material-icons">eco</span> KisanCare</div>
+        <div class="menu-toggle" id="mobile-menu"><span class="material-icons">menu</span></div>
+        <ul class="nav-links">
+            <li><a href="home.html" data-i18n="nav_home"><span class="material-icons">home</span> Home</a></li>
+            <li><a href="crop.html" data-i18n="nav_crop_advisory"><span class="material-icons">grass</span> Crop Advisory</a></li>
+            <li><a href="weather.html" data-i18n="nav_weather_alerts"><span class="material-icons">cloud</span> Weather Alerts</a></li>
+            <li><a href="crop-care.html" data-i18n="nav_crop_care"><span class="material-icons">local_florist</span> Crop Care</a></li>
+            <li><a href="market.html" data-i18n="nav_market_prices"><span class="material-icons">storefront</span> Market Prices</a></li>
+            <li><a href="schemes.html" data-i18n="nav_schemes"><span class="material-icons">account_balance</span> Govt Schemes</a></li>
+            <li><a href="fertilizer.html" data-i18n="nav_fertilizers"><span class="material-icons">science</span> Fertilizers</a></li>
+            <li><a href="#" id="navFeedbackLink" data-i18n="nav_feedback"><span class="material-icons">feedback</span> Feedback</a></li>
+            <li><a href="profile.html" data-i18n="nav_profile"><span class="material-icons">person</span> Profile</a></li>
+            <li><a href="history.html" data-i18n="nav_history"><span class="material-icons">history</span> History</a></li>
+            <li><a href="fertilizer-calc.html" data-i18n="nav_fert_calc"><span class="material-icons">calculate</span> Fert. Calc.</a></li>
+            <li><a href="expenses.html" data-i18n="nav_expenses"><span class="material-icons">payments</span> Expenses</a></li>
+            <li><a href="index.html" data-i18n="nav_login"><span class="material-icons">login</span> Login</a></li>
+            <li>
+                <select id="langSwitcher" class="lang-switcher">
+                    <option value="en">EN</option>
+                    <option value="hi">HI</option>
+                    <option value="gu">GU</option>
+                </select>
+            </li>
+        </ul>
+    </nav>
+    </header>
+
+    <main class="container" style="max-width: 960px; margin: 0 auto; padding: 20px;">
+        
+        <div class="disease-hero">
+            <h1>ðŸ©º Crop Doctor</h1>
+            <p>Upload a photo of your sick plant or pest, and our AI will identify the issue and recommend treatments.</p>
+            <div style="margin-top: 10px; font-size: 0.85rem; color: #fef08a;">
+                <span class="material-icons" style="font-size: 14px; vertical-align: middle;">warning</span>
+                AI-assisted diagnosis â€” confirm with your local agriculture officer before applying chemical treatments.
+            </div>
+        </div>
+
+
+
+        <div class="disease-container">
+            <!-- Upload Section -->
+            <div class="card">
+                <h2 class="card-title"><span class="material-icons">upload_file</span> Upload Photo</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <span class="material-icons upload-icon">add_photo_alternate</span>
+                    <div class="upload-text">Drag & Drop image here</div>
+                    <div class="upload-hint">or click to browse (JPG, PNG, WebP up to 5MB)</div>
+                    <input type="file" id="fileInput" accept="image/jpeg, image/png, image/webp">
+                </div>
+
+                <div class="image-preview-container" id="previewContainer">
+                    <img id="imagePreview" src="" alt="Image Preview">
+                    <button class="remove-img-btn" id="removeImgBtn" title="Remove image">
+                        <span class="material-icons" style="font-size: 18px;">close</span>
+                    </button>
+                </div>
+                
+                <div class="lang-selector">
+                    <label for="cropSelect" style="font-size: 0.9rem; font-weight: 500;">Crop Type:</label>
+                    <select id="cropSelect" style="flex: 1;">
+                        <option value="unknown">I don't know / Other</option>
+                        <option value="apple">Apple</option>
+                        <option value="corn">Corn (Maize)</option>
+                        <option value="grape">Grape</option>
+                        <option value="potato">Potato</option>
+                        <option value="tomato">Tomato</option>
+                        <option value="wheat">Wheat</option>
+                        <option value="rice">Rice</option>
+                    </select>
+                </div>
+
+                <div id="errorMessage"></div>
+                <div id="lowConfidenceMessage" style="display: none; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 10px; padding: 12px 16px; color: #92400e; font-size: 0.85rem; margin-top: 16px;"></div>
+
+                <button class="btn-analyze" id="analyzeBtn" disabled>
+                    <span class="btn-text">Analyze Crop</span>
+                    <div class="spinner" id="btnSpinner"></div>
+                    <span class="material-icons" id="btnIcon">analytics</span>
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="card" id="resultsCard">
+                <h2 class="card-title"><span class="material-icons">fact_check</span> Analysis Report</h2>
+                
+                <div class="result-header">
+                    <h3 class="disease-name" id="resDiseaseName">Healthy Plant</h3>
+                    <div class="badge" id="resSeverity">Low Severity</div>
+                </div>
+
+                <div class="treatment-box" style="border-color: #3b82f6;">
+                    <div class="treatment-title"><span class="material-icons">help_outline</span> Cause</div>
+                    <p class="treatment-desc" id="resCause">Unknown</p>
+                </div>
+
+                <div class="treatment-box" style="border-color: #8b5cf6;">
+                    <div class="treatment-title"><span class="material-icons">shield</span> Prevention</div>
+                    <p class="treatment-desc" id="resPrevention">Unknown</p>
+                </div>
+
+                <div class="treatment-box organic">
+                    <div class="treatment-title"><span class="material-icons">eco</span> Organic / Natural Treatment</div>
+                    <p class="treatment-desc" id="resOrganic">No treatment required.</p>
+                </div>
+
+                <div class="treatment-box chemical">
+                    <div class="treatment-title"><span class="material-icons">science</span> Chemical Treatment</div>
+                    <p class="treatment-desc" id="resChemical">Not required.</p>
+                </div>
+                
+                <div class="treatment-box" style="border-color: #14b8a6;">
+                    <div class="treatment-title"><span class="material-icons">grass</span> Fertilizer Suggestion</div>
+                    <p class="treatment-desc" id="resFertilizer">Not required.</p>
+                </div>
+
+                <div class="disclaimer">
+                    <span class="material-icons" style="font-size: 16px; color: #f59e0b;">warning</span>
+                    <span><strong>Disclaimer:</strong> AI analysis is for guidance only. Please verify with a local agricultural expert before applying chemical treatments.</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Standard Chat Widget -->
+    <div class="chat-btn" id="chat-toggle-btn"><span class="material-icons">chat</span></div>
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <span>Kisan AI Assistant</span>
+            <span class="material-icons close-btn" id="close-chat">close</span>
+        </div>
+        <div class="chat-lang-bar">
+            <label>ðŸŒ Language:</label>
+            <select id="chat-lang-select">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="gu">Gujarati</option>
+            </select>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">
+                <p>Hello! Ask me about farming, weather, or prices! ðŸšœ</p>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <label for="chat-file-input" class="file-upload-label"><span class="material-icons">attach_file</span></label>
+            <input type="file" id="chat-file-input" accept="image/*" hidden>
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="voice-btn" class="voice-btn" title="Voice Input"><span class="material-icons">mic</span></button>
+            <button id="send-btn"><span class="material-icons">send</span></button>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/disease.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/i18n.js"></script>
+</body>
+</html>
+
