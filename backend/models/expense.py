@@ -12,11 +12,53 @@ from backend.config import Config
 CYCLES_COL = Config.CYCLES_COLLECTION
 EXPENSE_CATEGORIES = ['seeds', 'fertilizer', 'labour', 'machinery', 'irrigation', 'transport', 'miscellaneous']
 
+# In-memory storage with sample crop cycles for fallback / demo mode
+_FALLBACK_CYCLES = [
+    {
+        'cycle_id': 'cycle-wheat-2026',
+        'email': 'demo@gmail.com',
+        'cycle_name': 'Wheat Rabi 2025-26',
+        'crop': 'Wheat',
+        'land_area_acres': 3.5,
+        'start_date': '2025-11-10',
+        'status': 'active',
+        'expenses': [
+            {'expense_id': 'exp-w-1', 'category': 'seeds', 'amount_inr': 4500.0, 'date': '2025-11-12', 'note': 'High-yield HD-2967 certified seeds (140 kg)'},
+            {'expense_id': 'exp-w-2', 'category': 'fertilizer', 'amount_inr': 6200.0, 'date': '2025-11-20', 'note': 'DAP & Urea basal application (3 bags)'},
+            {'expense_id': 'exp-w-3', 'category': 'labour', 'amount_inr': 5000.0, 'date': '2025-12-05', 'note': 'Weeding and initial soil treatment'},
+            {'expense_id': 'exp-w-4', 'category': 'irrigation', 'amount_inr': 3200.0, 'date': '2025-12-25', 'note': 'First crown root initiation irrigation pump charges'},
+            {'expense_id': 'exp-w-5', 'category': 'machinery', 'amount_inr': 4000.0, 'date': '2026-01-10', 'note': 'Tractor cultivator and rotavator service'}
+        ],
+        'expected_sale_price_inr_per_quintal': 2425.0,
+        'actual_sale_price_inr_per_quintal': 2475.0,
+        'actual_yield_quintals': 42.0,
+        'created_at': '2025-11-10 09:00:00',
+        'updated_at': '2026-01-10 14:30:00'
+    },
+    {
+        'cycle_id': 'cycle-cotton-2025',
+        'email': 'demo@gmail.com',
+        'cycle_name': 'Cotton Kharif 2025',
+        'crop': 'Cotton',
+        'land_area_acres': 2.0,
+        'start_date': '2025-06-15',
+        'status': 'completed',
+        'expenses': [
+            {'expense_id': 'exp-c-1', 'category': 'seeds', 'amount_inr': 3800.0, 'date': '2025-06-18', 'note': 'Bt-Cotton hybrid packets'},
+            {'expense_id': 'exp-c-2', 'category': 'fertilizer', 'amount_inr': 5500.0, 'date': '2025-07-02', 'note': 'NPK 19:19:19 & Micronutrients'},
+            {'expense_id': 'exp-c-3', 'category': 'labour', 'amount_inr': 7500.0, 'date': '2025-09-15', 'note': 'Boll picking labour (3 rounds)'},
+            {'expense_id': 'exp-c-4', 'category': 'transport', 'amount_inr': 2200.0, 'date': '2025-10-20', 'note': 'Mandi transport cartage'}
+        ],
+        'expected_sale_price_inr_per_quintal': 7200.0,
+        'actual_sale_price_inr_per_quintal': 7450.0,
+        'actual_yield_quintals': 18.0,
+        'created_at': '2025-06-15 10:00:00',
+        'updated_at': '2025-10-25 16:00:00'
+    }
+]
+
 def create_crop_cycle(db, email: str, cycle_data: dict):
     """Create a new crop cycle."""
-    if db is None:
-        return None
-        
     cycle_id = str(uuid.uuid4())
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
@@ -36,9 +78,12 @@ def create_crop_cycle(db, email: str, cycle_data: dict):
         'updated_at': now
     }
     
+    if db is None:
+        _FALLBACK_CYCLES.insert(0, doc)
+        return doc
+        
     try:
         db[CYCLES_COL].insert_one(doc)
-        # Remove _id before returning
         doc.pop('_id', None)
         return doc
     except Exception as e:
@@ -47,11 +92,12 @@ def create_crop_cycle(db, email: str, cycle_data: dict):
 
 def get_crop_cycles(db, email: str):
     """Retrieve all crop cycles for a user."""
+    email_key = email.lower().strip()
     if db is None:
-        return []
+        return [dict(c) for c in _FALLBACK_CYCLES if c.get('email', '').lower() == email_key or email_key == 'demo@gmail.com']
         
     try:
-        cursor = db[CYCLES_COL].find({'email': email.lower().strip()}, {'_id': 0}).sort('created_at', -1)
+        cursor = db[CYCLES_COL].find({'email': email_key}, {'_id': 0}).sort('created_at', -1)
         return list(cursor)
     except Exception as e:
         print(f"❌ Error fetching crop cycles: {e}")
@@ -59,20 +105,20 @@ def get_crop_cycles(db, email: str):
 
 def get_crop_cycle(db, cycle_id: str, email: str):
     """Retrieve a specific crop cycle."""
+    email_key = email.lower().strip()
     if db is None:
+        for c in _FALLBACK_CYCLES:
+            if c.get('cycle_id') == cycle_id:
+                return dict(c)
         return None
-    return db[CYCLES_COL].find_one({'cycle_id': cycle_id, 'email': email.lower().strip()}, {'_id': 0})
+    return db[CYCLES_COL].find_one({'cycle_id': cycle_id, 'email': email_key}, {'_id': 0})
 
 def update_crop_cycle(db, cycle_id: str, email: str, update_data: dict):
     """Update metadata of a crop cycle."""
-    if db is None:
-        return False
-        
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     update_doc = {'updated_at': now}
     
-    # Only map fields that are provided and valid
     field_map = {
         'cycle_name': str,
         'status': str,
@@ -96,8 +142,12 @@ def update_crop_cycle(db, cycle_id: str, email: str, update_data: dict):
                 except (ValueError, TypeError):
                     pass
                     
-    if len(update_doc) == 1: # Only updated_at
-        return True
+    if db is None:
+        for c in _FALLBACK_CYCLES:
+            if c.get('cycle_id') == cycle_id:
+                c.update(update_doc)
+                return True
+        return False
         
     try:
         result = db[CYCLES_COL].update_one(
@@ -111,9 +161,6 @@ def update_crop_cycle(db, cycle_id: str, email: str, update_data: dict):
 
 def add_expense(db, cycle_id: str, email: str, expense_data: dict):
     """Add an expense line item to a cycle."""
-    if db is None:
-        return None
-        
     category = expense_data.get('category', 'miscellaneous').lower()
     if category not in EXPENSE_CATEGORIES:
         category = 'miscellaneous'
@@ -128,6 +175,14 @@ def add_expense(db, cycle_id: str, email: str, expense_data: dict):
     
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
+    if db is None:
+        for c in _FALLBACK_CYCLES:
+            if c.get('cycle_id') == cycle_id:
+                c.setdefault('expenses', []).append(expense)
+                c['updated_at'] = now
+                return expense
+        return None
+        
     try:
         result = db[CYCLES_COL].update_one(
             {'cycle_id': cycle_id, 'email': email.lower().strip()},
@@ -145,11 +200,16 @@ def add_expense(db, cycle_id: str, email: str, expense_data: dict):
 
 def remove_expense(db, cycle_id: str, expense_id: str, email: str):
     """Remove an expense from a cycle."""
-    if db is None:
-        return False
-        
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
+    if db is None:
+        for c in _FALLBACK_CYCLES:
+            if c.get('cycle_id') == cycle_id:
+                c['expenses'] = [x for x in c.get('expenses', []) if x.get('expense_id') != expense_id]
+                c['updated_at'] = now
+                return True
+        return False
+        
     try:
         result = db[CYCLES_COL].update_one(
             {'cycle_id': cycle_id, 'email': email.lower().strip()},

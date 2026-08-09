@@ -67,8 +67,6 @@ def login():
 
         # ── DB check ──────────────────────────────────────────────────────
         db_ref = _get_db()
-        if db_ref is None:
-            return jsonify({'status': 'error', 'message': 'Database not connected'}), 500
 
         print(f"🔍 Login attempt for: {email}")
 
@@ -140,8 +138,6 @@ def signup():
 
         # ── DB check ──────────────────────────────────────────────────────
         db_ref = _get_db()
-        if db_ref is None:
-            return jsonify({'status': 'error', 'message': 'Database not connected'}), 500
 
         # ── Duplicate check ───────────────────────────────────────────────
         if find_user_by_email(db_ref, email):

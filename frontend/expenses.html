@@ -4,79 +4,451 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense & Profit Tracker | KisanCare</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
     <style>
-        .expenses-container { max-width: 1200px; margin: 40px auto; padding: 20px; display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
-        .panel { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .section-title { font-size: 1.2rem; border-bottom: 2px solid var(--primary-green); padding-bottom: 5px; margin-bottom: 15px; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; }
+        .expenses-container { 
+            max-width: 1240px; 
+            margin: 35px auto; 
+            padding: 0 20px; 
+            display: grid; 
+            grid-template-columns: 360px 1fr; 
+            gap: 25px; 
+        }
+        .panel { 
+            background: white; 
+            padding: 24px; 
+            border-radius: 14px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); 
+            border: 1px solid #edf2f7;
+        }
+        .section-title { 
+            font-size: 1.2rem; 
+            border-bottom: 2px solid #e2f0d9; 
+            padding-bottom: 8px; 
+            margin-bottom: 15px; 
+            color: #2c3e50; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
         
         /* Cycles List */
-        .cycle-list { display: flex; flex-direction: column; gap: 10px; max-height: 500px; overflow-y: auto; }
-        .cycle-card { padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
-        .cycle-card:hover { border-color: #ccc; }
-        .cycle-card.active { border-left-color: var(--primary-green); background: #f1f8e9; border-color: #c5e1a5; }
-        .cycle-card h4 { margin: 0 0 5px 0; color: #333; }
-        .cycle-card p { margin: 0; font-size: 0.85rem; color: #666; }
+        .cycle-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            max-height: 540px; 
+            overflow-y: auto; 
+            padding-right: 4px;
+        }
+        .cycle-card { 
+            padding: 14px 16px; 
+            border: 1.5px solid #e2e8f0; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: all 0.25s ease; 
+            border-left: 4px solid #cbd5e1; 
+            background: #fdfdfd;
+        }
+        .cycle-card:hover { 
+            border-color: #cbd5e1; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .cycle-card.active { 
+            border-left-color: var(--primary-green); 
+            background: #f0fdf4; 
+            border-color: #bbf7d0; 
+            box-shadow: 0 4px 14px rgba(46,204,113,0.12);
+        }
         
-        /* Forms */
-        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
-        .form-group label { font-weight: 500; color: #555; }
-        .form-group input, .form-group select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+        /* Forms & Inputs */
+        .form-group { 
+            margin-bottom: 14px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 5px; 
+        }
+        .form-group label { 
+            font-weight: 600; 
+            color: #4a5568; 
+            font-size: 0.88rem;
+        }
+        .form-group input, .form-group select { 
+            padding: 10px 14px; 
+            border: 1.5px solid #e2e8f0; 
+            border-radius: 8px; 
+            font-size: 0.95rem; 
+            transition: all 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(46,204,113,0.15);
+        }
         
         /* Main View */
-        .main-view { display: flex; flex-direction: column; gap: 20px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .stat-card { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
-        .stat-value { font-size: 1.5rem; font-weight: bold; margin: 10px 0 0 0; }
-        .stat-value.profit { color: #2e7d32; }
-        .stat-value.loss { color: #d32f2f; }
+        .main-view { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+        }
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 16px; 
+        }
+        .stat-card { 
+            background: #f8fafc; 
+            padding: 18px; 
+            border-radius: 10px; 
+            text-align: center; 
+            border: 1px solid #e2e8f0; 
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-value { 
+            font-size: 1.6rem; 
+            font-weight: 700; 
+            margin-top: 6px; 
+            color: #1e293b;
+        }
+        .stat-value.profit { color: #16a34a; }
+        .stat-value.loss { color: #dc2626; }
         
         /* Expense Table */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f5f5f5; color: #555; font-weight: 600; }
-        .btn-delete { color: #d32f2f; cursor: pointer; border: none; background: none; font-size: 1rem; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+        }
+        th, td { 
+            padding: 12px 14px; 
+            text-align: left; 
+            border-bottom: 1px solid #f1f5f9; 
+        }
+        th { 
+            background: #f8fafc; 
+            color: #475569; 
+            font-weight: 600; 
+            font-size: 0.85rem;
+        }
+        tr:hover td {
+            background-color: #f8fafc;
+        }
         
         /* Action buttons */
-        .actions { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-outline { border: 1px solid var(--primary-green); color: var(--primary-green); background: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-        .btn-outline:hover { background: var(--primary-green); color: white; }
+        .actions { 
+            display: flex; 
+            gap: 12px; 
+            margin-top: 20px; 
+            flex-wrap: wrap;
+        }
+        .btn-outline { 
+            border: 1.5px solid var(--primary-green); 
+            color: var(--primary-green); 
+            background: white; 
+            padding: 10px 18px; 
+            border-radius: 8px; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: all 0.25s; 
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-outline:hover { 
+            background: var(--primary-green); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(46,204,113,0.25);
+        }
+        .btn-primary {
+            background: var(--primary-green); 
+            color: white; 
+            border: none;
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: all 0.25s; 
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary:hover {
+            background: var(--dark-green);
+        }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.55); 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 10000; 
+            backdrop-filter: blur(4px);
+        }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 25px; border-radius: 10px; width: 400px; max-width: 90%; }
+        .modal-content { 
+            background: white; 
+            padding: 28px; 
+            border-radius: 14px; 
+            width: 440px; 
+            max-width: 90%; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalIn 0.25s ease-out;
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.94); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
         
         @media (max-width: 900px) {
-            .expenses-container { grid-template-columns: 1fr; }
+            .expenses-container { grid-template-columns: 1fr; margin: 20px 10px; }
             .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">eco</span> KisanCare</div>
-        <div class="nav-links">
-            <a href="home.html">Home</a>
-            <a href="crop.html">Crop Advisory</a>
-            <a href="weather.html">Weather Alerts</a>
-            <a href="market.html">Market Prices</a>
-            <a href="disease.html">Disease Detection</a>
-            <a href="crop-care.html">Crop Care</a>
-            <a href="fertilizer.html">Fertilizers</a>
-            <a href="schemes.html">Gov Schemes</a>
-            <a href="profile.html">‍<span class="material-icons" style="vertical-align: middle; font-size: inherit;">grass</span> Profile</a>
-            <a href="history.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">history</span> History</a>
-            <a href="fertilizer-calc.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">calculate</span> Fert. Calc.</a>
-            <a href="expenses.html" class="active"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">payments</span> Expenses</a>
+<!-- KISANCARE PRO STANDARDIZED NAVBAR -->
+<header class="app-header">
+    <nav class="app-navbar">
+        <!-- Brand Logo -->
+        <a href="home.html" class="nav-brand">
+            <div class="brand-icon"><span class="material-icons">eco</span></div>
+            <div class="brand-name">KisanCare<span>Pro</span></div>
+            <span class="badge-pro">AI 2.0</span>
+        </a>
+
+        <!-- Desktop Navigation Menu (Structured Categorized) -->
+        <ul class="nav-menu">
+            <!-- 1. Home -->
+            <li class="nav-item">
+                <a href="home.html" class="nav-link" data-i18n="nav_home">
+                    <span class="material-icons">home</span> Home
+                </a>
+            </li>
+
+            <!-- 2. Crop Services Dropdown -->
+            <li class="nav-item" id="navCropServices">
+                <button class="nav-link" type="button" data-i18n="nav_crop_services">
+                    <span class="material-icons">grass</span> Crop Services <span class="material-icons caret-icon">expand_more</span>
+                </button>
+                <div class="nav-dropdown">
+                    <a href="crop.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">psychology</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_crop_advisory">Crop Advisory</span>
+                            <span class="dropdown-desc">AI seasonal crop recommendation</span>
+                        </div>
+                    </a>
+                    <a href="disease.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">biotech</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_disease">Crop Doctor</span>
+                            <span class="dropdown-desc">Leaf disease detection & remedies</span>
+                        </div>
+                    </a>
+                    <a href="crop-care.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">local_florist</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_crop_care">Crop Care</span>
+                            <span class="dropdown-desc">Pest control & spray schedules</span>
+                        </div>
+                    </a>
+                    <a href="crop-calendar.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">calendar_month</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_calendar">Crop Calendar</span>
+                            <span class="dropdown-desc">Sowing & harvest cycle timeline</span>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="fertilizer.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">science</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_fertilizers">Fertilizers Shop</span>
+                            <span class="dropdown-desc">Nutrient products & eco fertilizers</span>
+                        </div>
+                    </a>
+                    <a href="fertilizer-calc.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">calculate</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_fert_calc">Fertilizer Calculator</span>
+                            <span class="dropdown-desc">Custom NPK dosage by acre</span>
+                        </div>
+                    </a>
+                </div>
+            </li>
+
+            <!-- 3. Market & Finance Dropdown -->
+            <li class="nav-item active" id="navMarketFinance">
+                <button class="nav-link active" type="button" data-i18n="nav_market_finance">
+                    <span class="material-icons">trending_up</span> Market & Finance <span class="material-icons caret-icon">expand_more</span>
+                </button>
+                <div class="nav-dropdown">
+                    <a href="market.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">storefront</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_market_prices">Market Mandi Prices</span>
+                            <span class="dropdown-desc">Live APMC wholesale market rates</span>
+                        </div>
+                    </a>
+                    <a href="expenses.html" class="dropdown-item active">
+                        <div class="dropdown-icon"><span class="material-icons">payments</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_expenses">Expense & Profit</span>
+                            <span class="dropdown-desc">Track income, inputs & net revenue</span>
+                        </div>
+                    </a>
+                    <a href="schemes.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">account_balance</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_schemes">Govt Schemes</span>
+                            <span class="dropdown-desc">Central & state farmer subsidies</span>
+                        </div>
+                    </a>
+                </div>
+            </li>
+
+            <!-- 4. Weather Alerts -->
+            <li class="nav-item">
+                <a href="weather.html" class="nav-link" data-i18n="nav_weather_alerts">
+                    <span class="material-icons">wb_sunny</span> Weather
+                </a>
+            </li>
+
+            <!-- 5. Community -->
+            <li class="nav-item">
+                <a href="community.html" class="nav-link" data-i18n="nav_community">
+                    <span class="material-icons">forum</span> Community
+                </a>
+            </li>
+        </ul>
+
+        <!-- Right Side Actions & User Menu -->
+        <div class="nav-actions">
+            <!-- Language Selector Pill -->
+            <div class="nav-lang-pill">
+                <span class="material-icons">translate</span>
+                <select id="langSwitcher" class="nav-lang-select" aria-label="Language Selector">
+                    <option value="en">English (EN)</option>
+                    <option value="hi">हिंदी (HI)</option>
+                    <option value="mr">मराठी (MR)</option>
+                    <option value="gu">ગુજરાતી (GU)</option>
+                </select>
+            </div>
+
+            <!-- Notifications Icon -->
+            <a href="notifications.html" class="nav-icon-btn" title="Notifications">
+                <span class="material-icons">notifications</span>
+                <span class="nav-badge" id="navNotifBadge" style="display: none;">0</span>
+            </a>
+
+            <!-- User Account Dropdown -->
+            <div class="nav-item">
+                <div class="nav-user-btn" tabindex="0">
+                    <div class="user-avatar-circle" id="navUserAvatar">K</div>
+                    <span class="user-btn-name" id="navUserName">Account</span>
+                    <span class="material-icons" style="font-size: 16px;">arrow_drop_down</span>
+                </div>
+                <div class="nav-dropdown dropdown-right">
+                    <a href="profile.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">person</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_profile">My Profile</span>
+                            <span class="dropdown-desc">Farm details & preferences</span>
+                        </div>
+                    </a>
+                    <a href="history.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">history</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_history">Activity History</span>
+                            <span class="dropdown-desc">Past predictions & consultations</span>
+                        </div>
+                    </a>
+                    <a href="#" id="navFeedbackLink" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">feedback</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_feedback">Feedback</span>
+                            <span class="dropdown-desc">Send suggestions or report bugs</span>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="index.html" class="dropdown-item" id="navAuthAction">
+                        <div class="dropdown-icon" style="color: #ef4444; background: #fee2e2;"><span class="material-icons">logout</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" style="color: #ef4444;" data-i18n="nav_logout">Logout</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobile Hamburger Toggle -->
+            <button class="nav-mobile-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu">
+                <span class="material-icons">menu</span>
+            </button>
         </div>
     </nav>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-overlay" id="mobileNavOverlay"></div>
+<aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+        <div class="nav-brand">
+            <div class="brand-icon"><span class="material-icons">eco</span></div>
+            <div class="brand-name">KisanCare</div>
+        </div>
+        <button class="drawer-close-btn" id="mobileDrawerClose" aria-label="Close menu">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="drawer-body">
+        <a href="home.html" class="drawer-link"><span class="material-icons">home</span> <span data-i18n="nav_home">Home</span></a>
+        <a href="weather.html" class="drawer-link"><span class="material-icons">wb_sunny</span> <span data-i18n="nav_weather_alerts">Weather Alerts</span></a>
+        <a href="community.html" class="drawer-link"><span class="material-icons">forum</span> <span data-i18n="nav_community">Community</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_crop_services">Crop Services</div>
+        <a href="crop.html" class="drawer-link"><span class="material-icons">psychology</span> <span data-i18n="nav_crop_advisory">Crop Advisory</span></a>
+        <a href="disease.html" class="drawer-link"><span class="material-icons">biotech</span> <span data-i18n="nav_disease">Crop Doctor</span></a>
+        <a href="crop-care.html" class="drawer-link"><span class="material-icons">local_florist</span> <span data-i18n="nav_crop_care">Crop Care</span></a>
+        <a href="crop-calendar.html" class="drawer-link"><span class="material-icons">calendar_month</span> <span data-i18n="nav_calendar">Crop Calendar</span></a>
+        <a href="fertilizer.html" class="drawer-link"><span class="material-icons">science</span> <span data-i18n="nav_fertilizers">Fertilizers Shop</span></a>
+        <a href="fertilizer-calc.html" class="drawer-link"><span class="material-icons">calculate</span> <span data-i18n="nav_fert_calc">Fertilizer Calculator</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_market_finance">Market & Finance</div>
+        <a href="market.html" class="drawer-link"><span class="material-icons">storefront</span> <span data-i18n="nav_market_prices">Market Prices</span></a>
+        <a href="expenses.html" class="drawer-link active"><span class="material-icons">payments</span> <span data-i18n="nav_expenses">Expense Tracker</span></a>
+        <a href="schemes.html" class="drawer-link"><span class="material-icons">account_balance</span> <span data-i18n="nav_schemes">Govt Schemes</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_account">Account</div>
+        <a href="profile.html" class="drawer-link"><span class="material-icons">person</span> <span data-i18n="nav_profile">Profile</span></a>
+        <a href="history.html" class="drawer-link"><span class="material-icons">history</span> <span data-i18n="nav_history">History</span></a>
+        <a href="notifications.html" class="drawer-link"><span class="material-icons">notifications</span> <span data-i18n="nav_notifications">Notifications</span></a>
+        <a href="index.html" class="drawer-link" style="color: #ef4444;"><span class="material-icons" style="color: #ef4444;">logout</span> <span data-i18n="nav_logout">Logout</span></a>
+    </div>
+</aside>
 
     <div class="expenses-container">
         <!-- Sidebar: Cycles -->
         <div class="panel">
             <div class="section-title">
-                Crop Cycles
-                <button class="btn" style="padding:5px 10px; font-size:0.9rem;" onclick="openNewCycleModal()">+ New</button>
+                <span style="display:flex; align-items:center; gap:6px; font-weight:700;">
+                    <span class="material-icons" style="color:var(--primary-green);">spa</span> Crop Cycles
+                </span>
+                <button class="btn-primary" style="padding:6px 14px; font-size:0.85rem;" onclick="openNewCycleModal()">
+                    <span class="material-icons" style="font-size:1rem;">add</span> New Cycle
+                </button>
             </div>
             <div class="cycle-list" id="cycleList">
                 <p style="text-align:center; color:#888;">Loading cycles...</p>
@@ -85,59 +457,71 @@
         
         <!-- Main Panel -->
         <div class="panel main-view" id="mainView" style="display:none;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
                 <div>
-                    <h2 id="viewCycleName" style="margin-top:0;">Cycle Name</h2>
-                    <p id="viewCycleMeta" style="color:#666;">Crop | Area | Start Date</p>
+                    <h2 id="viewCycleName" style="margin:0 0 4px 0; color:#1e293b;">Cycle Name</h2>
+                    <p id="viewCycleMeta" style="color:#64748b; margin:0; font-size:0.95rem;">Crop | Area | Start Date</p>
                 </div>
-                <button class="btn-outline" onclick="openEditMetaModal()">Edit Yield/Price</button>
+                <button class="btn-outline" onclick="openEditMetaModal()">
+                    <span class="material-icons" style="font-size:1.1rem;">edit</span> Edit Yield & Price
+                </button>
             </div>
             
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div>Total Investment</div>
+                    <div class="stat-label">Total Investment</div>
                     <div class="stat-value" id="statInvest">₹0</div>
                 </div>
                 <div class="stat-card">
-                    <div>Est. Revenue</div>
+                    <div class="stat-label">Est. Revenue</div>
                     <div class="stat-value" id="statRev">₹0</div>
                 </div>
                 <div class="stat-card">
-                    <div>Profit / Loss</div>
+                    <div class="stat-label">Net Profit / Loss</div>
                     <div class="stat-value" id="statProfit">₹0</div>
                 </div>
             </div>
             
-            <div class="section-title" style="margin-top:20px;">
-                Expense Items
-                <button class="btn" style="padding:5px 10px; font-size:0.9rem;" onclick="openAddExpenseModal()">+ Add Expense</button>
+            <div class="section-title" style="margin-top:15px;">
+                <span style="display:flex; align-items:center; gap:6px; font-weight:700;">
+                    <span class="material-icons" style="color:var(--primary-green);">receipt_long</span> Expense Items
+                </span>
+                <button class="btn-primary" style="padding:6px 14px; font-size:0.85rem;" onclick="openAddExpenseModal()">
+                    <span class="material-icons" style="font-size:1rem;">add</span> Add Expense
+                </button>
             </div>
             
-            <div style="overflow-x:auto;">
+            <div style="overflow-x:auto; border-radius:8px; border:1px solid #f1f5f9;">
                 <table id="expenseTable">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Category</th>
-                            <th>Amount (₹)</th>
+                            <th>Amount</th>
                             <th>Note</th>
-                            <th>Action</th>
+                            <th style="text-align:center;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="expenseTbody">
-                        <!-- Populated by JS -->
+                        <!-- Populated dynamically by JS -->
                     </tbody>
                 </table>
             </div>
             
             <div class="actions">
-                <button class="btn-outline" onclick="downloadReport('pdf')"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">description</span> Download PDF</button>
-                <button class="btn-outline" onclick="downloadReport('xlsx')"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">bar_chart</span> Download Excel</button>
+                <button class="btn-outline" onclick="downloadReport('pdf')">
+                    <span class="material-icons" style="font-size:1.1rem;">print</span> Print / PDF Report
+                </button>
+                <button class="btn-outline" onclick="downloadReport('xlsx')">
+                    <span class="material-icons" style="font-size:1.1rem;">table_view</span> Export CSV / Excel
+                </button>
             </div>
         </div>
         
-        <div class="panel" id="emptyView" style="display:flex; align-items:center; justify-content:center; flex-direction:column; color:#888;">
-            <h2 style="color:#ccc;">Select or create a crop cycle</h2>
+        <div class="panel" id="emptyView" style="display:flex; align-items:center; justify-content:center; flex-direction:column; color:#888; min-height:400px;">
+            <span class="material-icons" style="font-size:4rem; color:#cbd5e1; margin-bottom:12px;">receipt_long</span>
+            <h3 style="color:#64748b; margin-bottom:6px;">Select or Create a Crop Cycle</h3>
+            <p style="color:#94a3b8; font-size:0.9rem;">Track seeds, fertilizers, labour costs, and calculate profit per acre.</p>
         </div>
     </div>
 
@@ -145,27 +529,29 @@
     <!-- New Cycle Modal -->
     <div class="modal" id="newCycleModal">
         <div class="modal-content">
-            <h3 style="margin-top:0;">Create Crop Cycle</h3>
+            <h3 style="margin-top:0; color:#1e293b; display:flex; align-items:center; gap:8px;">
+                <span class="material-icons" style="color:var(--primary-green);">add_circle</span> Create Crop Cycle
+            </h3>
             <form id="newCycleForm">
                 <div class="form-group">
                     <label>Cycle Name</label>
-                    <input type="text" id="ncName" placeholder="e.g. Wheat Rabi 2026" required>
+                    <input type="text" id="ncName" placeholder="e.g. Wheat Rabi 2025-26" required>
                 </div>
                 <div class="form-group">
                     <label>Crop</label>
-                    <input type="text" id="ncCrop" required>
+                    <input type="text" id="ncCrop" placeholder="e.g. Wheat, Cotton, Mustard" required>
                 </div>
                 <div class="form-group">
                     <label>Land Area (Acres)</label>
-                    <input type="number" step="0.1" id="ncArea" required>
+                    <input type="number" step="0.1" id="ncArea" placeholder="e.g. 3.5" required>
                 </div>
                 <div class="form-group">
-                    <label>Start Date</label>
+                    <label>Sowing / Start Date</label>
                     <input type="date" id="ncDate" required>
                 </div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button type="submit" class="btn" style="flex:1;">Create</button>
-                    <button type="button" class="btn-outline" style="flex:1;" onclick="closeModal('newCycleModal')">Cancel</button>
+                    <button type="submit" class="btn-primary" style="flex:1; justify-content:center;">Create Cycle</button>
+                    <button type="button" class="btn-outline" style="flex:1; justify-content:center;" onclick="closeModal('newCycleModal')">Cancel</button>
                 </div>
             </form>
         </div>
@@ -174,35 +560,37 @@
     <!-- Add Expense Modal -->
     <div class="modal" id="addExpenseModal">
         <div class="modal-content">
-            <h3 style="margin-top:0;">Add Expense</h3>
+            <h3 style="margin-top:0; color:#1e293b; display:flex; align-items:center; gap:8px;">
+                <span class="material-icons" style="color:var(--primary-green);">add_shopping_cart</span> Add Expense Item
+            </h3>
             <form id="addExpenseForm">
                 <div class="form-group">
                     <label>Category</label>
                     <select id="aeCategory" required>
-                        <option value="seeds">Seeds</option>
-                        <option value="fertilizer">Fertilizer</option>
-                        <option value="labour">Labour</option>
-                        <option value="machinery">Machinery</option>
-                        <option value="irrigation">Irrigation</option>
-                        <option value="transport">Transport</option>
-                        <option value="miscellaneous">Miscellaneous</option>
+                        <option value="seeds">Seeds & Seed Treatment</option>
+                        <option value="fertilizer">Fertilizers & Nutrients</option>
+                        <option value="labour">Labour & Sowing Charges</option>
+                        <option value="machinery">Tractor & Machinery Rental</option>
+                        <option value="irrigation">Irrigation & Electricity</option>
+                        <option value="transport">Transport & Mandi Cartage</option>
+                        <option value="miscellaneous">Miscellaneous Expenses</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Amount (₹)</label>
-                    <input type="number" step="1" id="aeAmount" required>
+                    <input type="number" step="1" id="aeAmount" placeholder="e.g. 4500" required>
                 </div>
                 <div class="form-group">
-                    <label>Date</label>
+                    <label>Expense Date</label>
                     <input type="date" id="aeDate" required>
                 </div>
                 <div class="form-group">
-                    <label>Note</label>
-                    <input type="text" id="aeNote" placeholder="Optional details">
+                    <label>Note / Particulars</label>
+                    <input type="text" id="aeNote" placeholder="e.g. 3 bags of Urea, 2 labourers">
                 </div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button type="submit" class="btn" style="flex:1;">Add</button>
-                    <button type="button" class="btn-outline" style="flex:1;" onclick="closeModal('addExpenseModal')">Cancel</button>
+                    <button type="submit" class="btn-primary" style="flex:1; justify-content:center;">Add Expense</button>
+                    <button type="button" class="btn-outline" style="flex:1; justify-content:center;" onclick="closeModal('addExpenseModal')">Cancel</button>
                 </div>
             </form>
         </div>
@@ -211,24 +599,26 @@
     <!-- Edit Meta Modal -->
     <div class="modal" id="editMetaModal">
         <div class="modal-content">
-            <h3 style="margin-top:0;">Update Yield & Price</h3>
-            <p style="font-size:0.85rem; color:#666;">Enter expected values if crop is still growing, or actual values after harvest.</p>
+            <h3 style="margin-top:0; color:#1e293b; display:flex; align-items:center; gap:8px;">
+                <span class="material-icons" style="color:var(--primary-green);">trending_up</span> Update Yield & Sale Price
+            </h3>
+            <p style="font-size:0.85rem; color:#64748b; margin-bottom:14px;">Enter expected values while crop is growing, or actual harvest results.</p>
             <form id="editMetaForm">
                 <div class="form-group">
-                    <label>Expected Sale Price (₹/Quintal)</label>
-                    <input type="number" step="0.1" id="emExpPrice">
+                    <label>Expected Sale Price (₹ / Quintal)</label>
+                    <input type="number" step="0.1" id="emExpPrice" placeholder="e.g. 2425">
                 </div>
                 <div class="form-group">
-                    <label>Actual Sale Price (₹/Quintal)</label>
-                    <input type="number" step="0.1" id="emActPrice">
+                    <label>Actual Sale Price (₹ / Quintal)</label>
+                    <input type="number" step="0.1" id="emActPrice" placeholder="e.g. 2475">
                 </div>
                 <div class="form-group">
                     <label>Actual Yield (Quintals)</label>
-                    <input type="number" step="0.1" id="emYield">
+                    <input type="number" step="0.1" id="emYield" placeholder="e.g. 42.0">
                 </div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button type="submit" class="btn" style="flex:1;">Save</button>
-                    <button type="button" class="btn-outline" style="flex:1;" onclick="closeModal('editMetaModal')">Cancel</button>
+                    <button type="submit" class="btn-primary" style="flex:1; justify-content:center;">Save Details</button>
+                    <button type="button" class="btn-outline" style="flex:1; justify-content:center;" onclick="closeModal('editMetaModal')">Cancel</button>
                 </div>
             </form>
         </div>
@@ -238,6 +628,7 @@
     <script src="js/auth.js"></script>
     <script src="js/expenses.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/navbar.js"></script>
     <script src="js/i18n.js"></script>
 </body>
 </html>

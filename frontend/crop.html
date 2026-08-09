@@ -10,12 +10,12 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Crop Advisory ?????? KisanCare</title>
+    <title>Crop Advisory  KisanCare</title>
 
     <meta name="description" content="AI-powered crop recommendation for Indian farmers. Enter your soil nutrient levels and climate data to get the best crop suggestion.">
 
     <link rel="stylesheet" href="css/style.css">
-
+    <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/chat.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -524,61 +524,225 @@
 
 
 
-    <header>
+<!-- KISANCARE PRO STANDARDIZED NAVBAR -->
+<header class="app-header">
+    <nav class="app-navbar">
+        <!-- Brand Logo -->
+        <a href="home.html" class="nav-brand">
+            <div class="brand-icon"><span class="material-icons">eco</span></div>
+            <div class="brand-name">KisanCare<span>Pro</span></div>
+            <span class="badge-pro">AI 2.0</span>
+        </a>
 
-        <nav>
-
-        <div class="logo"><span class="material-icons">eco</span> KisanCare</div>
-
-        <div class="menu-toggle" id="mobile-menu"><span class="material-icons">menu</span></div>
-
-        <ul class="nav-links">
-
-            <li><a href="home.html" data-i18n="nav_home"><span class="material-icons">home</span> Home</a></li>
-
-            <li><a href="crop.html" class="active" data-i18n="nav_crop_advisory"><span class="material-icons">grass</span> Crop Advisory</a></li>
-
-            <li><a href="weather.html" data-i18n="nav_weather_alerts"><span class="material-icons">cloud</span> Weather Alerts</a></li>
-
-            <li><a href="crop-care.html" data-i18n="nav_crop_care"><span class="material-icons">local_florist</span> Crop Care</a></li>
-
-            <li><a href="market.html" data-i18n="nav_market_prices"><span class="material-icons">storefront</span> Market Prices</a></li>
-
-            <li><a href="schemes.html" data-i18n="nav_schemes"><span class="material-icons">account_balance</span> Govt Schemes</a></li>
-
-            <li><a href="fertilizer.html" data-i18n="nav_fertilizers"><span class="material-icons">science</span> Fertilizers</a></li>
-
-            <li><a href="#" id="navFeedbackLink" data-i18n="nav_feedback"><span class="material-icons">feedback</span> Feedback</a></li>
-
-            <li><a href="profile.html" data-i18n="nav_profile"><span class="material-icons">person</span> Profile</a></li>
-
-            <li><a href="history.html" data-i18n="nav_history"><span class="material-icons">history</span> History</a></li>
-
-            <li><a href="fertilizer-calc.html" data-i18n="nav_fert_calc"><span class="material-icons">calculate</span> Fert. Calc.</a></li>
-
-            <li><a href="expenses.html" data-i18n="nav_expenses"><span class="material-icons">payments</span> Expenses</a></li>
-
-            <li><a href="index.html" data-i18n="nav_login"><span class="material-icons">login</span> Login</a></li>
-
-            <li>
-
-                <select id="langSwitcher" class="lang-switcher">
-
-                    <option value="en">EN</option>
-
-                    <option value="hi">HI</option>
-
-                    <option value="gu">GU</option>
-
-                </select>
-
+        <!-- Desktop Navigation Menu (Structured Categorized) -->
+        <ul class="nav-menu">
+            <!-- 1. Home -->
+            <li class="nav-item">
+                <a href="home.html" class="nav-link" data-i18n="nav_home">
+                    <span class="material-icons">home</span> Home
+                </a>
             </li>
 
+            <!-- 2. Crop Services Dropdown -->
+            <li class="nav-item active" id="navCropServices">
+                <button class="nav-link active" type="button" data-i18n="nav_crop_services">
+                    <span class="material-icons">grass</span> Crop Services <span class="material-icons caret-icon">expand_more</span>
+                </button>
+                <div class="nav-dropdown">
+                    <a href="crop.html" class="dropdown-item active">
+                        <div class="dropdown-icon"><span class="material-icons">psychology</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_crop_advisory">Crop Advisory</span>
+                            <span class="dropdown-desc">AI seasonal crop recommendation</span>
+                        </div>
+                    </a>
+                    <a href="disease.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">biotech</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_disease">Crop Doctor</span>
+                            <span class="dropdown-desc">Leaf disease detection & remedies</span>
+                        </div>
+                    </a>
+                    <a href="crop-care.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">local_florist</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_crop_care">Crop Care</span>
+                            <span class="dropdown-desc">Pest control & spray schedules</span>
+                        </div>
+                    </a>
+                    <a href="crop-calendar.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">calendar_month</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_calendar">Crop Calendar</span>
+                            <span class="dropdown-desc">Sowing & harvest cycle timeline</span>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="fertilizer.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">science</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_fertilizers">Fertilizers Shop</span>
+                            <span class="dropdown-desc">Nutrient products & eco fertilizers</span>
+                        </div>
+                    </a>
+                    <a href="fertilizer-calc.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">calculate</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_fert_calc">Fertilizer Calculator</span>
+                            <span class="dropdown-desc">Custom NPK dosage by acre</span>
+                        </div>
+                    </a>
+                </div>
+            </li>
+
+            <!-- 3. Market & Finance Dropdown -->
+            <li class="nav-item" id="navMarketFinance">
+                <button class="nav-link" type="button" data-i18n="nav_market_finance">
+                    <span class="material-icons">trending_up</span> Market & Finance <span class="material-icons caret-icon">expand_more</span>
+                </button>
+                <div class="nav-dropdown">
+                    <a href="market.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">storefront</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_market_prices">Market Mandi Prices</span>
+                            <span class="dropdown-desc">Live APMC wholesale market rates</span>
+                        </div>
+                    </a>
+                    <a href="expenses.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">payments</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_expenses">Expense & Profit</span>
+                            <span class="dropdown-desc">Track income, inputs & net revenue</span>
+                        </div>
+                    </a>
+                    <a href="schemes.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">account_balance</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_schemes">Govt Schemes</span>
+                            <span class="dropdown-desc">Central & state farmer subsidies</span>
+                        </div>
+                    </a>
+                </div>
+            </li>
+
+            <!-- 4. Weather Alerts -->
+            <li class="nav-item">
+                <a href="weather.html" class="nav-link" data-i18n="nav_weather_alerts">
+                    <span class="material-icons">wb_sunny</span> Weather
+                </a>
+            </li>
+
+            <!-- 5. Community -->
+            <li class="nav-item">
+                <a href="community.html" class="nav-link" data-i18n="nav_community">
+                    <span class="material-icons">forum</span> Community
+                </a>
+            </li>
         </ul>
 
-    </nav>
+        <!-- Right Side Actions & User Menu -->
+        <div class="nav-actions">
+            <!-- Language Selector Pill -->
+            <div class="nav-lang-pill">
+                <span class="material-icons">translate</span>
+                <select id="langSwitcher" class="nav-lang-select" aria-label="Language Selector">
+                    <option value="en">English (EN)</option>
+                    <option value="hi">हिंदी (HI)</option>
+                    <option value="mr">मराठी (MR)</option>
+                    <option value="gu">ગુજરાતી (GU)</option>
+                </select>
+            </div>
 
-    </header>
+            <!-- Notifications Icon -->
+            <a href="notifications.html" class="nav-icon-btn" title="Notifications">
+                <span class="material-icons">notifications</span>
+                <span class="nav-badge" id="navNotifBadge" style="display: none;">0</span>
+            </a>
+
+            <!-- User Account Dropdown -->
+            <div class="nav-item">
+                <div class="nav-user-btn" tabindex="0">
+                    <div class="user-avatar-circle" id="navUserAvatar">K</div>
+                    <span class="user-btn-name" id="navUserName">Account</span>
+                    <span class="material-icons" style="font-size: 16px;">arrow_drop_down</span>
+                </div>
+                <div class="nav-dropdown dropdown-right">
+                    <a href="profile.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">person</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_profile">My Profile</span>
+                            <span class="dropdown-desc">Farm details & preferences</span>
+                        </div>
+                    </a>
+                    <a href="history.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">history</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_history">Activity History</span>
+                            <span class="dropdown-desc">Past predictions & consultations</span>
+                        </div>
+                    </a>
+                    <a href="#" id="navFeedbackLink" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">feedback</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_feedback">Feedback</span>
+                            <span class="dropdown-desc">Send suggestions or report bugs</span>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="index.html" class="dropdown-item" id="navAuthAction">
+                        <div class="dropdown-icon" style="color: #ef4444; background: #fee2e2;"><span class="material-icons">logout</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" style="color: #ef4444;" data-i18n="nav_logout">Logout</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobile Hamburger Toggle -->
+            <button class="nav-mobile-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu">
+                <span class="material-icons">menu</span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-overlay" id="mobileNavOverlay"></div>
+<aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+        <div class="nav-brand">
+            <div class="brand-icon"><span class="material-icons">eco</span></div>
+            <div class="brand-name">KisanCare</div>
+        </div>
+        <button class="drawer-close-btn" id="mobileDrawerClose" aria-label="Close menu">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="drawer-body">
+        <a href="home.html" class="drawer-link"><span class="material-icons">home</span> <span data-i18n="nav_home">Home</span></a>
+        <a href="weather.html" class="drawer-link"><span class="material-icons">wb_sunny</span> <span data-i18n="nav_weather_alerts">Weather Alerts</span></a>
+        <a href="community.html" class="drawer-link"><span class="material-icons">forum</span> <span data-i18n="nav_community">Community</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_crop_services">Crop Services</div>
+        <a href="crop.html" class="drawer-link active"><span class="material-icons">psychology</span> <span data-i18n="nav_crop_advisory">Crop Advisory</span></a>
+        <a href="disease.html" class="drawer-link"><span class="material-icons">biotech</span> <span data-i18n="nav_disease">Crop Doctor</span></a>
+        <a href="crop-care.html" class="drawer-link"><span class="material-icons">local_florist</span> <span data-i18n="nav_crop_care">Crop Care</span></a>
+        <a href="crop-calendar.html" class="drawer-link"><span class="material-icons">calendar_month</span> <span data-i18n="nav_calendar">Crop Calendar</span></a>
+        <a href="fertilizer.html" class="drawer-link"><span class="material-icons">science</span> <span data-i18n="nav_fertilizers">Fertilizers Shop</span></a>
+        <a href="fertilizer-calc.html" class="drawer-link"><span class="material-icons">calculate</span> <span data-i18n="nav_fert_calc">Fertilizer Calculator</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_market_finance">Market & Finance</div>
+        <a href="market.html" class="drawer-link"><span class="material-icons">storefront</span> <span data-i18n="nav_market_prices">Market Prices</span></a>
+        <a href="expenses.html" class="drawer-link"><span class="material-icons">payments</span> <span data-i18n="nav_expenses">Expense Tracker</span></a>
+        <a href="schemes.html" class="drawer-link"><span class="material-icons">account_balance</span> <span data-i18n="nav_schemes">Govt Schemes</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_account">Account</div>
+        <a href="profile.html" class="drawer-link"><span class="material-icons">person</span> <span data-i18n="nav_profile">Profile</span></a>
+        <a href="history.html" class="drawer-link"><span class="material-icons">history</span> <span data-i18n="nav_history">History</span></a>
+        <a href="notifications.html" class="drawer-link"><span class="material-icons">notifications</span> <span data-i18n="nav_notifications">Notifications</span></a>
+        <a href="index.html" class="drawer-link" style="color: #ef4444;"><span class="material-icons" style="color: #ef4444;">logout</span> <span data-i18n="nav_logout">Logout</span></a>
+    </div>
+</aside>
 
 
 
@@ -1266,6 +1430,7 @@
 
 
 
+    <script src="js/navbar.js"></script>
     <script src="js/i18n.js"></script>
 
 </body>

@@ -3,11 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KisanCare â€” Login & Sign Up</title>
+    <title>KisanCare &mdash; Login & Sign Up</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Protect Material Icons from Inter font override */
+        .material-icons {
+            font-family: 'Material Icons' !important;
+            font-weight: normal !important;
+            font-style: normal !important;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Protect Material Icons from Inter font override */
+        .material-icons {
+            font-family: 'Material Icons' !important;
+            font-weight: normal !important;
+            font-style: normal !important;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
 
         :root {
             --green:       #27ae60;
@@ -29,7 +63,7 @@
         }
 
         /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-           LAYOUT  â€” Two-column split
+           LAYOUT  - Two-column split
         â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         .page-wrap {
             display: flex;
@@ -591,6 +625,16 @@
     <main class="auth-panel">
         <div class="auth-box">
 
+            <!-- Language Selector -->
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+                <select id="langSwitcher" class="lang-switcher" style="padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: #374151; outline: none;">
+                    <option value="en">English (EN)</option>
+                    <option value="hi">हिंदी (HI)</option>
+                    <option value="mr">मराठी (MR)</option>
+                    <option value="gu">ગુજરાતી (GU)</option>
+                </select>
+            </div>
+
             <!-- Tabs -->
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">
@@ -856,7 +900,7 @@ function finishLogin(email, name, method = 'email') {
 }
 
 /* ==============================================
-   LOGIN â€” real-time email validation
+   LOGIN - real-time email validation
 ============================================== */
 document.getElementById('loginEmail').addEventListener('input', function() {
     const v = this.value.trim();
@@ -925,7 +969,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
 });
 
 /* ==============================================
-   SIGNUP â€” real-time validation
+   SIGNUP - real-time validation
 ============================================== */
 document.getElementById('signupName').addEventListener('input', function() {
     const ok = this.value.trim().length >= 3;
@@ -1086,4 +1130,5 @@ document.getElementById('sendOtpBtn').addEventListener('click', () => {
     <script src="js/i18n.js"></script>
 </body>
 </html>
+
 
