@@ -4,160 +4,534 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmer Profile | KisanCare</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Inline styles for profile layout -->
+    <link rel="stylesheet" href="css/navbar.css">
     <style>
-        .profile-container { max-width: 800px; margin: 40px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .profile-header { text-align: center; margin-bottom: 30px; }
-        .photo-upload { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .photo-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; background: #eee; border: 3px solid var(--primary-green); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-preview span { color: #888; font-size: 0.9rem; text-align: center; }
-        .section-title { font-size: 1.2rem; border-bottom: 2px solid var(--primary-green); padding-bottom: 5px; margin-bottom: 15px; color: var(--text-dark); }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group label { font-weight: 500; color: #555; }
-        .form-group input, .form-group select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
-        .chips-container { display: flex; flex-wrap: wrap; gap: 10px; }
-        .chip { padding: 5px 12px; background: #eee; border-radius: 15px; cursor: pointer; transition: 0.2s; user-select: none; }
-        .chip.selected { background: var(--primary-green); color: white; }
-        .btn-save { background: var(--primary-green); color: white; padding: 12px 24px; border: none; border-radius: 5px; font-size: 1.1rem; cursor: pointer; width: 100%; transition: 0.3s; }
-        .btn-save:hover { background: #27ae60; }
-        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+        .profile-container { 
+            max-width: 860px; 
+            margin: 40px auto; 
+            padding: 30px; 
+            background: #ffffff; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            border: 1px solid #eef2f5;
+        }
+        .profile-header { 
+            text-align: center; 
+            margin-bottom: 25px; 
+        }
+        .profile-header h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 6px;
+        }
+        .profile-header p {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+        .photo-upload { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 25px; 
+        }
+        .photo-preview { 
+            width: 130px; 
+            height: 130px; 
+            border-radius: 50%; 
+            background: #f1f8e9; 
+            border: 4px solid var(--primary-green); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(46,204,113,0.2);
+        }
+        .photo-preview img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        .photo-preview span { 
+            color: #888; 
+            font-size: 0.9rem; 
+            text-align: center; 
+        }
+        .section-title { 
+            font-size: 1.25rem; 
+            border-bottom: 2px solid #e2f0d9; 
+            padding-bottom: 8px; 
+            margin: 25px 0 15px; 
+            color: #27ae60; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 20px; 
+        }
+        .form-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+        }
+        .form-group label { 
+            font-weight: 600; 
+            color: #4a5568; 
+            font-size: 0.9rem;
+        }
+        .form-group input, .form-group select { 
+            padding: 12px 14px; 
+            border: 1.5px solid #e2e8f0; 
+            border-radius: 8px; 
+            font-size: 0.95rem; 
+            transition: all 0.2s ease;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(46,204,113,0.15);
+        }
+        .chips-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            margin-top: 6px;
+        }
+        .chip { 
+            padding: 7px 16px; 
+            background: #f1f5f9; 
+            color: #475569;
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s; 
+            user-select: none; 
+            border: 1px solid transparent;
+        }
+        .chip:hover {
+            background: #e2e8f0;
+        }
+        .chip.selected { 
+            background: var(--primary-green); 
+            color: white; 
+            box-shadow: 0 3px 8px rgba(46,204,113,0.3);
+        }
+        .toggle-row {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .toggle-row label {
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.95rem;
+            margin: 0;
+            cursor: pointer;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-green);
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        .btn-save { 
+            background: linear-gradient(135deg, #2ecc71, #27ae60); 
+            color: white; 
+            padding: 14px 28px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.05rem; 
+            font-weight: 600;
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 25px;
+            transition: all 0.3s; 
+            box-shadow: 0 4px 15px rgba(46,204,113,0.35);
+        }
+        .btn-save:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46,204,113,0.45);
+        }
+        @media (max-width: 650px) { 
+            .form-grid { grid-template-columns: 1fr; } 
+            .profile-container { margin: 20px 15px; padding: 20px; }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">eco</span> KisanCare</div>
-        <div class="nav-links">
-            <a href="home.html">Home</a>
-            <a href="crop.html">Crop Advisory</a>
-            <a href="weather.html">Weather Alerts</a>
-            <a href="market.html">Market Prices</a>
-            <a href="disease.html">Disease Detection</a>
-            <a href="crop-care.html">Crop Care</a>
-            <a href="fertilizer.html">Fertilizers</a>
-            <a href="schemes.html">Gov Schemes</a>
-            <a href="profile.html" class="active">‍<span class="material-icons" style="vertical-align: middle; font-size: inherit;">grass</span> Profile</a>
-            <a href="history.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">history</span> History</a>
-            <a href="fertilizer-calc.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">calculate</span> Fert. Calc.</a>
-            <a href="expenses.html"><span class="material-icons" style="vertical-align: middle; font-size: inherit;">payments</span> Expenses</a>
+<!-- KISANCARE PRO STANDARDIZED NAVBAR -->
+<header class="app-header">
+    <nav class="app-navbar">
+        <!-- Brand Logo -->
+        <a href="home.html" class="nav-brand">
+            <div class="brand-icon"><span class="material-icons">eco</span></div>
+            <div class="brand-name">KisanCare<span>Pro</span></div>
+            <span class="badge-pro">AI 2.0</span>
+        </a>
+
+        <!-- Desktop Navigation Menu (Structured Categorized) -->
+        <ul class="nav-menu">
+            <!-- 1. Home -->
+            <li class="nav-item">
+                <a href="home.html" class="nav-link" data-i18n="nav_home">
+                    <span class="material-icons">home</span> Home
+                </a>
+            </li>
+
+            <!-- 2. Crop Services Dropdown -->
+            <li class="nav-item" id="navCropServices">
+                <button class="nav-link" type="button" data-i18n="nav_crop_services">
+                    <span class="material-icons">grass</span> Crop Services <span class="material-icons caret-icon">expand_more</span>
+                </button>
+                <div class="nav-dropdown">
+                    <a href="crop.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">psychology</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_crop_advisory">Crop Advisory</span>
+                            <span class="dropdown-desc">AI seasonal crop recommendation</span>
+                        </div>
+                    </a>
+                    <a href="disease.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">biotech</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_disease">Crop Doctor</span>
+                            <span class="dropdown-desc">Leaf disease detection & remedies</span>
+                        </div>
+                    </a>
+                    <a href="crop-care.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">local_florist</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_crop_care">Crop Care</span>
+                            <span class="dropdown-desc">Pest control & spray schedules</span>
+                        </div>
+                    </a>
+                    <a href="crop-calendar.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">calendar_month</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_calendar">Crop Calendar</span>
+                            <span class="dropdown-desc">Sowing & harvest cycle timeline</span>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="fertilizer.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">science</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_fertilizers">Fertilizers Shop</span>
+                            <span class="dropdown-desc">Nutrient products & eco fertilizers</span>
+                        </div>
+                    </a>
+                    <a href="fertilizer-calc.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">calculate</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_fert_calc">Fertilizer Calculator</span>
+                            <span class="dropdown-desc">Custom NPK dosage by acre</span>
+                        </div>
+                    </a>
+                </div>
+            </li>
+
+            <!-- 3. Market & Finance Dropdown -->
+            <li class="nav-item" id="navMarketFinance">
+                <button class="nav-link" type="button" data-i18n="nav_market_finance">
+                    <span class="material-icons">trending_up</span> Market & Finance <span class="material-icons caret-icon">expand_more</span>
+                </button>
+                <div class="nav-dropdown">
+                    <a href="market.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">storefront</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_market_prices">Market Mandi Prices</span>
+                            <span class="dropdown-desc">Live APMC wholesale market rates</span>
+                        </div>
+                    </a>
+                    <a href="expenses.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">payments</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_expenses">Expense & Profit</span>
+                            <span class="dropdown-desc">Track income, inputs & net revenue</span>
+                        </div>
+                    </a>
+                    <a href="schemes.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">account_balance</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_schemes">Govt Schemes</span>
+                            <span class="dropdown-desc">Central & state farmer subsidies</span>
+                        </div>
+                    </a>
+                </div>
+            </li>
+
+            <!-- 4. Weather Alerts -->
+            <li class="nav-item">
+                <a href="weather.html" class="nav-link" data-i18n="nav_weather_alerts">
+                    <span class="material-icons">wb_sunny</span> Weather
+                </a>
+            </li>
+
+            <!-- 5. Community -->
+            <li class="nav-item">
+                <a href="community.html" class="nav-link" data-i18n="nav_community">
+                    <span class="material-icons">forum</span> Community
+                </a>
+            </li>
+        </ul>
+
+        <!-- Right Side Actions & User Menu -->
+        <div class="nav-actions">
+            <!-- Language Selector Pill -->
+            <div class="nav-lang-pill">
+                <span class="material-icons">translate</span>
+                <select id="langSwitcher" class="nav-lang-select" aria-label="Language Selector">
+                    <option value="en">English (EN)</option>
+                    <option value="hi">हिंदी (HI)</option>
+                    <option value="mr">मराठी (MR)</option>
+                    <option value="gu">ગુજરાતી (GU)</option>
+                </select>
+            </div>
+
+            <!-- Notifications Icon -->
+            <a href="notifications.html" class="nav-icon-btn" title="Notifications">
+                <span class="material-icons">notifications</span>
+                <span class="nav-badge" id="navNotifBadge" style="display: none;">0</span>
+            </a>
+
+            <!-- User Account Dropdown -->
+            <div class="nav-item active">
+                <div class="nav-user-btn active" tabindex="0">
+                    <div class="user-avatar-circle" id="navUserAvatar">K</div>
+                    <span class="user-btn-name" id="navUserName">Account</span>
+                    <span class="material-icons" style="font-size: 16px;">arrow_drop_down</span>
+                </div>
+                <div class="nav-dropdown dropdown-right">
+                    <a href="profile.html" class="dropdown-item active">
+                        <div class="dropdown-icon"><span class="material-icons">person</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_profile">My Profile</span>
+                            <span class="dropdown-desc">Farm details & preferences</span>
+                        </div>
+                    </a>
+                    <a href="history.html" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">history</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_history">Activity History</span>
+                            <span class="dropdown-desc">Past predictions & consultations</span>
+                        </div>
+                    </a>
+                    <a href="#" id="navFeedbackLink" class="dropdown-item">
+                        <div class="dropdown-icon"><span class="material-icons">feedback</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" data-i18n="nav_feedback">Feedback</span>
+                            <span class="dropdown-desc">Send suggestions or report bugs</span>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="index.html" class="dropdown-item" id="navAuthAction">
+                        <div class="dropdown-icon" style="color: #ef4444; background: #fee2e2;"><span class="material-icons">logout</span></div>
+                        <div class="dropdown-info">
+                            <span class="dropdown-title" style="color: #ef4444;" data-i18n="nav_logout">Logout</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobile Hamburger Toggle -->
+            <button class="nav-mobile-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu">
+                <span class="material-icons">menu</span>
+            </button>
         </div>
     </nav>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-overlay" id="mobileNavOverlay"></div>
+<aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+        <div class="nav-brand">
+            <div class="brand-icon"><span class="material-icons">eco</span></div>
+            <div class="brand-name">KisanCare</div>
+        </div>
+        <button class="drawer-close-btn" id="mobileDrawerClose" aria-label="Close menu">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="drawer-body">
+        <a href="home.html" class="drawer-link"><span class="material-icons">home</span> <span data-i18n="nav_home">Home</span></a>
+        <a href="weather.html" class="drawer-link"><span class="material-icons">wb_sunny</span> <span data-i18n="nav_weather_alerts">Weather Alerts</span></a>
+        <a href="community.html" class="drawer-link"><span class="material-icons">forum</span> <span data-i18n="nav_community">Community</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_crop_services">Crop Services</div>
+        <a href="crop.html" class="drawer-link"><span class="material-icons">psychology</span> <span data-i18n="nav_crop_advisory">Crop Advisory</span></a>
+        <a href="disease.html" class="drawer-link"><span class="material-icons">biotech</span> <span data-i18n="nav_disease">Crop Doctor</span></a>
+        <a href="crop-care.html" class="drawer-link"><span class="material-icons">local_florist</span> <span data-i18n="nav_crop_care">Crop Care</span></a>
+        <a href="crop-calendar.html" class="drawer-link"><span class="material-icons">calendar_month</span> <span data-i18n="nav_calendar">Crop Calendar</span></a>
+        <a href="fertilizer.html" class="drawer-link"><span class="material-icons">science</span> <span data-i18n="nav_fertilizers">Fertilizers Shop</span></a>
+        <a href="fertilizer-calc.html" class="drawer-link"><span class="material-icons">calculate</span> <span data-i18n="nav_fert_calc">Fertilizer Calculator</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_market_finance">Market & Finance</div>
+        <a href="market.html" class="drawer-link"><span class="material-icons">storefront</span> <span data-i18n="nav_market_prices">Market Prices</span></a>
+        <a href="expenses.html" class="drawer-link"><span class="material-icons">payments</span> <span data-i18n="nav_expenses">Expense Tracker</span></a>
+        <a href="schemes.html" class="drawer-link"><span class="material-icons">account_balance</span> <span data-i18n="nav_schemes">Govt Schemes</span></a>
+
+        <div class="drawer-section-title" data-i18n="nav_account">Account</div>
+        <a href="profile.html" class="drawer-link active"><span class="material-icons">person</span> <span data-i18n="nav_profile">Profile</span></a>
+        <a href="history.html" class="drawer-link"><span class="material-icons">history</span> <span data-i18n="nav_history">History</span></a>
+        <a href="notifications.html" class="drawer-link"><span class="material-icons">notifications</span> <span data-i18n="nav_notifications">Notifications</span></a>
+        <a href="index.html" class="drawer-link" style="color: #ef4444;"><span class="material-icons" style="color: #ef4444;">logout</span> <span data-i18n="nav_logout">Logout</span></a>
+    </div>
+</aside>
 
     <div class="profile-container">
         <div class="profile-header">
-            <h2>Farmer Profile</h2>
-            <p>Manage your personal and farm details for better personalized advice.</p>
+            <h2>👨‍🌾 Farmer Profile</h2>
+            <p>Manage your personal and farm details for AI-powered personalized crop and fertilizer recommendations.</p>
         </div>
 
         <div class="photo-upload">
             <div class="photo-preview" id="photoPreview">
-                <span>No Photo</span>
+                <span class="material-icons" style="font-size: 3rem; color: #a3d9a5;">account_circle</span>
             </div>
             <input type="file" id="photoInput" accept="image/png, image/jpeg" style="display:none">
-            <button class="btn" onclick="document.getElementById('photoInput').click()">Upload Photo</button>
+            <button class="btn" type="button" onclick="document.getElementById('photoInput').click()" style="background:#2ecc71; color:white; border:none; padding:8px 18px; border-radius:20px; font-weight:600; cursor:pointer; font-size:0.9rem;">
+                <span class="material-icons" style="font-size:1.1rem; vertical-align:middle;">photo_camera</span> Upload Photo
+            </button>
         </div>
 
         <form id="profileForm">
-            <h3 class="section-title">Personal Information</h3>
+            <h3 class="section-title"><span class="material-icons">person</span> Personal Information</h3>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" id="profName" required>
+                    <input type="text" id="profName" placeholder="e.g. Ramesh Patel" required>
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" id="profPhone">
+                    <input type="tel" id="profPhone" placeholder="e.g. 9876543210">
                 </div>
                 <div class="form-group">
-                    <label>Village</label>
-                    <input type="text" id="profVillage">
+                    <label>Village / Town</label>
+                    <input type="text" id="profVillage" placeholder="e.g. Kisan Nagar">
                 </div>
                 <div class="form-group">
                     <label>District / City</label>
-                    <input type="text" id="profDistrict">
+                    <input type="text" id="profDistrict" placeholder="e.g. Anand">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="grid-column: 1 / -1;">
                     <label>State</label>
-                    <input type="text" id="profState">
+                    <input type="text" id="profState" placeholder="e.g. Gujarat">
                 </div>
             </div>
 
-            <h3 class="section-title">Farm Details</h3>
+            <h3 class="section-title"><span class="material-icons">agriculture</span> Farm Details</h3>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Total Land Area (Acres)</label>
-                    <input type="number" step="0.1" id="profLandArea">
+                    <input type="number" step="0.1" id="profLandArea" placeholder="e.g. 5.0">
                 </div>
                 <div class="form-group">
                     <label>Primary Soil Type</label>
                     <select id="profSoilType">
-                        <option value="">Select...</option>
-                        <option value="loamy">Loamy</option>
-                        <option value="sandy">Sandy</option>
-                        <option value="clay">Clay</option>
-                        <option value="black_cotton">Black Cotton</option>
-                        <option value="red_laterite">Red Laterite</option>
+                        <option value="">Select Soil Type...</option>
+                        <option value="loamy">Loamy Soil</option>
+                        <option value="sandy">Sandy Soil</option>
+                        <option value="clay">Clay Soil</option>
+                        <option value="black_cotton">Black Cotton Soil</option>
+                        <option value="red_laterite">Red / Laterite Soil</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="grid-column: 1 / -1;">
                     <label>Irrigation Type</label>
                     <select id="profIrrigation">
-                        <option value="">Select...</option>
-                        <option value="rainfed">Rainfed</option>
+                        <option value="">Select Irrigation...</option>
+                        <option value="rainfed">Rainfed (Dependent on monsoon)</option>
                         <option value="drip">Drip Irrigation</option>
-                        <option value="sprinkler">Sprinkler</option>
-                        <option value="canal">Canal / Flood</option>
-                        <option value="borewell">Borewell</option>
+                        <option value="sprinkler">Sprinkler Irrigation</option>
+                        <option value="canal">Canal / Flood Irrigation</option>
+                        <option value="borewell">Tube well / Borewell</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group" style="margin-bottom: 25px;">
-                <label>Preferred Crops (Select multiple)</label>
+                <label>Preferred Crops (Select all that you grow)</label>
                 <div class="chips-container" id="cropChips">
-                    <!-- Chips populated by JS -->
+                    <!-- Populated dynamically -->
                 </div>
             </div>
 
-            <div class="profile-section">
-                <h3><span class="material-icons" style="vertical-align: middle; font-size: inherit;">notifications</span> Notification Preferences</h3>
-                <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                    <label for="prefEmail" style="margin: 0; font-weight: normal; color: #333;">Enable Email Notifications</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="prefEmail" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                    <label for="prefWeather" style="margin: 0; font-weight: normal; color: #333;">Weather Alerts (Extreme heat, frost, rain)</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="prefWeather" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                    <label for="prefPest" style="margin: 0; font-weight: normal; color: #333;">Pest & Disease Warnings</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="prefPest" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                    <label for="prefMarket" style="margin: 0; font-weight: normal; color: #333;">Market Price Trends</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="prefMarket" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
-                    <label for="prefScheme" style="margin: 0; font-weight: normal; color: #333;">Govt Scheme Deadlines</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="prefScheme" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
+            <h3 class="section-title"><span class="material-icons">notifications</span> Notification & Alert Preferences</h3>
+            <div class="toggle-row">
+                <label for="prefEmail">Enable Email Alerts & Summaries</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="prefEmail" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-row">
+                <label for="prefWeather">Extreme Weather & Frost Warnings</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="prefWeather" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-row">
+                <label for="prefPest">Pest Infestation & Disease Alerts</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="prefPest" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-row">
+                <label for="prefMarket">APMC Mandi Price Surges & Trends</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="prefMarket" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-row" style="border-bottom: none; margin-bottom: 15px;">
+                <label for="prefScheme">Govt Schemes & Subsidy Deadlines</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="prefScheme" checked>
+                    <span class="slider"></span>
+                </label>
             </div>
 
             <button type="submit" class="btn-save" id="saveProfileBtn">Save Profile</button>
@@ -166,8 +540,9 @@
 
     <!-- Scripts -->
     <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/navbar.js"></script>
     <script src="js/profile.js"></script>
-    <script src="js/app.js"></script> <!-- Shared UI logic -->
     <script src="js/i18n.js"></script>
 </body>
 </html>

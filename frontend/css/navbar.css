@@ -1,0 +1,642 @@
+/* ==========================================================================
+   KISANCARE - MODERN STRUCTURED NAVBAR COMPONENT
+   Clean, Organized, Categorized Dropdowns, Glassmorphic & Mobile-Responsive
+   ========================================================================== */
+
+:root {
+    --nav-bg-start: #0f3d23;
+    --nav-bg-end: #176538;
+    --nav-accent: #2ecc71;
+    --nav-accent-light: #a8e063;
+    --nav-text: #ffffff;
+    --nav-text-muted: rgba(255, 255, 255, 0.85);
+    --nav-hover-bg: rgba(255, 255, 255, 0.14);
+    --nav-active-bg: rgba(255, 255, 255, 0.22);
+    --nav-dropdown-bg: #ffffff;
+    --nav-dropdown-border: #e2e8f0;
+    --nav-dropdown-shadow: 0 18px 45px rgba(0, 0, 0, 0.18), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Protect Material Icons from being overridden by any global font-family rule */
+.material-icons,
+.material-icons-outlined,
+.material-icons-round,
+.material-icons-sharp {
+    font-family: 'Material Icons' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Header Container */
+header.app-header,
+.app-header {
+    background: linear-gradient(135deg, var(--nav-bg-start) 0%, #14552e 50%, var(--nav-bg-end) 100%) !important;
+    color: var(--nav-text) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.14) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    font-family: 'Poppins', 'Mukta', 'Noto Sans Devanagari', 'Noto Sans Gujarati', sans-serif !important;
+}
+
+/* Main Navigation Bar */
+.app-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 68px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Brand / Logo */
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.nav-brand:hover {
+    transform: scale(1.02);
+}
+
+.nav-brand .brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.35);
+}
+
+.nav-brand .brand-icon .material-icons {
+    font-size: 22px;
+}
+
+.nav-brand .brand-name span {
+    color: var(--nav-accent-light);
+}
+
+.nav-brand .badge-pro {
+    font-size: 0.65rem;
+    font-weight: 800;
+    background: rgba(168, 224, 99, 0.22);
+    color: #a8e063;
+    border: 1px solid rgba(168, 224, 99, 0.5);
+    padding: 2px 7px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 4px;
+}
+
+/* Navigation Links (Center Group) */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 4px;
+}
+
+.nav-item {
+    position: relative;
+    list-style: none;
+}
+
+/* Nav Link Item */
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    color: var(--nav-text-muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+}
+
+.nav-link .material-icons {
+    font-size: 19px;
+    opacity: 0.9;
+}
+
+.nav-link .caret-icon {
+    font-size: 16px;
+    margin-left: -2px;
+    transition: transform 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #ffffff;
+    background: var(--nav-hover-bg);
+}
+
+.nav-link.active,
+.nav-item.active > .nav-link {
+    color: #ffffff;
+    background: var(--nav-active-bg);
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.nav-item:hover > .nav-link .caret-icon,
+.nav-item.open > .nav-link .caret-icon {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   DROPDOWN MENUS (Desktop Categorized Dropdowns)
+   ========================================================================== */
+
+.nav-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 280px;
+    background: var(--nav-dropdown-bg);
+    border: 1px solid var(--nav-dropdown-border);
+    border-radius: 14px;
+    box-shadow: var(--nav-dropdown-shadow);
+    padding: 8px;
+    margin: 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1050;
+    pointer-events: none;
+}
+
+/* Open Dropdown on Hover or Open class */
+.nav-item:hover > .nav-dropdown,
+.nav-item:focus-within > .nav-dropdown,
+.nav-item.open > .nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Bridge invisible gap so hover isn't lost */
+.nav-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+}
+
+/* Dropdown Menu Items */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border-radius: 9px;
+    color: #1e293b;
+    text-decoration: none;
+    transition: all 0.18s ease;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #f0fdf4;
+    color: #15803d;
+    transform: translateX(3px);
+}
+
+.dropdown-item.active {
+    background: #e8f5e9;
+    color: #1b5e20;
+    font-weight: 600;
+}
+
+.dropdown-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    color: #475569;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover .dropdown-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.dropdown-icon .material-icons {
+    font-size: 20px;
+}
+
+.dropdown-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1e293b;
+}
+
+.dropdown-desc {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 2px;
+    line-height: 1.2;
+}
+
+/* Dropdown Divider */
+.dropdown-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 6px 0;
+}
+
+/* Dropdown Right-Aligned for Account Menu */
+.nav-dropdown.dropdown-right {
+    left: auto;
+    right: 0;
+}
+
+/* ==========================================================================
+   RIGHT ACTION CONTROLS (Lang Switcher, Notifications, User Menu)
+   ========================================================================== */
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Language Switcher Pill */
+.nav-lang-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 30px;
+    padding: 4px 10px;
+    color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.nav-lang-pill:hover {
+    background: rgba(255, 255, 255, 0.24);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.nav-lang-pill .material-icons {
+    font-size: 18px;
+    color: var(--nav-accent-light);
+}
+
+.nav-lang-select {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+    padding-right: 4px;
+}
+
+.nav-lang-select option {
+    background: #ffffff;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* Notification Button */
+.nav-icon-btn {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.nav-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.24);
+    transform: translateY(-1px);
+}
+
+.nav-icon-btn .material-icons {
+    font-size: 20px;
+}
+
+.nav-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    height: 17px;
+    min-width: 17px;
+    padding: 0 4px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--nav-bg-start);
+}
+
+/* User Account Button */
+.nav-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 30px;
+    color: #ffffff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.nav-user-btn:hover {
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.user-avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #56ab2f, #a8e063);
+    color: #103b22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+.user-btn-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Mobile Toggle Hamburger Button */
+.nav-mobile-toggle {
+    display: none;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-mobile-toggle:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.nav-mobile-toggle .material-icons {
+    font-size: 24px;
+}
+
+/* ==========================================================================
+   MOBILE DRAWER & RESPONSIVE BEHAVIOR
+   ========================================================================== */
+
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100%;
+    background: #ffffff;
+    z-index: 1999;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+}
+
+.mobile-drawer.active {
+    right: 0;
+}
+
+.drawer-header {
+    background: linear-gradient(135deg, var(--nav-bg-start), var(--nav-bg-end));
+    padding: 20px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.drawer-close-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.drawer-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.drawer-section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+    margin: 14px 0 4px 8px;
+}
+
+.drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: #334155;
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.drawer-link:hover,
+.drawer-link.active {
+    background: #f0fdf4;
+    color: #15803d;
+    font-weight: 600;
+}
+
+.drawer-link .material-icons {
+    font-size: 20px;
+    color: #16a34a;
+}
+
+/* ==========================================================================
+   RESPONSIVE MEDIA QUERIES
+   ========================================================================== */
+
+/* ── Medium screens (1281px – 1500px): Compressed nav, icon-only labels ── */
+@media (max-width: 1500px) and (min-width: 1281px) {
+    .app-navbar {
+        gap: 4px;
+        padding: 0 16px;
+    }
+
+    .nav-menu {
+        gap: 2px;
+    }
+
+    .nav-link {
+        padding: 8px 10px;
+        font-size: 0;
+        gap: 0;
+    }
+
+    /* Show only the first material-icons inside nav-link, hide text */
+    .nav-link > .material-icons:first-child {
+        font-size: 20px !important;
+    }
+
+    /* Keep caret visible on dropdowns */
+    .nav-link .caret-icon {
+        font-size: 16px !important;
+    }
+
+    .badge-pro {
+        display: none;
+    }
+
+    .nav-lang-pill {
+        padding: 4px 8px;
+    }
+
+    .nav-lang-select {
+        font-size: 0.78rem;
+        max-width: 90px;
+    }
+
+    .user-btn-name {
+        display: none;
+    }
+}
+
+/* ── Small/Tablet screens (≤1280px): Collapse to mobile hamburger drawer ── */
+@media (max-width: 1280px) {
+    .nav-menu {
+        display: none !important;
+    }
+
+    .nav-mobile-toggle {
+        display: flex !important;
+    }
+
+    .user-btn-name {
+        display: none;
+    }
+
+    .badge-pro {
+        display: none;
+    }
+
+    .nav-actions {
+        gap: 8px;
+    }
+}
